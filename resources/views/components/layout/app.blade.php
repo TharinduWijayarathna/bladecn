@@ -76,7 +76,7 @@
     </div>
 
     @stack('scripts')
-    
+
     {{-- Theme update function for header dropdown --}}
     <script>
         function updateTheme(mode) {
@@ -84,16 +84,19 @@
             if (typeof localStorage !== 'undefined') {
                 localStorage.setItem('appearance', mode);
             }
-            
+
             // Set cookie
             const maxAge = 365 * 24 * 60 * 60;
             document.cookie = `appearance=${mode};path=/;max-age=${maxAge};SameSite=Lax`;
-            
+
             // Apply theme immediately
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const isDark = mode === 'dark' || (mode === 'system' && prefersDark);
             document.documentElement.classList.toggle('dark', isDark);
-            
+
+            // Update button visual states
+            updateThemeButtons(mode);
+
             // Submit to server to save in session
             fetch('{{ route('settings.appearance.update') }}', {
                 method: 'PUT',
@@ -107,6 +110,51 @@
                 console.error('Failed to save appearance preference:', err);
             });
         }
+
+        function updateThemeButtons(activeMode) {
+            // Find all theme toggle buttons
+            const buttons = document.querySelectorAll('.theme-toggle-btn');
+
+            buttons.forEach(button => {
+                const mode = button.getAttribute('data-theme');
+                const isActive = mode === activeMode;
+
+                // Remove all active classes
+                button.classList.remove('bg-accent', 'z-10', 'border-r', 'border-l', 'border-x', 'border-input');
+                button.classList.add('bg-transparent');
+
+                // Add active classes if this is the active button
+                if (isActive) {
+                    button.classList.remove('bg-transparent');
+                    button.classList.add('bg-accent', 'z-10');
+
+                    // Add border classes based on position
+                    if (mode === 'light') {
+                        button.classList.add('border-r', 'border-input');
+                    } else if (mode === 'dark') {
+                        button.classList.add('border-x', 'border-input');
+                    } else if (mode === 'system') {
+                        button.classList.add('border-l', 'border-input');
+                    }
+                }
+            });
+        }
+
+        // Initialize theme buttons on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get current theme from localStorage or session
+            const currentTheme = localStorage.getItem('appearance') || '{{ session('appearance', 'system') }}';
+            updateThemeButtons(currentTheme);
+
+            // Add click handlers to theme buttons
+            document.querySelectorAll('.theme-toggle-btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const mode = this.getAttribute('data-theme');
+                    updateTheme(mode);
+                });
+            });
+        });
     </script>
 </body>
 

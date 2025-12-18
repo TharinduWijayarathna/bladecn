@@ -37,22 +37,25 @@
                         <x-ui.dropdown-separator />
 
                         {{-- Theme Toggle --}}
-                        <div class="px-2 py-1.5">
+                        <div class="px-2 py-1.5" id="header-theme-toggle">
                             <p class="text-xs font-medium text-muted-foreground mb-1.5 px-2">Theme</p>
                             <div
                                 class="flex items-center gap-0 -space-x-px rounded-md border border-input overflow-hidden shadow-xs">
-                                <button type="button" onclick="updateTheme('light')"
-                                    class="flex-1 flex items-center justify-center px-2 py-1.5 text-xs transition-colors hover:bg-accent first:rounded-l-md last:rounded-r-md {{ session('appearance', 'system') === 'light' ? 'bg-accent z-10 border-r border-input' : 'bg-transparent' }}"
+                                <button type="button"
+                                    data-theme="light"
+                                    class="theme-toggle-btn flex-1 flex items-center justify-center px-2 py-1.5 text-xs transition-colors hover:bg-accent first:rounded-l-md last:rounded-r-md {{ session('appearance', 'system') === 'light' ? 'bg-accent z-10 border-r border-input' : 'bg-transparent' }}"
                                     title="Light">
                                     <x-icons.sun class="size-3.5" />
                                 </button>
-                                <button type="button" onclick="updateTheme('dark')"
-                                    class="flex-1 flex items-center justify-center px-2 py-1.5 text-xs transition-colors hover:bg-accent border-x border-input {{ session('appearance', 'system') === 'dark' ? 'bg-accent z-10' : 'bg-transparent' }}"
+                                <button type="button"
+                                    data-theme="dark"
+                                    class="theme-toggle-btn flex-1 flex items-center justify-center px-2 py-1.5 text-xs transition-colors hover:bg-accent border-x border-input {{ session('appearance', 'system') === 'dark' ? 'bg-accent z-10' : 'bg-transparent' }}"
                                     title="Dark">
                                     <x-icons.moon class="size-3.5" />
                                 </button>
-                                <button type="button" onclick="updateTheme('system')"
-                                    class="flex-1 flex items-center justify-center px-2 py-1.5 text-xs transition-colors hover:bg-accent {{ session('appearance', 'system') === 'system' ? 'bg-accent z-10 border-l border-input' : 'bg-transparent' }}"
+                                <button type="button"
+                                    data-theme="system"
+                                    class="theme-toggle-btn flex-1 flex items-center justify-center px-2 py-1.5 text-xs transition-colors hover:bg-accent {{ session('appearance', 'system') === 'system' ? 'bg-accent z-10 border-l border-input' : 'bg-transparent' }}"
                                     title="System">
                                     <x-icons.monitor class="size-3.5" />
                                 </button>
