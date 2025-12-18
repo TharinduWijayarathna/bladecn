@@ -19,7 +19,7 @@ class ProfileController
         if (view()->exists('settings.profile')) {
             return view('settings.profile');
         }
-        
+
         if (view()->exists('bladecn::settings.profile')) {
             return view('bladecn::settings.profile');
         }
@@ -36,7 +36,7 @@ class ProfileController
         if (view()->exists('settings.password')) {
             return view('settings.password');
         }
-        
+
         return view('bladecn::settings.password');
     }
 
