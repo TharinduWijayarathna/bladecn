@@ -2,6 +2,11 @@
 
 All notable changes to `:package_name` will be documented in this file.
 
+## v0.5 - 2025-11-10
+
+- changed the package name
+- fixed some component rendering issues
+
 ## v0.4 - 2025-11-10
 
 - updated default logo
