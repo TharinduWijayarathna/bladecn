@@ -5,6 +5,7 @@ use BladeCN\BladeCN\Http\Controllers\Auth\NewPasswordController;
 use BladeCN\BladeCN\Http\Controllers\Auth\PasswordResetLinkController;
 use BladeCN\BladeCN\Http\Controllers\Auth\RegisteredUserController;
 use BladeCN\BladeCN\Http\Controllers\ProfileController;
+use BladeCN\BladeCN\Http\Controllers\AppearanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -35,7 +36,16 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 
-    // Profile routes
+    // Settings routes
+    Route::prefix('settings')->group(function () {
+        Route::get('profile', [ProfileController::class, 'edit'])->name('settings.profile');
+        Route::get('password', [ProfileController::class, 'editPassword'])->name('settings.password');
+        Route::get('appearance', [AppearanceController::class, 'edit'])->name('settings.appearance');
+        
+        Route::put('appearance', [AppearanceController::class, 'update'])->name('settings.appearance.update');
+    });
+
+    // Profile routes (backward compatibility)
     Route::get('profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 

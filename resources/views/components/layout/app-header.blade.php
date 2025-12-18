@@ -27,10 +27,12 @@
                             <p class="text-muted-foreground text-xs leading-none">{{ Auth::user()->email }}</p>
                         </x-ui.dropdown-label>
                         <x-ui.dropdown-separator />
-                        @if (Route::has('profile.edit'))
-                            <x-ui.dropdown-item :href="route('profile.edit')">Profile</x-ui.dropdown-item>
+                        @if (Route::has('settings.profile'))
+                            <x-ui.dropdown-item :href="route('settings.profile')">Profile</x-ui.dropdown-item>
                         @endif
-                        <x-ui.dropdown-item href="#">Settings</x-ui.dropdown-item>
+                        @if (Route::has('settings.profile'))
+                            <x-ui.dropdown-item :href="route('settings.profile')">Settings</x-ui.dropdown-item>
+                        @endif
 
                         <x-ui.dropdown-separator />
 

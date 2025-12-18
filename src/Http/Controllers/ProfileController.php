@@ -5,6 +5,7 @@ namespace BladeCN\BladeCN\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
 
 class ProfileController
@@ -14,7 +15,20 @@ class ProfileController
      */
     public function edit(Request $request)
     {
+        // Check if settings/profile view exists, otherwise fall back to old profile view
+        if (view()->exists('bladecn::settings.profile')) {
+            return view('bladecn::settings.profile');
+        }
+        
         return view('bladecn::profile');
+    }
+
+    /**
+     * Display the password form.
+     */
+    public function editPassword(Request $request)
+    {
+        return view('bladecn::settings.password');
     }
 
     /**
@@ -25,15 +39,29 @@ class ProfileController
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$request->user()->id],
+            'avatar' => ['nullable', 'image', 'max:2048'], // 2MB max
         ]);
 
-        $request->user()->fill($validated);
+        $user = $request->user();
+        $user->fill($validated);
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Handle avatar upload
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if exists
+            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            
+            // Store new avatar
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
         }
 
-        $request->user()->save();
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return back()->with('status', 'profile-updated');
     }

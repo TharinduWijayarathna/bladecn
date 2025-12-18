@@ -76,6 +76,38 @@
     </div>
 
     @stack('scripts')
+    
+    {{-- Theme update function for header dropdown --}}
+    <script>
+        function updateTheme(mode) {
+            // Update localStorage
+            if (typeof localStorage !== 'undefined') {
+                localStorage.setItem('appearance', mode);
+            }
+            
+            // Set cookie
+            const maxAge = 365 * 24 * 60 * 60;
+            document.cookie = `appearance=${mode};path=/;max-age=${maxAge};SameSite=Lax`;
+            
+            // Apply theme immediately
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = mode === 'dark' || (mode === 'system' && prefersDark);
+            document.documentElement.classList.toggle('dark', isDark);
+            
+            // Submit to server to save in session
+            fetch('{{ route('settings.appearance.update') }}', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ appearance: mode })
+            }).catch(err => {
+                console.error('Failed to save appearance preference:', err);
+            });
+        }
+    </script>
 </body>
 
 </html>

@@ -10,20 +10,20 @@
             <nav class="flex flex-col space-y-1 space-x-0">
                 @php
                     $navItems = [
-                        ['title' => 'Profile', 'href' => '/settings/profile'],
-                        ['title' => 'Password', 'href' => '/settings/password'],
-                        ['title' => 'Billing', 'href' => '/settings/billing'],
-                        ['title' => 'Notifications', 'href' => '/settings/notifications'],
-                        ['title' => 'Appearance', 'href' => '/settings/appearance'],
+                        ['title' => 'Profile', 'route' => 'settings.profile'],
+                        ['title' => 'Password', 'route' => 'settings.password'],
+                        ['title' => 'Appearance', 'route' => 'settings.appearance'],
                     ];
                 @endphp
                 
                 @foreach($navItems as $item)
                     @php
-                        $isActive = request()->is(ltrim($item['href'], '/')) || request()->is(ltrim($item['href'], '/').'/*');
+                        $route = $item['route'] ?? null;
+                        $href = $route && Route::has($route) ? route($route) : '#';
+                        $isActive = $route && request()->routeIs($route);
                     @endphp
                     <a 
-                        href="{{ $item['href'] }}"
+                        href="{{ $href }}"
                         class="{{ cn('inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all [&_svg]:pointer-events-none [&_svg:not([class*="size-"])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 w-full justify-start', $isActive ? 'bg-muted' : '') }}"
                     >
                         {{ $item['title'] }}
