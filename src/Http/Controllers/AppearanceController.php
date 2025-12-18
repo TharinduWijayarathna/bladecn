@@ -16,7 +16,7 @@ class AppearanceController
         if (view()->exists('settings.appearance')) {
             return view('settings.appearance');
         }
-        
+
         return view('bladecn::settings.appearance');
     }
 
