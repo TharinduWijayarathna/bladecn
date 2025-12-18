@@ -15,7 +15,11 @@ class ProfileController
      */
     public function edit(Request $request)
     {
-        // Check if settings/profile view exists, otherwise fall back to old profile view
+        // Check if settings/profile view exists (installed in app), otherwise try package view, then fall back to old profile view
+        if (view()->exists('settings.profile')) {
+            return view('settings.profile');
+        }
+        
         if (view()->exists('bladecn::settings.profile')) {
             return view('bladecn::settings.profile');
         }
@@ -28,6 +32,11 @@ class ProfileController
      */
     public function editPassword(Request $request)
     {
+        // Check if settings/password view exists (installed in app), otherwise try package view
+        if (view()->exists('settings.password')) {
+            return view('settings.password');
+        }
+        
         return view('bladecn::settings.password');
     }
 

@@ -161,6 +161,34 @@ class InstallBladeCNCommand extends Command
             File::copy($source.'/profile.blade.php', $destination.'/profile.blade.php');
         }
 
+        // Copy settings views
+        if (File::isDirectory($source.'/settings')) {
+            File::copyDirectory($source.'/settings', $destination.'/settings');
+            $this->info('   ✓ Settings views installed');
+        }
+
+        // Copy additional UI components needed for settings
+        $settingsComponents = [
+            'avatar-upload', 'heading-small', 'appearance-tabs', 'input-group-password',
+            'notification-group', 'heading',
+        ];
+        foreach ($settingsComponents as $component) {
+            $sourceFile = $source.'/components/ui/'.$component.'.blade.php';
+            if (File::exists($sourceFile)) {
+                File::copy($sourceFile, $destination.'/components/ui/'.$component.'.blade.php');
+            }
+        }
+
+        // Copy settings layout component
+        if (File::exists($source.'/components/layout/settings.blade.php')) {
+            File::copy($source.'/components/layout/settings.blade.php', $destination.'/components/layout/settings.blade.php');
+        }
+
+        // Copy settings components (like delete-user)
+        if (File::isDirectory($source.'/components/settings')) {
+            File::copyDirectory($source.'/components/settings', $destination.'/components/settings');
+        }
+
         $this->info('   ✓ Views installed to resources/views/');
     }
 
@@ -184,7 +212,7 @@ class InstallBladeCNCommand extends Command
             'Dropdown', 'DropdownCheckboxItem', 'DropdownContent', 'DropdownItem',
             'DropdownLabel', 'DropdownRadioItem', 'DropdownSeparator', 'DropdownShortcut',
             'DropdownSub', 'DropdownSubContent', 'DropdownSubTrigger', 'DropdownTrigger',
-            'Input', 'InputError', 'InputGroup', 'InputGroupAddon', 'InputGroupInput', 'Label', 'NativeSelect', 'Select', 'RadioGroup',
+            'Input', 'InputError', 'InputGroup', 'InputGroupAddon', 'InputGroupInput', 'InputGroupPassword', 'Label', 'NativeSelect', 'Select', 'RadioGroup',
             'Separator', 'Sheet', 'SheetClose', 'SheetDescription', 'SheetFooter',
             'SheetHeader', 'SheetTitle', 'SheetTrigger', 'Spinner', 'Table',
             'TableBody', 'TableCell', 'TableHead', 'TableHeader', 'TableRow',
@@ -292,6 +320,27 @@ class InstallBladeCNCommand extends Command
             );
 
             File::put($destination.'/ProfileController.php', $content);
+        }
+
+        // Install AppearanceController
+        if (File::exists($source.'/AppearanceController.php')) {
+            $content = File::get($source.'/AppearanceController.php');
+
+            // Update namespace
+            $content = str_replace(
+                'namespace BladeCN\\BladeCN\\Http\\Controllers;',
+                'namespace App\\Http\\Controllers;',
+                $content
+            );
+
+            // Update view paths
+            $content = preg_replace(
+                "/view\('bladecn::([^']+)'\)/",
+                "view('$1')",
+                $content
+            );
+
+            File::put($destination.'/AppearanceController.php', $content);
         }
 
         $this->info('   ✓ Controllers installed to app/Http/Controllers/');
