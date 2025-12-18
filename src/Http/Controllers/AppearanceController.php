@@ -46,4 +46,3 @@ class AppearanceController
         return back()->with('status', 'appearance-updated');
     }
 }
-

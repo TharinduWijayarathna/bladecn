@@ -23,7 +23,7 @@ class ProfileController
         if (view()->exists('bladecn::settings.profile')) {
             return view('bladecn::settings.profile');
         }
-        
+
         return view('bladecn::profile');
     }
 
@@ -60,7 +60,7 @@ class ProfileController
             if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            
+
             // Store new avatar
             $path = $request->file('avatar')->store('avatars', 'public');
             $user->avatar = $path;

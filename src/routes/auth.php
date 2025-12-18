@@ -1,11 +1,11 @@
 <?php
 
+use BladeCN\BladeCN\Http\Controllers\AppearanceController;
 use BladeCN\BladeCN\Http\Controllers\Auth\AuthenticatedSessionController;
 use BladeCN\BladeCN\Http\Controllers\Auth\NewPasswordController;
 use BladeCN\BladeCN\Http\Controllers\Auth\PasswordResetLinkController;
 use BladeCN\BladeCN\Http\Controllers\Auth\RegisteredUserController;
 use BladeCN\BladeCN\Http\Controllers\ProfileController;
-use BladeCN\BladeCN\Http\Controllers\AppearanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
         Route::get('profile', [ProfileController::class, 'edit'])->name('settings.profile');
         Route::get('password', [ProfileController::class, 'editPassword'])->name('settings.password');
         Route::get('appearance', [AppearanceController::class, 'edit'])->name('settings.appearance');
-        
+
         Route::put('appearance', [AppearanceController::class, 'update'])->name('settings.appearance.update');
     });
 
