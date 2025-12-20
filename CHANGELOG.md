@@ -2,6 +2,10 @@
 
 All notable changes to `:package_name` will be documented in this file.
 
+## v0.8 - 2025-12-20
+
+**Full Changelog**: https://github.com/TharinduWijayarathna/bladecn/compare/v0.7...v0.8
+
 ## v0.7 - 2025-12-18
 
 **Full Changelog**: https://github.com/TharinduWijayarathna/bladecn/compare/v0.6...v0.7
