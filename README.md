@@ -1,13 +1,40 @@
 # BladeCN
 
-A beautiful Laravel UI component library inspired by shadcn/ui, providing a complete set of components and starter templates for building modern web applications.
+**shadcn for Laravel Blade.** No React. No Livewire.
+
+BladeCN is a starter kit: login, register, password reset, dashboard, and profile, plus a shadcn-style Blade component set on Alpine and Tailwind 4.
+
+Official Laravel kits already ship shadcn with React/Vue/Svelte, or Flux with Livewire. Use BladeCN when you want that look and still want server-rendered Blade.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/bladecn/bladecn.svg?style=flat-square)](https://packagist.org/packages/bladecn/bladecn)
 [![Total Downloads](https://img.shields.io/packagist/dt/bladecn/bladecn.svg?style=flat-square)](https://packagist.org/packages/bladecn/bladecn)
 
+## Installation
+
+```bash
+composer require bladecn/bladecn
+```
+
+```bash
+php artisan bladecn:install
+```
+
+```bash
+npm install tailwindcss @tailwindcss/vite tailwindcss-animate alpinejs @alpinejs/focus
+npm run build
+```
+
+*Auth and a dashboard in one install.*
+
+![Dashboard Dark](.github/images/dashboard-desktop-dark.png)
+
+![Login](.github/images/login-desktop-light.png)
+
+![Delete Account Dialog](.github/images/dialog-delete-light.png)
+
 ## Features
 
-- 🎨 **50+ Components** - Complete shadcn/ui component library for Laravel Blade
+- 🎨 **106 Component Files** - Complete shadcn-style component library across 37 families (Button, Card, Dialog, Dropdown, Table, Sheet, Avatar, and more)
 - 🔐 **Authentication System** - Pre-built login, registration, and password reset flows
 - 📊 **Dashboard Templates** - Ready-to-use dashboard with stats, tables, and cards
 - 👤 **Profile Management** - Complete user profile and account settings pages
@@ -15,14 +42,6 @@ A beautiful Laravel UI component library inspired by shadcn/ui, providing a comp
 - 🌙 **Dark Mode** - Built-in dark mode support across all components
 - ⚡ **Easy Integration** - Simple Blade component syntax
 - 🎯 **Type-Safe** - PHP component classes with comprehensive type hints
-
-## Installation
-
-Install via Composer:
-
-```bash
-composer require bladecn/bladecn
-```
 
 ## Quick Start
 
@@ -151,18 +170,20 @@ All UI components are namespaced under `x-ui`:
 </x-ui.dialog>
 ```
 
-## Component Categories
+## Component Families
 
-- **Form Components** - Input, Textarea, Checkbox, Radio, Select, Label
-- **Buttons** - Multiple variants and sizes
-- **Cards** - Header, content, footer sections
-- **Dialogs & Modals** - Dialog, Sheet components
-- **Navigation** - Breadcrumbs, Dropdown menus
-- **Data Display** - Tables, Badges, Avatars, Progress bars
-- **Layout** - Separators, Grid systems
-- **Feedback** - Tooltips, Spinners, Error messages
-
-For a complete component reference, visit the [documentation](https://github.com/bladecn/bladecn).
+- **Input** - Input, Textarea, Checkbox, Radio, Select, Label, OTP, Phone
+- **Card** - Card, Header, Content, Footer, Title, Description, Action
+- **Dialog** - Dialog, Trigger, Content, Header, Footer, Title, Close, Overlay
+- **Dropdown** - Dropdown, Trigger, Content, Item, Label, Separator, Sub-menus
+- **Table** - Table, Header, Body, Row, Cell, Head
+- **Sheet** - Sheet, Trigger, Content, Header, Footer, Title, Close
+- **Avatar** - Avatar, Image, Fallback, Upload
+- **Empty State** - Empty state, Title, Description, Media, Header, Content
+- **Item** - Item, Header, Title, Description, Media, Actions, Separator, Group
+- **Navigation** - Breadcrumbs, Text links
+- **Feedback** - Tooltips, Spinners, Progress bars, Badges
+- **Layout** - Separators, Headings
 
 ## Customization
 
@@ -192,10 +213,6 @@ php artisan vendor:publish --tag="bladecn-config"
 - PHP 8.3 or higher
 - Laravel 10.x, 11.x, or 12.x
 - Tailwind CSS 4.x
-
-## Documentation
-
-For detailed documentation, component examples, and guides, visit [bladecn.dev](https://github.com/bladecn/bladecn).
 
 ## Contributing
 
