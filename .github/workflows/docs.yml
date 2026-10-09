@@ -1,0 +1,90 @@
+name: docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'resources/**'
+      - 'src/**'
+      - 'workbench/**'
+      - 'tests/DocsTest.php'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'testbench.yaml.dist'
+      - 'composer.json'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    paths:
+      - 'resources/**'
+      - 'src/**'
+      - 'workbench/**'
+      - 'tests/DocsTest.php'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'testbench.yaml.dist'
+      - 'composer.json'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, intl, fileinfo
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build docs assets
+        run: |
+          npm ci
+          npm run docs:build
+
+      - name: Render every docs page (tests)
+        run: vendor/bin/pest tests/DocsTest.php
+
+      - name: Export static site
+        run: vendor/bin/testbench docs:export --base="/${{ github.event.repository.name }}"
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/docs-site
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
