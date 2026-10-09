@@ -1,0 +1,19 @@
+# Testbench / Workbench config for the BladeCN docs site.
+# `vendor/bin/testbench serve` boots a throwaway Laravel app with the package
+# and the docs provider from workbench/, then serves the docs at /docs.
+providers:
+  - BladeCN\BladeCN\BladeCNServiceProvider
+  - Workbench\App\Providers\DocsServiceProvider
+
+workbench:
+  start: '/docs'
+  install: false
+  discovers:
+    web: false
+    api: false
+    commands: false
+    components: false
+    views: false
+  build: []
+  assets: []
+  sync: []
