@@ -1,6 +1,6 @@
 <x-ui.card x-data="calendarComponent({{ json_encode($events) }})" x-init="init()">
     {{-- Calendar Header --}}
-    <x-ui.card-header class="flex flex-col sm:flex-row gap-2 justify-between border-b">
+    <x-ui.card-header class="gap-2 border-b max-sm:grid-cols-1">
         <div class="flex items-center gap-2 sm:gap-3">
             <div class="flex flex-col items-center justify-center rounded-md border border-input">
                 <span
@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <x-ui.card-action class="flex flex-row items-stretch sm:items-center gap-2">
+        <x-ui.card-action class="flex flex-row flex-wrap items-stretch sm:flex-nowrap sm:items-center gap-2 max-sm:col-start-1 max-sm:row-span-1 max-sm:row-start-auto max-sm:justify-self-stretch">
             <div class="flex items-center gap-1">
                 <x-ui.button variant="outline" size="icon" @click="prevMonth">
                     <x-icons.chevron-left />
@@ -31,11 +31,13 @@
                 </x-ui.button>
             </div>
 
-            <x-ui.native-select aria-label="Select view" x-model.change="view" @change="renderCalendar()"
-                class="w-full sm:w-auto">
-                <option value="month">Month view</option>
-                <option value="week">Week view</option>
-            </x-ui.native-select>
+            <div class="min-w-[9rem] flex-1 sm:flex-none [&>div]:w-full">
+                <x-ui.native-select aria-label="Select view" x-model.change="view" @change="renderCalendar()"
+                    class="w-full sm:w-auto">
+                    <option value="month">Month view</option>
+                    <option value="week">Week view</option>
+                </x-ui.native-select>
+            </div>
         </x-ui.card-action>
     </x-ui.card-header>
 
@@ -75,10 +77,10 @@
                                 {{-- Event Modal --}}
                                 <x-ui.dialog>
                                     <x-ui.dialog-trigger>
-                                        <button class="calendar-event p-1 rounded-md text-left text-sm truncate"
+                                        <button class="calendar-event w-full min-w-0 max-w-full p-1 rounded-md text-left text-sm truncate"
                                             :class="'event-' + event.color" :title="event.title">
                                             <div class="font-medium truncate" x-text="event.title"></div>
-                                            <div class="text-[0.7rem] text-muted-foreground"
+                                            <div class="truncate text-[0.7rem] text-muted-foreground"
                                                 x-text="event.allDay ? 'All day' : event.time"></div>
                                         </button>
                                     </x-ui.dialog-trigger>
