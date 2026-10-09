@@ -34,7 +34,7 @@
     </x-ui.card-content>
     @if($upgradeRoute)
         <x-ui.card-footer class="flex-col items-end border-t py-2 text-sm">
-            <x-ui.button variant="link" as="a" :href="$upgradeRoute" class="cursor-default">
+            <x-ui.button variant="link" tag="a" :href="$upgradeRoute" class="cursor-default">
                 Upgrade plan
                 <x-icons.arrow-up-right />
             </x-ui.button>
