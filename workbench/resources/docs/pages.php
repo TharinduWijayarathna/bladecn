@@ -1292,7 +1292,7 @@ BLADE,
             'components' => ['ui.command', 'ui.command-input', 'ui.command-list', 'ui.command-empty', 'ui.command-group', 'ui.command-item', 'ui.command-separator', 'ui.command-shortcut', 'ui.command-dialog'],
             'examples' => [
                 'default' => 'Default',
-                'dialog' => ['title' => 'Dialog', 'description' => 'Press <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd>. Items with `href` navigate; listen for `command-select` to run an action.'],
+                'dialog' => ['title' => 'Dialog', 'description' => 'Opens with <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + the `shortcut` key (default <kbd>K</kbd>; this demo uses <kbd>J</kbd> because the docs search already owns ⌘K). Items with `href` navigate; listen for `command-select` to run an action.'],
             ],
             'anatomy' => <<<'BLADE'
 <x-ui.command>
