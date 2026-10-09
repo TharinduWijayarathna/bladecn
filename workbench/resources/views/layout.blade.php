@@ -116,12 +116,10 @@
                     @php $hasActive = in_array($page['slug'], array_column($items, 'slug'), true); @endphp
                     <div x-data="{ open: true }" data-nav-group>
                         <button type="button" @click="open = ! open" :aria-expanded="open"
-                            class="group mb-1.5 flex w-full items-center justify-between rounded-md px-2.5 py-1 text-left text-xs font-semibold tracking-wide text-foreground uppercase">
-                            <span class="flex items-center gap-2">
-                                {{ $group }}
-                                <span class="rounded-full bg-muted px-1.5 text-[10px] font-medium text-muted-foreground tabular-nums">{{ count($items) }}</span>
-                            </span>
-                            <x-icons.chevron-down class="size-3.5 text-muted-foreground transition-transform duration-200" ::class="open ? '' : '-rotate-90'" />
+                            class="group mb-1.5 inline-flex max-w-full items-center gap-1.5 rounded-md py-1 pr-2 pl-1 text-left text-xs font-semibold tracking-wide text-foreground uppercase hover:bg-accent/60">
+                            <x-icons.chevron-down class="size-3.5 shrink-0 text-muted-foreground transition-transform duration-200" ::class="open ? '' : '-rotate-90'" />
+                            <span class="truncate">{{ $group }}</span>
+                            <span class="rounded-full bg-muted px-1.5 text-[10px] font-medium text-muted-foreground tabular-nums">{{ count($items) }}</span>
                         </button>
                         <ul x-show="open" class="grid gap-px border-l border-border/80 ml-2.5">
                             @foreach ($items as $item)
