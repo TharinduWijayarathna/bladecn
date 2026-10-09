@@ -31,6 +31,18 @@ vendor/bin/testbench docs:export --base=/bladecn   # writes build/docs-site
 this on every push to `main` and deploys `build/docs-site` to GitHub Pages (Settings → Pages → Source:
 **GitHub Actions**).
 
+## README hero image
+
+`.github/images/hero.png` and `hero-dark.png` (also usable as the GitHub social preview) are screenshots of real
+components laid out in `resources/views/hero.blade.php`. Regenerate them with headless Chrome:
+
+```bash
+npm run docs:build
+npm run docs:hero    # set CHROME_PATH if Chrome/Chromium isn't on your PATH
+```
+
+Brand assets (logo, mark, favicon) live in `/art`.
+
 ## How it fits together
 
 | Path | What it is |
@@ -38,9 +50,10 @@ this on every push to `main` and deploys `build/docs-site` to GitHub Pages (Sett
 | `resources/docs/pages.php` | Registry: nav, page titles, examples, composition notes, prop descriptions |
 | `resources/views/examples/{page}/{example}.blade.php` | One file per example. Rendered for **Preview**, printed verbatim for **Code**, so they can't drift |
 | `app/Docs/PropsExtractor.php` | Builds props tables from the component constructor (name, type, default) and/or the `@props([...])` array |
-| `app/Docs/Docs.php` | Navigation, URLs, examples, props, and which components `bladecn:install` publishes (read from the installer) |
-| `app/Providers/DocsServiceProvider.php` | Registers every package component as `<x-ui.*>` / `<x-icons.*>` / `<x-ai.*>` / `<x-charts.*>`, the docs views and routes |
+| `app/Docs/Docs.php` | Navigation, URLs, examples and props |
+| `app/Providers/DocsServiceProvider.php` | Registers the docs views, routes and `docs:export` command. Components resolve through the package's own service provider, as in an app |
 | `app/Console/ExportDocsCommand.php` | `docs:export` static site generator |
+| `resources/views/hero.blade.php`, `scripts/hero.mjs` | The README hero mosaic and the script that screenshots it |
 | `resources/css/docs.css`, `resources/js/docs.js` | Import the package's own `app.css` / `app.js`, plus code highlighting |
 
 ## Adding or changing a component page
