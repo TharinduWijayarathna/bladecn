@@ -2,11 +2,9 @@
 
 namespace Workbench\App\Providers;
 
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Illuminate\Support\ViewErrorBag;
 use Workbench\App\Console\ExportDocsCommand;
 use Workbench\App\Docs\Docs;
@@ -33,7 +31,8 @@ class DocsServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->registerPackageComponents();
+        // Components (<x-ui.*>, <x-layout.*>, <x-icons.*>, …) are registered by the package's own
+        // BladeCNServiceProvider, exactly as in a consuming app, so the docs prove they resolve.
 
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'docs');
 
@@ -46,33 +45,5 @@ class DocsServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([ExportDocsCommand::class]);
         }
-    }
-
-    /**
-     * Register every component shipped in the package so the docs render the
-     * real source files from `resources/views/components` and
-     * `src/View/Components`, exactly the files `bladecn:install` publishes.
-     *
-     * - Class-backed components are registered under their kebab-case tag
-     *   (`BladeCN\...\Ui\InputOtpSlot` => `<x-ui.input-otp-slot>`).
-     * - Everything else (anonymous components, icons, ai, charts) resolves
-     *   through the package's components directory as an anonymous path.
-     */
-    protected function registerPackageComponents(): void
-    {
-        $packagePath = dirname(__DIR__, 3);
-
-        foreach (['Ui' => 'ui', 'Layout' => 'layout'] as $namespace => $prefix) {
-            foreach (glob($packagePath."/src/View/Components/{$namespace}/*.php") ?: [] as $file) {
-                $name = basename($file, '.php');
-                $class = "BladeCN\\BladeCN\\View\\Components\\{$namespace}\\{$name}";
-
-                if (class_exists($class)) {
-                    Blade::component($class, $prefix.'.'.Str::kebab($name));
-                }
-            }
-        }
-
-        Blade::anonymousComponentPath($packagePath.'/resources/views/components');
     }
 }
