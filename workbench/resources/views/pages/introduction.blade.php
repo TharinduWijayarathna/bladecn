@@ -62,8 +62,8 @@ BLADE;
 </div>
 
 <h2 class="mt-12 mb-3 text-2xl font-semibold tracking-tight">At a glance</h2>
-<div class="grid gap-4 lg:grid-cols-2">
-    <div class="flex items-center justify-center rounded-lg border p-6">
+<div class="docs-example min-w-0 rounded-xl border">
+    <div class="docs-preview flex items-center justify-center rounded-t-xl border-b p-6 md:p-10">
         <x-ui.card class="w-full max-w-sm">
             <x-ui.card-header>
                 <x-ui.card-title>Welcome back</x-ui.card-title>
@@ -78,7 +78,9 @@ BLADE;
             </x-ui.card-footer>
         </x-ui.card>
     </div>
-    @include('docs::partials.code', ['code' => $usage])
+    <div class="overflow-hidden rounded-b-xl [&_.docs-code-block]:my-0 [&_.docs-code-block]:rounded-none [&_.docs-code-block]:border-0">
+        @include('docs::partials.code', ['code' => $usage])
+    </div>
 </div>
 
 <div class="docs-prose mt-12">
