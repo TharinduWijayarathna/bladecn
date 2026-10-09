@@ -28,7 +28,7 @@
                     <span class="text-sm text-muted-foreground">{{ $cardHolder }}</span>
                 </div>
             </div>
-            <x-ui.button variant="outline" size="sm" as="a" href="#" class="cursor-default">
+            <x-ui.button variant="outline" size="sm" tag="a" href="#" class="cursor-default">
                 Edit
             </x-ui.button>
         </div>
