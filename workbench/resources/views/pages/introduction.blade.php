@@ -16,6 +16,7 @@
 BLADE;
 @endphp
 
+<h2 class="mb-3 text-2xl font-semibold tracking-tight">What is BladeCN?</h2>
 <div class="docs-prose">
     <p>
         BladeCN brings the look and API of <a href="https://ui.shadcn.com" target="_blank" rel="noreferrer">shadcn/ui</a>
@@ -60,7 +61,7 @@ BLADE;
     </ul>
 </div>
 
-<h2 class="mt-12 mb-3 text-xl font-semibold tracking-tight">At a glance</h2>
+<h2 class="mt-12 mb-3 text-2xl font-semibold tracking-tight">At a glance</h2>
 <div class="grid gap-4 lg:grid-cols-2">
     <div class="flex items-center justify-center rounded-lg border p-6">
         <x-ui.card class="w-full max-w-sm">

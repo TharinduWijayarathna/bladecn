@@ -1,7 +1,7 @@
-<x-ui.command-dialog>
+<x-ui.command-dialog shortcut="j">
     <x-slot:trigger>
         <p class="text-sm text-muted-foreground">
-            Press <x-ui.kbd-group><x-ui.kbd>⌘</x-ui.kbd><x-ui.kbd>K</x-ui.kbd></x-ui.kbd-group> or
+            Press <x-ui.kbd-group><x-ui.kbd>⌘</x-ui.kbd><x-ui.kbd>J</x-ui.kbd></x-ui.kbd-group> or
             <x-ui.button variant="link" class="h-auto p-0" x-on:click="open = true">open the palette</x-ui.button>
         </p>
     </x-slot:trigger>

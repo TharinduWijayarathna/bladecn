@@ -38,12 +38,124 @@ function setupThemeToggle() {
     });
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        highlight();
-        setupThemeToggle();
+const slugify = (text) =>
+    text
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+
+// Content headings (not the ones inside live previews or cards).
+function contentHeadings() {
+    const article = document.querySelector('[data-docs-article]');
+    if (!article) return [];
+    return [...article.querySelectorAll('h2, h3')].filter(
+        (h) => !h.closest('[data-example-preview], [data-slot], [data-docs-hero], [data-docs-showcase], .docs-example, footer, nav'),
+    );
+}
+
+// Give headings ids + hover anchors, and build the TOC on guide pages.
+function setupHeadings() {
+    const headings = contentHeadings();
+    const used = new Set();
+
+    headings.forEach((heading) => {
+        const section = heading.closest('section[id]');
+        if (!heading.id && !section) {
+            let id = slugify(heading.textContent) || 'section';
+            while (used.has(id) || document.getElementById(id)) id += '-1';
+            heading.id = id;
+        }
+        used.add(heading.id);
+        const target = heading.id || section.id;
+        if (!heading.querySelector('.docs-anchor')) {
+            const a = document.createElement('a');
+            a.href = `#${target}`;
+            a.className = 'docs-anchor';
+            a.setAttribute('aria-label', `Link to ${heading.textContent.trim()}`);
+            a.textContent = '#';
+            heading.appendChild(a);
+        }
     });
-} else {
+
+    const toc = document.querySelector('[data-toc-auto] [data-toc-list]');
+    if (toc && !toc.children.length) {
+        const hasH2 = headings.some((h) => h.tagName === 'H2');
+        headings.forEach((heading) => {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.className = 'docs-toc-link';
+            a.href = `#${heading.id}`;
+            a.dataset.depth = heading.tagName === 'H3' && hasH2 ? '3' : '2';
+            a.textContent = heading.firstChild?.textContent?.trim() || heading.textContent.replace(/#$/, '').trim();
+            li.appendChild(a);
+            toc.appendChild(li);
+        });
+    }
+
+    const container = document.querySelector('[data-toc]');
+    if (container && !container.querySelector('[data-toc-list] a')) {
+        container.closest('aside')?.classList.add('xl:hidden');
+    }
+}
+
+// Highlight the TOC entry for the section currently in view.
+function setupScrollSpy() {
+    const links = [...document.querySelectorAll('[data-toc-list] a[href^="#"]')];
+    if (!links.length) return;
+
+    const targets = links
+        .map((link) => document.getElementById(decodeURIComponent(link.getAttribute('href').slice(1))))
+        .filter(Boolean);
+
+    const update = () => {
+        const offset = 110;
+        let current = targets[0];
+        for (const target of targets) {
+            if (target.getBoundingClientRect().top - offset <= 0) current = target;
+        }
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+            current = targets[targets.length - 1];
+        }
+        links.forEach((link) => link.toggleAttribute('data-active', link.getAttribute('href') === `#${current?.id}`));
+    };
+
+    let ticking = false;
+    window.addEventListener(
+        'scroll',
+        () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+                update();
+                ticking = false;
+            });
+        },
+        { passive: true },
+    );
+    update();
+}
+
+// Keep the active sidebar link visible in a long navigation list.
+function revealActiveNav() {
+    const active = document.querySelector('[data-docs-sidebar] [data-active]');
+    const sidebar = document.querySelector('[data-docs-sidebar]');
+    if (!active || !sidebar) return;
+    const top = active.offsetTop - sidebar.clientHeight / 3;
+    if (top > 0) sidebar.scrollTop = top;
+}
+
+function boot() {
     highlight();
     setupThemeToggle();
+    setupHeadings();
+    setupScrollSpy();
+    revealActiveNav();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+} else {
+    boot();
 }
