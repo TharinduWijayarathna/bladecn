@@ -1,0 +1,22 @@
+{
+    "private": true,
+    "name": "bladecn-docs",
+    "description": "Tooling for the BladeCN documentation site (workbench/). Not needed to use the package.",
+    "type": "module",
+    "scripts": {
+        "docs:build": "npm run docs:css && npm run docs:js",
+        "docs:css": "tailwindcss -i workbench/resources/css/docs.css -o workbench/dist/docs.css --minify",
+        "docs:js": "esbuild workbench/resources/js/docs.js --bundle --minify --format=iife --outfile=workbench/dist/docs.js",
+        "docs:dev": "concurrently -k -n css,js \"tailwindcss -i workbench/resources/css/docs.css -o workbench/dist/docs.css --watch\" \"esbuild workbench/resources/js/docs.js --bundle --format=iife --outfile=workbench/dist/docs.js --watch=forever\""
+    },
+    "devDependencies": {
+        "@alpinejs/focus": "^3.14.9",
+        "@tailwindcss/cli": "^4.1.0",
+        "alpinejs": "^3.14.9",
+        "concurrently": "^9.1.2",
+        "esbuild": "^0.25.0",
+        "highlight.js": "^11.11.1",
+        "tailwindcss": "^4.1.0",
+        "tailwindcss-animate": "^1.0.7"
+    }
+}

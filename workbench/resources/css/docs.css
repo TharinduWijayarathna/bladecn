@@ -1,0 +1,106 @@
+/*
+ * BladeCN docs stylesheet.
+ * Imports the package's own theme (resources/css/app.css) so every component
+ * renders with exactly the tokens, dark variant and animations users ship.
+ */
+@import '../../../resources/css/app.css';
+
+/* Component class strings live in the PHP component classes too. */
+@source '../../../src';
+@source '../../../resources/views';
+@source '../views';
+@source '../docs';
+@source '../../app';
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* Prose for markdown rendered from the docs registry. */
+.docs-prose {
+    @apply text-sm leading-7;
+}
+.docs-prose p:not(:first-child) {
+    @apply mt-3;
+}
+.docs-prose a {
+    @apply font-medium underline underline-offset-4;
+}
+.docs-prose ul {
+    @apply my-3 ml-6 list-disc [&>li]:mt-1.5;
+}
+.docs-prose ol {
+    @apply my-3 ml-6 list-decimal [&>li]:mt-1.5;
+}
+.docs-prose code {
+    @apply rounded bg-muted px-[0.3rem] py-[0.15rem] font-mono text-[0.8rem];
+}
+.docs-prose pre {
+    @apply my-3 overflow-x-auto rounded-lg border bg-muted/40 p-4 text-[13px];
+}
+.docs-prose pre code {
+    @apply bg-transparent p-0;
+}
+.docs-prose h3 {
+    @apply mt-8 mb-2 text-lg font-semibold tracking-tight;
+}
+.docs-prose table {
+    @apply my-4 w-full text-left text-sm;
+}
+.docs-prose th,
+.docs-prose td {
+    @apply border px-3 py-2;
+}
+
+/* highlight.js token colours (light / dark). */
+.docs-code code {
+    @apply font-mono;
+}
+.hljs-tag,
+.hljs-punctuation {
+    color: oklch(0.55 0 0);
+}
+.hljs-name {
+    color: oklch(0.5 0.17 255);
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-property {
+    color: oklch(0.52 0.15 300);
+}
+.hljs-string {
+    color: oklch(0.5 0.13 150);
+}
+.hljs-comment {
+    color: oklch(0.6 0 0);
+    font-style: italic;
+}
+.hljs-keyword,
+.hljs-variable,
+.hljs-built_in,
+.hljs-selector-class,
+.hljs-number {
+    color: oklch(0.55 0.17 40);
+}
+.dark .hljs-tag,
+.dark .hljs-punctuation {
+    color: oklch(0.65 0 0);
+}
+.dark .hljs-name {
+    color: oklch(0.75 0.12 245);
+}
+.dark .hljs-attr,
+.dark .hljs-attribute,
+.dark .hljs-property {
+    color: oklch(0.78 0.11 310);
+}
+.dark .hljs-string {
+    color: oklch(0.8 0.12 150);
+}
+.dark .hljs-keyword,
+.dark .hljs-variable,
+.dark .hljs-built_in,
+.dark .hljs-selector-class,
+.dark .hljs-number {
+    color: oklch(0.8 0.12 60);
+}

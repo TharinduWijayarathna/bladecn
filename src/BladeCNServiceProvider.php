@@ -4,6 +4,73 @@ namespace BladeCN\BladeCN;
 
 use BladeCN\BladeCN\Commands\BladeCNCommand;
 use BladeCN\BladeCN\Commands\InstallBladeCNCommand;
+use BladeCN\BladeCN\View\Components\Layout\App;
+use BladeCN\BladeCN\View\Components\Layout\AppHeader;
+use BladeCN\BladeCN\View\Components\Layout\AppSidebar;
+use BladeCN\BladeCN\View\Components\Layout\Auth;
+use BladeCN\BladeCN\View\Components\Layout\Head;
+use BladeCN\BladeCN\View\Components\Ui\Avatar;
+use BladeCN\BladeCN\View\Components\Ui\AvatarFallback;
+use BladeCN\BladeCN\View\Components\Ui\AvatarImage;
+use BladeCN\BladeCN\View\Components\Ui\Badge;
+use BladeCN\BladeCN\View\Components\Ui\Breadcrumb;
+use BladeCN\BladeCN\View\Components\Ui\Button;
+use BladeCN\BladeCN\View\Components\Ui\Card;
+use BladeCN\BladeCN\View\Components\Ui\CardContent;
+use BladeCN\BladeCN\View\Components\Ui\CardDescription;
+use BladeCN\BladeCN\View\Components\Ui\CardFooter;
+use BladeCN\BladeCN\View\Components\Ui\CardHeader;
+use BladeCN\BladeCN\View\Components\Ui\CardTitle;
+use BladeCN\BladeCN\View\Components\Ui\Checkbox;
+use BladeCN\BladeCN\View\Components\Ui\Dialog;
+use BladeCN\BladeCN\View\Components\Ui\DialogClose;
+use BladeCN\BladeCN\View\Components\Ui\DialogContent;
+use BladeCN\BladeCN\View\Components\Ui\DialogDescription;
+use BladeCN\BladeCN\View\Components\Ui\DialogFooter;
+use BladeCN\BladeCN\View\Components\Ui\DialogHeader;
+use BladeCN\BladeCN\View\Components\Ui\DialogOverlay;
+use BladeCN\BladeCN\View\Components\Ui\DialogTitle;
+use BladeCN\BladeCN\View\Components\Ui\DialogTrigger;
+use BladeCN\BladeCN\View\Components\Ui\Dropdown;
+use BladeCN\BladeCN\View\Components\Ui\DropdownCheckboxItem;
+use BladeCN\BladeCN\View\Components\Ui\DropdownContent;
+use BladeCN\BladeCN\View\Components\Ui\DropdownItem;
+use BladeCN\BladeCN\View\Components\Ui\DropdownLabel;
+use BladeCN\BladeCN\View\Components\Ui\DropdownRadioItem;
+use BladeCN\BladeCN\View\Components\Ui\DropdownSeparator;
+use BladeCN\BladeCN\View\Components\Ui\DropdownShortcut;
+use BladeCN\BladeCN\View\Components\Ui\DropdownSub;
+use BladeCN\BladeCN\View\Components\Ui\DropdownSubContent;
+use BladeCN\BladeCN\View\Components\Ui\DropdownSubTrigger;
+use BladeCN\BladeCN\View\Components\Ui\DropdownTrigger;
+use BladeCN\BladeCN\View\Components\Ui\Input;
+use BladeCN\BladeCN\View\Components\Ui\InputError;
+use BladeCN\BladeCN\View\Components\Ui\InputGroup;
+use BladeCN\BladeCN\View\Components\Ui\InputGroupAddon;
+use BladeCN\BladeCN\View\Components\Ui\InputGroupInput;
+use BladeCN\BladeCN\View\Components\Ui\Label;
+use BladeCN\BladeCN\View\Components\Ui\NativeSelect;
+use BladeCN\BladeCN\View\Components\Ui\Progress;
+use BladeCN\BladeCN\View\Components\Ui\RadioGroup;
+use BladeCN\BladeCN\View\Components\Ui\Select;
+use BladeCN\BladeCN\View\Components\Ui\Separator;
+use BladeCN\BladeCN\View\Components\Ui\Sheet;
+use BladeCN\BladeCN\View\Components\Ui\SheetClose;
+use BladeCN\BladeCN\View\Components\Ui\SheetDescription;
+use BladeCN\BladeCN\View\Components\Ui\SheetFooter;
+use BladeCN\BladeCN\View\Components\Ui\SheetHeader;
+use BladeCN\BladeCN\View\Components\Ui\SheetTitle;
+use BladeCN\BladeCN\View\Components\Ui\SheetTrigger;
+use BladeCN\BladeCN\View\Components\Ui\Spinner;
+use BladeCN\BladeCN\View\Components\Ui\Table;
+use BladeCN\BladeCN\View\Components\Ui\TableBody;
+use BladeCN\BladeCN\View\Components\Ui\TableCell;
+use BladeCN\BladeCN\View\Components\Ui\TableHead;
+use BladeCN\BladeCN\View\Components\Ui\TableHeader;
+use BladeCN\BladeCN\View\Components\Ui\TableRow;
+use BladeCN\BladeCN\View\Components\Ui\Textarea;
+use BladeCN\BladeCN\View\Components\Ui\TextLink;
+use BladeCN\BladeCN\View\Components\Ui\Tooltip;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Spatie\LaravelPackageTools\Package;
@@ -57,80 +124,80 @@ class BladeCNServiceProvider extends PackageServiceProvider
         // Essential shadcn/ui components only
         $components = [
             // Core Components
-            'Avatar' => \BladeCN\BladeCN\View\Components\Ui\Avatar::class,
-            'AvatarFallback' => \BladeCN\BladeCN\View\Components\Ui\AvatarFallback::class,
-            'AvatarImage' => \BladeCN\BladeCN\View\Components\Ui\AvatarImage::class,
-            'Badge' => \BladeCN\BladeCN\View\Components\Ui\Badge::class,
-            'Button' => \BladeCN\BladeCN\View\Components\Ui\Button::class,
-            'Card' => \BladeCN\BladeCN\View\Components\Ui\Card::class,
-            'CardContent' => \BladeCN\BladeCN\View\Components\Ui\CardContent::class,
-            'CardDescription' => \BladeCN\BladeCN\View\Components\Ui\CardDescription::class,
-            'CardFooter' => \BladeCN\BladeCN\View\Components\Ui\CardFooter::class,
-            'CardHeader' => \BladeCN\BladeCN\View\Components\Ui\CardHeader::class,
-            'CardTitle' => \BladeCN\BladeCN\View\Components\Ui\CardTitle::class,
-            'Input' => \BladeCN\BladeCN\View\Components\Ui\Input::class,
-            'InputError' => \BladeCN\BladeCN\View\Components\Ui\InputError::class,
-            'InputGroup' => \BladeCN\BladeCN\View\Components\Ui\InputGroup::class,
-            'InputGroupAddon' => \BladeCN\BladeCN\View\Components\Ui\InputGroupAddon::class,
-            'InputGroupInput' => \BladeCN\BladeCN\View\Components\Ui\InputGroupInput::class,
-            'Label' => \BladeCN\BladeCN\View\Components\Ui\Label::class,
-            'Separator' => \BladeCN\BladeCN\View\Components\Ui\Separator::class,
-            'Textarea' => \BladeCN\BladeCN\View\Components\Ui\Textarea::class,
-            'TextLink' => \BladeCN\BladeCN\View\Components\Ui\TextLink::class,
-            'Breadcrumb' => \BladeCN\BladeCN\View\Components\Ui\Breadcrumb::class,
+            'Avatar' => Avatar::class,
+            'AvatarFallback' => AvatarFallback::class,
+            'AvatarImage' => AvatarImage::class,
+            'Badge' => Badge::class,
+            'Button' => Button::class,
+            'Card' => Card::class,
+            'CardContent' => CardContent::class,
+            'CardDescription' => CardDescription::class,
+            'CardFooter' => CardFooter::class,
+            'CardHeader' => CardHeader::class,
+            'CardTitle' => CardTitle::class,
+            'Input' => Input::class,
+            'InputError' => InputError::class,
+            'InputGroup' => InputGroup::class,
+            'InputGroupAddon' => InputGroupAddon::class,
+            'InputGroupInput' => InputGroupInput::class,
+            'Label' => Label::class,
+            'Separator' => Separator::class,
+            'Textarea' => Textarea::class,
+            'TextLink' => TextLink::class,
+            'Breadcrumb' => Breadcrumb::class,
 
             // Dialog Components
-            'Dialog' => \BladeCN\BladeCN\View\Components\Ui\Dialog::class,
-            'DialogClose' => \BladeCN\BladeCN\View\Components\Ui\DialogClose::class,
-            'DialogContent' => \BladeCN\BladeCN\View\Components\Ui\DialogContent::class,
-            'DialogDescription' => \BladeCN\BladeCN\View\Components\Ui\DialogDescription::class,
-            'DialogFooter' => \BladeCN\BladeCN\View\Components\Ui\DialogFooter::class,
-            'DialogHeader' => \BladeCN\BladeCN\View\Components\Ui\DialogHeader::class,
-            'DialogOverlay' => \BladeCN\BladeCN\View\Components\Ui\DialogOverlay::class,
-            'DialogTitle' => \BladeCN\BladeCN\View\Components\Ui\DialogTitle::class,
-            'DialogTrigger' => \BladeCN\BladeCN\View\Components\Ui\DialogTrigger::class,
+            'Dialog' => Dialog::class,
+            'DialogClose' => DialogClose::class,
+            'DialogContent' => DialogContent::class,
+            'DialogDescription' => DialogDescription::class,
+            'DialogFooter' => DialogFooter::class,
+            'DialogHeader' => DialogHeader::class,
+            'DialogOverlay' => DialogOverlay::class,
+            'DialogTitle' => DialogTitle::class,
+            'DialogTrigger' => DialogTrigger::class,
 
             // Dropdown Components
-            'Dropdown' => \BladeCN\BladeCN\View\Components\Ui\Dropdown::class,
-            'DropdownCheckboxItem' => \BladeCN\BladeCN\View\Components\Ui\DropdownCheckboxItem::class,
-            'DropdownContent' => \BladeCN\BladeCN\View\Components\Ui\DropdownContent::class,
-            'DropdownItem' => \BladeCN\BladeCN\View\Components\Ui\DropdownItem::class,
-            'DropdownLabel' => \BladeCN\BladeCN\View\Components\Ui\DropdownLabel::class,
-            'DropdownRadioItem' => \BladeCN\BladeCN\View\Components\Ui\DropdownRadioItem::class,
-            'DropdownSeparator' => \BladeCN\BladeCN\View\Components\Ui\DropdownSeparator::class,
-            'DropdownShortcut' => \BladeCN\BladeCN\View\Components\Ui\DropdownShortcut::class,
-            'DropdownSub' => \BladeCN\BladeCN\View\Components\Ui\DropdownSub::class,
-            'DropdownSubContent' => \BladeCN\BladeCN\View\Components\Ui\DropdownSubContent::class,
-            'DropdownSubTrigger' => \BladeCN\BladeCN\View\Components\Ui\DropdownSubTrigger::class,
-            'DropdownTrigger' => \BladeCN\BladeCN\View\Components\Ui\DropdownTrigger::class,
+            'Dropdown' => Dropdown::class,
+            'DropdownCheckboxItem' => DropdownCheckboxItem::class,
+            'DropdownContent' => DropdownContent::class,
+            'DropdownItem' => DropdownItem::class,
+            'DropdownLabel' => DropdownLabel::class,
+            'DropdownRadioItem' => DropdownRadioItem::class,
+            'DropdownSeparator' => DropdownSeparator::class,
+            'DropdownShortcut' => DropdownShortcut::class,
+            'DropdownSub' => DropdownSub::class,
+            'DropdownSubContent' => DropdownSubContent::class,
+            'DropdownSubTrigger' => DropdownSubTrigger::class,
+            'DropdownTrigger' => DropdownTrigger::class,
 
             // Sheet Components
-            'Sheet' => \BladeCN\BladeCN\View\Components\Ui\Sheet::class,
-            'SheetClose' => \BladeCN\BladeCN\View\Components\Ui\SheetClose::class,
-            'SheetDescription' => \BladeCN\BladeCN\View\Components\Ui\SheetDescription::class,
-            'SheetFooter' => \BladeCN\BladeCN\View\Components\Ui\SheetFooter::class,
-            'SheetHeader' => \BladeCN\BladeCN\View\Components\Ui\SheetHeader::class,
-            'SheetTitle' => \BladeCN\BladeCN\View\Components\Ui\SheetTitle::class,
-            'SheetTrigger' => \BladeCN\BladeCN\View\Components\Ui\SheetTrigger::class,
+            'Sheet' => Sheet::class,
+            'SheetClose' => SheetClose::class,
+            'SheetDescription' => SheetDescription::class,
+            'SheetFooter' => SheetFooter::class,
+            'SheetHeader' => SheetHeader::class,
+            'SheetTitle' => SheetTitle::class,
+            'SheetTrigger' => SheetTrigger::class,
 
             // Form Components
-            'Checkbox' => \BladeCN\BladeCN\View\Components\Ui\Checkbox::class,
-            'NativeSelect' => \BladeCN\BladeCN\View\Components\Ui\NativeSelect::class,
-            'Select' => \BladeCN\BladeCN\View\Components\Ui\Select::class,
-            'RadioGroup' => \BladeCN\BladeCN\View\Components\Ui\RadioGroup::class,
+            'Checkbox' => Checkbox::class,
+            'NativeSelect' => NativeSelect::class,
+            'Select' => Select::class,
+            'RadioGroup' => RadioGroup::class,
 
             // Table Components
-            'Table' => \BladeCN\BladeCN\View\Components\Ui\Table::class,
-            'TableHeader' => \BladeCN\BladeCN\View\Components\Ui\TableHeader::class,
-            'TableBody' => \BladeCN\BladeCN\View\Components\Ui\TableBody::class,
-            'TableRow' => \BladeCN\BladeCN\View\Components\Ui\TableRow::class,
-            'TableHead' => \BladeCN\BladeCN\View\Components\Ui\TableHead::class,
-            'TableCell' => \BladeCN\BladeCN\View\Components\Ui\TableCell::class,
+            'Table' => Table::class,
+            'TableHeader' => TableHeader::class,
+            'TableBody' => TableBody::class,
+            'TableRow' => TableRow::class,
+            'TableHead' => TableHead::class,
+            'TableCell' => TableCell::class,
 
             // Utility Components
-            'Progress' => \BladeCN\BladeCN\View\Components\Ui\Progress::class,
-            'Spinner' => \BladeCN\BladeCN\View\Components\Ui\Spinner::class,
-            'Tooltip' => \BladeCN\BladeCN\View\Components\Ui\Tooltip::class,
+            'Progress' => Progress::class,
+            'Spinner' => Spinner::class,
+            'Tooltip' => Tooltip::class,
         ];
 
         foreach ($components as $name => $class) {
@@ -143,11 +210,11 @@ class BladeCNServiceProvider extends PackageServiceProvider
     protected function registerLayoutComponents(): void
     {
         $components = [
-            'App' => \BladeCN\BladeCN\View\Components\Layout\App::class,
-            'AppHeader' => \BladeCN\BladeCN\View\Components\Layout\AppHeader::class,
-            'AppSidebar' => \BladeCN\BladeCN\View\Components\Layout\AppSidebar::class,
-            'Auth' => \BladeCN\BladeCN\View\Components\Layout\Auth::class,
-            'Head' => \BladeCN\BladeCN\View\Components\Layout\Head::class,
+            'App' => App::class,
+            'AppHeader' => AppHeader::class,
+            'AppSidebar' => AppSidebar::class,
+            'Auth' => Auth::class,
+            'Head' => Head::class,
         ];
 
         foreach ($components as $name => $class) {
