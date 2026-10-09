@@ -15,16 +15,8 @@ class ProfileController
      */
     public function edit(Request $request)
     {
-        // Check if settings/profile view exists (installed in app), otherwise try package view, then fall back to old profile view
-        if (view()->exists('settings.profile')) {
-            return view('settings.profile');
-        }
-
-        if (view()->exists('bladecn::settings.profile')) {
-            return view('bladecn::settings.profile');
-        }
-
-        return view('bladecn::profile');
+        // Prefer the view published into the app, then the package's own.
+        return view()->first(['settings.profile', 'bladecn::settings.profile', 'bladecn::profile']);
     }
 
     /**
@@ -32,12 +24,8 @@ class ProfileController
      */
     public function editPassword(Request $request)
     {
-        // Check if settings/password view exists (installed in app), otherwise try package view
-        if (view()->exists('settings.password')) {
-            return view('settings.password');
-        }
-
-        return view('bladecn::settings.password');
+        // Prefer the view published into the app, then the package's own.
+        return view()->first(['settings.password', 'bladecn::settings.password']);
     }
 
     /**
@@ -57,17 +45,19 @@ class ProfileController
         // Handle avatar upload
         if ($request->hasFile('avatar')) {
             // Delete old avatar if exists
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                Storage::disk('public')->delete($user->avatar);
+            $current = $user->getAttribute('avatar');
+
+            if ($current && Storage::disk('public')->exists($current)) {
+                Storage::disk('public')->delete($current);
             }
 
             // Store new avatar
             $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $path;
+            $user->setAttribute('avatar', $path);
         }
 
         if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
+            $user->setAttribute('email_verified_at', null);
         }
 
         $user->save();
