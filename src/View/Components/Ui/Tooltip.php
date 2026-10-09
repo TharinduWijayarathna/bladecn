@@ -35,8 +35,9 @@ class Tooltip extends Component
     public function tooltipClasses(): string
     {
         return cn(
-            'z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md',
-            'transition-opacity duration-150 ease-in-out opacity-0 pointer-events-none',
+            'fixed left-0 top-0 z-50 w-max max-w-xs overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-balance text-primary-foreground',
+            'pointer-events-none transition-opacity duration-150 ease-in-out',
+            'data-[state=closed]:invisible data-[state=closed]:opacity-0 data-[state=open]:opacity-100',
             $this->class
         );
     }
