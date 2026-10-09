@@ -104,3 +104,94 @@
 .dark .hljs-number {
     color: oklch(0.8 0.12 60);
 }
+
+/* ---------------------------------------------------------------------------
+ * Docs chrome (header, sidebar, TOC, hero) — Mintlify-style layout.
+ * ------------------------------------------------------------------------- */
+html {
+    scroll-padding-top: 5.5rem;
+}
+
+.docs-prose {
+    @apply text-[15px] leading-7 text-foreground/90;
+}
+.docs-prose h2 {
+    @apply mt-12 mb-3 scroll-mt-24 text-2xl font-semibold tracking-tight text-foreground;
+}
+.docs-prose h3 {
+    @apply scroll-mt-24 text-foreground;
+}
+.docs-prose strong {
+    @apply font-semibold text-foreground;
+}
+.docs-prose a {
+    @apply text-foreground decoration-foreground/30 transition-colors hover:decoration-foreground;
+}
+.docs-prose th {
+    @apply bg-muted/50 font-medium;
+}
+.docs-prose kbd {
+    @apply rounded border bg-muted px-1 font-sans text-xs;
+}
+
+/* Heading anchor added by docs.js. */
+.docs-anchor {
+    @apply ml-2 text-muted-foreground/60 no-underline opacity-0 transition-opacity hover:text-foreground;
+}
+:is(h2, h3):hover > .docs-anchor,
+.docs-anchor:focus-visible {
+    @apply opacity-100;
+}
+
+/* "On this page" links + scroll-spy state. */
+.docs-toc-link {
+    @apply -ml-px block border-l border-transparent py-1 pl-3.5 transition-colors hover:text-foreground;
+}
+.docs-toc-link[data-depth='3'] {
+    @apply pl-6;
+}
+.docs-toc-link[data-active] {
+    @apply border-foreground font-medium text-foreground;
+}
+
+/* Thin, quiet scrollbars for the sidebars. */
+.docs-sidebar,
+[aria-label='On this page'] {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+/* Example preview canvas: subtle dot grid. */
+.docs-preview {
+    background-image: radial-gradient(circle at 1px 1px, color-mix(in oklch, var(--foreground) 9%, transparent) 1px, transparent 0);
+    background-size: 18px 18px;
+}
+
+/* Landing hero. */
+.docs-hero {
+    background: linear-gradient(180deg, color-mix(in oklch, var(--muted) 70%, transparent), var(--background));
+}
+.docs-hero-grid {
+    background-image:
+        linear-gradient(to right, color-mix(in oklch, var(--foreground) 6%, transparent) 1px, transparent 1px),
+        linear-gradient(to bottom, color-mix(in oklch, var(--foreground) 6%, transparent) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 40%, transparent 100%);
+}
+.docs-hero-glow {
+    background: radial-gradient(closest-side, oklch(0.72 0.16 255 / 0.28), oklch(0.75 0.15 320 / 0.12), transparent);
+}
+.dark .docs-hero-glow {
+    background: radial-gradient(closest-side, oklch(0.6 0.18 260 / 0.35), oklch(0.6 0.18 320 / 0.15), transparent);
+}
+.docs-hero-accent {
+    background: linear-gradient(90deg, oklch(0.55 0.2 260), oklch(0.6 0.2 320));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.dark .docs-hero-accent {
+    background: linear-gradient(90deg, oklch(0.78 0.13 250), oklch(0.8 0.13 320));
+    -webkit-background-clip: text;
+    background-clip: text;
+}
