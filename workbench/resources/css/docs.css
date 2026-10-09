@@ -195,3 +195,56 @@ html {
     -webkit-background-clip: text;
     background-clip: text;
 }
+
+/* ---------------------------------------------------------------------------
+ * Layout robustness: nothing in the article may clip or force page scroll.
+ * ------------------------------------------------------------------------- */
+
+/* Code never clips: it scrolls inside its own frame, with a visible thin
+   scrollbar so the overflow is discoverable on overlay-scrollbar systems. */
+.docs-code {
+    white-space: pre;
+    tab-size: 4;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--foreground) 25%, transparent) transparent;
+}
+.docs-code code {
+    display: block;
+    width: max-content;
+    min-width: 100%;
+}
+
+/* Long inline code / URLs wrap instead of pushing the column wider. */
+.docs-prose :not(pre) > code,
+.docs-prose a {
+    overflow-wrap: break-word;
+}
+.docs-prose td code {
+    overflow-wrap: normal;
+}
+.docs-prose > table {
+    @apply block max-w-full overflow-x-auto;
+}
+
+/* Previews: centre without losing the left edge of wide content, and only
+   scroll sideways (class set by docs.js) when the component is wider than the
+   canvas, so popovers keep escaping the frame in the normal case. */
+.docs-preview,
+.docs-preview-row {
+    justify-content: safe center;
+}
+.docs-preview {
+    min-width: 0;
+}
+.docs-preview-scroll {
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.docs-preview-scroll,
+.docs-preview-scroll .docs-preview-row {
+    justify-content: flex-start;
+}
+.docs-preview-scroll > .docs-preview-inner {
+    width: max-content;
+    min-width: 100%;
+}
