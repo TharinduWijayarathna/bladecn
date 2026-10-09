@@ -1,75 +1,59 @@
-# BladeCN
+<p align="center">
+  <a href="https://tharinduwijayarathna.github.io/bladecn/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".github/images/hero-dark.png">
+      <img src=".github/images/hero.png" alt="BladeCN: shadcn/ui components for Laravel Blade" width="100%">
+    </picture>
+  </a>
+</p>
 
-**shadcn for Laravel Blade.** No React. No Livewire.
+<p align="center"><strong>shadcn/ui for Laravel Blade.</strong> Accessible, themeable components on Tailwind CSS 4 and Alpine.js. No React, no Livewire required.</p>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/bladecn/bladecn.svg?style=flat-square)](https://packagist.org/packages/bladecn/bladecn)
-[![Total Downloads](https://img.shields.io/packagist/dt/bladecn/bladecn.svg?style=flat-square)](https://packagist.org/packages/bladecn/bladecn)
+<p align="center">
+  <a href="https://packagist.org/packages/bladecn/bladecn"><img src="https://img.shields.io/packagist/v/bladecn/bladecn.svg?style=flat-square" alt="Latest Version"></a>
+  <a href="https://packagist.org/packages/bladecn/bladecn"><img src="https://img.shields.io/packagist/dt/bladecn/bladecn.svg?style=flat-square" alt="Total Downloads"></a>
+  <a href="https://github.com/TharinduWijayarathna/bladecn/actions/workflows/run-tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/TharinduWijayarathna/bladecn/run-tests.yml?branch=main&label=tests&style=flat-square" alt="Tests"></a>
+  <a href="LICENSE.md"><img src="https://img.shields.io/packagist/l/bladecn/bladecn.svg?style=flat-square" alt="License"></a>
+</p>
 
-BladeCN is a starter kit (login, register, password reset, dashboard and profile) plus a shadcn-style Blade component set on Alpine and Tailwind 4.
+<h3 align="center"><a href="https://tharinduwijayarathna.github.io/bladecn/">📚 Documentation →</a></h3>
 
-### 📚 [Documentation →](https://tharinduwijayarathna.github.io/bladecn/)
-
-Every component with live previews, copyable code, variants and props tables, plus installation, theming, dark mode and layouts.
-
-![Dashboard Dark](.github/images/dashboard-desktop-dark.png)
-
-![Login](.github/images/login-desktop-light.png)
-
-![Delete Account Dialog](.github/images/dialog-delete-light.png)
-
-## Installation
+## Install
 
 ```bash
 composer require bladecn/bladecn
-php artisan bladecn:install
+php artisan bladecn:install        # optional: publish the starter kit and components into your app
+npm install tailwindcss @tailwindcss/vite tailwindcss-animate alpinejs @alpinejs/focus && npm run build
 ```
 
-```bash
-npm install tailwindcss @tailwindcss/vite tailwindcss-animate alpinejs @alpinejs/focus
-npm run build
-```
-
-Full setup (Vite, layout stacks, configuration): [Installation](https://tharinduwijayarathna.github.io/bladecn/installation).
+Components work straight from the package; the installer copies them (plus auth screens, layouts and assets) into your app so you own the code. See [Installation](https://tharinduwijayarathna.github.io/bladecn/installation) for Vite and layout setup.
 
 ## Usage
 
 ```blade
-<x-ui.card>
-    <x-ui.card-header>
-        <x-ui.card-title>Welcome</x-ui.card-title>
-    </x-ui.card-header>
-    <x-ui.card-content>
-        <x-ui.button variant="outline">Get started</x-ui.button>
-    </x-ui.card-content>
-</x-ui.card>
+<x-ui.button variant="outline">Click me</x-ui.button>
 ```
 
-Browse all [components](https://tharinduwijayarathna.github.io/bladecn/components/button), [layouts](https://tharinduwijayarathna.github.io/bladecn/layouts) and [theming](https://tharinduwijayarathna.github.io/bladecn/theming) in the docs.
-
-### Run the docs locally
-
-```bash
-composer install && npm install
-npm run docs:build
-vendor/bin/testbench serve   # http://127.0.0.1:8000/docs
-```
-
-See [`workbench/README.md`](workbench/README.md) for how the docs site works.
+Browse the [Components](https://tharinduwijayarathna.github.io/bladecn/components/accordion), [Theming & Dark mode](https://tharinduwijayarathna.github.io/bladecn/theming) and [Layouts](https://tharinduwijayarathna.github.io/bladecn/layouts) docs.
 
 ## Requirements
 
-- PHP 8.3 or higher
-- Laravel 10.x, 11.x, or 12.x
-- Tailwind CSS 4.x
+- PHP 8.3+
+- Laravel 10, 11 or 12
+- Tailwind CSS 4, Alpine.js 3 with `@alpinejs/focus`
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+Issues and pull requests are welcome. To work on the package and its docs site:
+
+```bash
+composer install && npm install
+npm run docs:build && vendor/bin/testbench serve   # http://127.0.0.1:8000/docs
+vendor/bin/pest && vendor/bin/phpstan analyse && vendor/bin/pint
+```
+
+Every component needs a docs page; [`workbench/README.md`](workbench/README.md) explains how the docs are built.
 
 ## License
 
-BladeCN is open-sourced software licensed under the [MIT license](LICENSE.md).
-
-## Credits
-
-BladeCN is inspired by [shadcn/ui](https://ui.shadcn.com) and built for the Laravel ecosystem.
+MIT. See [LICENSE.md](LICENSE.md). Inspired by [shadcn/ui](https://ui.shadcn.com).
