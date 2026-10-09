@@ -11,6 +11,8 @@ All notable changes to `bladecn/bladecn` will be documented in this file.
 - `input-group-addon` accepts `align="inline-start|inline-end"`.
 - `[x-cloak]` rule in the published `app.css`.
 - BladeCN logo, favicon and a README / social-preview hero generated from real components (`npm run docs:hero`).
+- Icons: `github` (GitHub mark) and `menu`.
+- Docs site redesign: translucent sticky header with ⌘K / `/` search across every page (built on Command Dialog), GitHub and theme buttons; collapsible sidebar groups with a mobile drawer; "On this page" table of contents with scroll-spy and heading anchors; breadcrumb eyebrows, code blocks with language label + copy, preview/code tabs, previous/next cards, "Edit this page on GitHub" links and a landing hero with a live component showcase.
 
 ### Changed
 
