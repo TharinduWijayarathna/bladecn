@@ -12,12 +12,8 @@ class AppearanceController
      */
     public function edit(Request $request)
     {
-        // Check if settings/appearance view exists (installed in app), otherwise try package view
-        if (view()->exists('settings.appearance')) {
-            return view('settings.appearance');
-        }
-
-        return view('bladecn::settings.appearance');
+        // Prefer the view published into the app, then the package's own.
+        return view()->first(['settings.appearance', 'bladecn::settings.appearance']);
     }
 
     /**
