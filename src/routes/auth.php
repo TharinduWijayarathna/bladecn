@@ -60,6 +60,6 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard route
     Route::get('dashboard', function () {
-        return view('dashboard');
+        return view()->first(['dashboard', 'bladecn::dashboard']);
     })->name('dashboard');
 });
