@@ -25,6 +25,8 @@ All notable changes to `bladecn/bladecn` will be documented in this file.
 
 ### Fixed
 
+- Docs layout: code blocks scroll inside their frame instead of clipping (thin visible scrollbar, copy button stays put); the introduction's "At a glance" preview now sits above its code at full width; sidebar group chevrons sit inline with their heading; component previews only scroll sideways when the component is genuinely wider than the canvas, so popovers are never clipped; props tables keep a readable description column; long inline code wraps.
+- Event Calendar: header controls stack on small screens and event chips truncate instead of being cut off.
 - `payment-card` / `subscription-card` passed `as="a"` to the button (now `tag="a"`), so their links rendered as `<button>`.
 - `editable-input` passed `align` to `input-group-addon`, which ignored it; the route is now JSON-encoded in its script.
 - `item-footer` had `data-slot="item-header"`.
