@@ -10,12 +10,18 @@ class InputGroupAddon extends Component
 {
     public ?string $class;
 
+    public ?string $align;
+
     /**
      * Create a new component instance.
+     *
+     * @param  string|null  $align  `inline-start` / `inline-end` pin the addon before / after the
+     *                              control regardless of source order; null keeps source order.
      */
-    public function __construct(?string $class = null)
+    public function __construct(?string $class = null, ?string $align = null)
     {
         $this->class = $class;
+        $this->align = $align;
     }
 
     /**
@@ -30,6 +36,11 @@ class InputGroupAddon extends Component
     {
         return cn(
             'flex items-center justify-center px-3 text-muted-foreground [&>svg]:size-4',
+            match ($this->align) {
+                'inline-start' => 'order-first',
+                'inline-end' => 'order-last',
+                default => null,
+            },
             $this->class
         );
     }
