@@ -146,12 +146,48 @@ function revealActiveNav() {
     if (top > 0) sidebar.scrollTop = top;
 }
 
+// A preview only scrolls sideways when its component is genuinely wider than the
+// canvas (e.g. a calendar on a phone). Otherwise it stays overflow-visible so
+// dropdowns, popovers and tooltips are never clipped by the preview frame.
+function setupWidePreviews() {
+    const previews = [...document.querySelectorAll('[data-example-preview]')];
+    if (!previews.length) return;
+
+    const measure = () => {
+        previews.forEach((preview) => {
+            if (preview.offsetParent === null) return;
+            preview.classList.remove('docs-preview-scroll');
+            const content = preview.firstElementChild;
+            const wide = preview.scrollWidth > preview.clientWidth + 1 || (content && content.scrollWidth > content.clientWidth + 1);
+            preview.classList.toggle('docs-preview-scroll', wide);
+        });
+    };
+
+    let frame = 0;
+    const schedule = () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(measure);
+    };
+
+    if ('ResizeObserver' in window) {
+        const observer = new ResizeObserver(schedule);
+        previews.forEach((preview) => observer.observe(preview));
+    }
+    window.addEventListener('resize', schedule, { passive: true });
+    window.addEventListener('load', schedule);
+    document.addEventListener('click', (event) => {
+        if (event.target.closest?.('.docs-example [role="tab"]')) setTimeout(schedule, 0);
+    });
+    schedule();
+}
+
 function boot() {
     highlight();
     setupThemeToggle();
     setupHeadings();
     setupScrollSpy();
     revealActiveNav();
+    setupWidePreviews();
 }
 
 if (document.readyState === 'loading') {

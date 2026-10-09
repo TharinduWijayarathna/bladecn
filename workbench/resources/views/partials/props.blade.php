@@ -23,8 +23,8 @@
                         <tr class="border-t align-top">
                             <td class="px-3 py-2 font-mono text-xs whitespace-nowrap">{{ $prop['name'] }}@if ($prop['required'])<span class="text-destructive-foreground" title="Required">*</span>@endif</td>
                             <td class="px-3 py-2 font-mono text-xs whitespace-nowrap text-muted-foreground">{{ $prop['type'] }}</td>
-                            <td class="px-3 py-2 font-mono text-xs text-muted-foreground">{{ $prop['required'] ? 'required' : $prop['default'] }}</td>
-                            <td class="docs-prose px-3 py-2 text-sm">{!! $prop['description'] ? $docs->markdown($prop['description']) : '<span class="text-muted-foreground">—</span>' !!}</td>
+                            <td class="max-w-[14rem] px-3 py-2 font-mono text-xs break-words text-muted-foreground">{{ $prop['required'] ? 'required' : $prop['default'] }}</td>
+                            <td class="docs-prose min-w-[16rem] px-3 py-2 text-sm">{!! $prop['description'] ? $docs->markdown($prop['description']) : '<span class="text-muted-foreground">—</span>' !!}</td>
                         </tr>
                     @endforeach
                 </tbody>
