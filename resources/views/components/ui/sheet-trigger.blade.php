@@ -1,3 +1,3 @@
-<span class="{{ $sheetTriggerClasses() }}">
+<span {{ $attributes->merge(['class' => $sheetTriggerClasses()]) }}>
     {{ $slot }}
 </span>

@@ -29,13 +29,21 @@ class DocsController extends Controller
         ]);
     }
 
+    /**
+     * The README / social-preview hero image source (see `npm run docs:hero`).
+     */
+    public function hero(string $theme)
+    {
+        return view('docs::hero', ['docs' => $this->docs, 'theme' => $theme]);
+    }
+
     public function asset(string $file): BinaryFileResponse
     {
         $path = $this->docs->distPath($file);
 
         abort_unless(is_file($path), 404);
 
-        $types = ['css' => 'text/css', 'js' => 'application/javascript', 'svg' => 'image/svg+xml'];
+        $types = ['css' => 'text/css', 'js' => 'application/javascript', 'svg' => 'image/svg+xml', 'png' => 'image/png'];
 
         return response()->file($path, [
             'Content-Type' => $types[pathinfo($path, PATHINFO_EXTENSION)] ?? 'application/octet-stream',

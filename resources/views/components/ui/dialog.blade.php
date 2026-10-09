@@ -1,4 +1,3 @@
-<div x-data="{ open: false }" x-transition @keydown.escape.window="open = false" @click.self="open = false" role="dialog"
-    aria-modal="true" {{ $attributes }}>
+<div x-data="{ open: false }" x-modelable="open" @keydown.escape.window="open = false" {{ $attributes }}>
     {{ $slot }}
 </div>

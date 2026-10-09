@@ -5,7 +5,7 @@ if (! function_exists('cn')) {
      * Merge class names together, filtering out empty values.
      * Similar to clsx utility in JavaScript.
      *
-     * @param  string|array  ...$classes
+     * @param  mixed  ...$classes  strings, nested arrays; anything else (null, false) is ignored
      */
     function cn(...$classes): string
     {

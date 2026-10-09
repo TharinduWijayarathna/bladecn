@@ -370,6 +370,7 @@ MD,
 BLADE,
             'composition' => <<<'MD'
 - `dropdown` owns the Alpine state. Pass the trigger through the **named `trigger` slot**; clicking it toggles the menu and clicking outside closes it.
+- Keyboard: <kbd>↓</kbd>/<kbd>↑</kbd> on the trigger open the menu on the first/last item, arrows/<kbd>Home</kbd>/<kbd>End</kbd> move between items, <kbd>Esc</kbd> closes and refocuses the trigger. The trigger gets `aria-haspopup` / `aria-expanded`.
 - `dropdown-trigger` is an optional unstyled-ish `<button>` you can put in that slot instead of `x-ui.button`.
 - The panel is right-aligned (`right-0`) and `w-48` by default.
 - `dropdown-sub` also uses a named `trigger` slot; its default slot is the sub-menu panel. `dropdown-sub-content` is available if you want to build your own panel.
@@ -550,7 +551,10 @@ BLADE,
                     'type' => 'Input type.',
                     'class' => 'Extra classes for the input.',
                 ],
-                'ui.input-group-addon' => ['class' => 'Extra classes for the addon.'],
+                'ui.input-group-addon' => [
+                    'class' => 'Extra classes for the addon.',
+                    'align' => '`inline-start` or `inline-end` pins the addon before / after the control whatever the source order; omit it to keep source order.',
+                ],
                 'ui.input-group-text' => ['class' => 'Extra classes for the text.'],
                 'ui.input-group-button' => [
                     'size' => '`xs`, `sm`, `icon-xs` or `icon-sm`.',
@@ -889,7 +893,7 @@ BLADE,
 - The trigger goes in the **named `trigger` slot**; its first child element opens the sheet.
 - Clicking the overlay, pressing <kbd>Esc</kbd> or any `sheet-close` (`data-action="close-sheet"`) closes it.
 - `sheet-trigger` is a plain `<span>` wrapper if you need one.
-- Sheet uses a small vanilla script (no Alpine).
+- Sheet uses a small vanilla script (no Alpine); several sheets with different sides can live on one page.
 MD,
             'props' => [
                 'ui.sheet' => [
@@ -901,9 +905,13 @@ MD,
                 'ui.sheet-title' => ['class' => 'Extra classes.'],
                 'ui.sheet-description' => ['class' => 'Extra classes.'],
                 'ui.sheet-footer' => ['class' => 'Extra classes.'],
-                'ui.sheet-close' => ['class' => 'Extra classes for the close button.'],
+                'ui.sheet-close' => ['class' => 'Extra classes for the outline close button (the panel also has a built-in ✕).'],
             ],
-            'notes' => 'The sheet panel uses `bg-white`, so it stays light in dark mode. Sub-components ignore attributes other than `class`.',
+            'notes' => <<<'MD'
+- The panel uses the `background` / `foreground` tokens, so it follows dark mode, and has `role="dialog"` labelled by its title and description.
+- Opening moves focus into the sheet and keeps <kbd>Tab</kbd> inside it; closing returns focus to the trigger. A ✕ close button is built in.
+- The script is pushed once to the `scripts` stack, so your layout needs `@stack('scripts')`. Sub-components forward extra attributes.
+MD,
         ],
 
         'spinner' => [
@@ -1037,9 +1045,744 @@ BLADE,
                 ],
             ],
             'notes' => <<<'MD'
-- Set the text with the `content` attribute. The first child of the slot is the hover target. The script is pushed once to the `scripts` stack.
-- Known limitation: the bubble has no `absolute`/`fixed` positioning, so it renders in normal flow below the trigger (taking up space while hidden) and `side` / `side-offset` have no visible effect. Tracked as a follow-up in the docs PR.
+- Set the text with the `content` attribute. The first child of the slot is the trigger.
+- Opens on hover and keyboard focus (after a 100 ms delay), closes on leave, blur, <kbd>Esc</kbd> or scroll. The trigger gets `aria-describedby` pointing at the bubble.
+- The bubble is `position: fixed` next to the trigger on `side`, `side-offset` pixels away; it flips to the opposite side when there is no room and is kept inside the viewport.
+- The script is pushed once to the `scripts` stack.
 MD,
+        ],
+
+        'accordion' => [
+            'title' => 'Accordion',
+            'description' => 'A vertically stacked set of interactive headings that each reveal a section of content.',
+            'components' => ['ui.accordion', 'ui.accordion-item', 'ui.accordion-trigger', 'ui.accordion-content'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => '`type="single"` with `collapsible` lets the open item be closed again.', 'preview' => 'block'],
+                'multiple' => ['title' => 'Multiple', 'description' => '`type="multiple"` keeps several items open; `default-value` takes an array. Disabled items are skipped by the keyboard.', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.accordion type="single" collapsible default-value="a">
+    <x-ui.accordion-item value="a">
+        <x-ui.accordion-trigger>...</x-ui.accordion-trigger>
+        <x-ui.accordion-content>...</x-ui.accordion-content>
+    </x-ui.accordion-item>
+</x-ui.accordion>
+BLADE,
+            'notes' => <<<'MD'
+- Triggers are `<button>`s inside `<h3>`s with `aria-expanded` / `aria-controls`; contents are `role="region"` labelled by their trigger.
+- <kbd>↑</kbd> <kbd>↓</kbd> <kbd>Home</kbd> <kbd>End</kbd> move between triggers; <kbd>Enter</kbd> / <kbd>Space</kbd> toggle.
+- Height animates with CSS grid rows; closed content is `inert`. Items listed in `default-value` are rendered open on the server, so they don't flash.
+MD,
+            'props' => [
+                'ui.accordion' => [
+                    'type' => '`single` (one item open at a time) or `multiple`.',
+                    'collapsible' => 'With `type="single"`, allow closing the open item.',
+                    'default-value' => 'Initially open item value, or an array of values for `multiple`.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.accordion-item' => [
+                    'value' => 'Unique value identifying the item (required).',
+                    'disabled' => 'Prevent the item from being toggled.',
+                    'class' => 'Extra classes for the item.',
+                ],
+                'ui.accordion-trigger' => ['class' => 'Extra classes for the trigger button.'],
+                'ui.accordion-content' => ['class' => 'Extra classes for the inner content wrapper.'],
+            ],
+        ],
+
+        'alert' => [
+            'title' => 'Alert',
+            'description' => 'Displays a callout for user attention.',
+            'components' => ['ui.alert', 'ui.alert-title', 'ui.alert-description'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'destructive' => ['title' => 'Destructive', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.alert>
+    <x-icons.info />
+    <x-ui.alert-title>...</x-ui.alert-title>
+    <x-ui.alert-description>...</x-ui.alert-description>
+</x-ui.alert>
+BLADE,
+            'composition' => 'An icon placed as the first child gets its own column; title and description line up next to it. The root has `role="alert"`.',
+            'props' => [
+                'ui.alert' => [
+                    'variant' => '`default` or `destructive`.',
+                    'class' => 'Extra classes for the alert.',
+                ],
+                'ui.alert-title' => ['class' => 'Extra classes for the title.'],
+                'ui.alert-description' => ['class' => 'Extra classes for the description.'],
+            ],
+        ],
+
+        'alert-dialog' => [
+            'title' => 'Alert Dialog',
+            'description' => 'A modal dialog that interrupts the user with important content and expects a response.',
+            'components' => ['ui.alert-dialog', 'ui.alert-dialog-trigger', 'ui.alert-dialog-content', 'ui.alert-dialog-header', 'ui.alert-dialog-title', 'ui.alert-dialog-description', 'ui.alert-dialog-footer', 'ui.alert-dialog-cancel', 'ui.alert-dialog-action'],
+            'examples' => [
+                'default' => 'Default',
+                'form' => ['title' => 'Confirming a form', 'description' => 'The dialog renders in place, so an action with `type="submit"` submits the surrounding form (here it is intercepted for the demo).'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.alert-dialog>
+    <x-ui.alert-dialog-trigger>...</x-ui.alert-dialog-trigger>
+    <x-ui.alert-dialog-content>
+        <x-ui.alert-dialog-header>
+            <x-ui.alert-dialog-title>...</x-ui.alert-dialog-title>
+            <x-ui.alert-dialog-description>...</x-ui.alert-dialog-description>
+        </x-ui.alert-dialog-header>
+        <x-ui.alert-dialog-footer>
+            <x-ui.alert-dialog-cancel>...</x-ui.alert-dialog-cancel>
+            <x-ui.alert-dialog-action>...</x-ui.alert-dialog-action>
+        </x-ui.alert-dialog-footer>
+    </x-ui.alert-dialog-content>
+</x-ui.alert-dialog>
+BLADE,
+            'notes' => <<<'MD'
+- The panel has `role="alertdialog"`, `aria-modal`, and is labelled by its title and description.
+- Focus is trapped inside (`x-trap`, requires `@alpinejs/focus`) and starts on the first button, the Cancel action; the page behind is made `inert`.
+- <kbd>Esc</kbd> and Cancel close it. Unlike Dialog, clicking the overlay does **not** close it.
+- `alert-dialog-trigger`, `-cancel` and `-action` render `<x-ui.button>`s; extra attributes are forwarded. Works with `x-model` on the root to control `open`.
+MD,
+            'props' => [
+                'ui.alert-dialog' => [
+                    'open' => 'Initial open state.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.alert-dialog-trigger' => [
+                    'variant' => 'Button variant of the trigger.',
+                    'size' => 'Button size of the trigger.',
+                    'class' => 'Extra classes for the trigger.',
+                ],
+                'ui.alert-dialog-content' => ['class' => 'Extra classes for the panel (e.g. `sm:max-w-md`).'],
+                'ui.alert-dialog-header' => ['class' => 'Extra classes.'],
+                'ui.alert-dialog-title' => ['class' => 'Extra classes.'],
+                'ui.alert-dialog-description' => ['class' => 'Extra classes.'],
+                'ui.alert-dialog-footer' => ['class' => 'Extra classes.'],
+                'ui.alert-dialog-cancel' => ['class' => 'Extra classes for the outline button.'],
+                'ui.alert-dialog-action' => [
+                    'variant' => 'Button variant, e.g. `destructive`.',
+                    'class' => 'Extra classes for the button.',
+                ],
+            ],
+        ],
+
+        'aspect-ratio' => [
+            'title' => 'Aspect Ratio',
+            'description' => 'Displays content within a desired ratio.',
+            'components' => ['ui.aspect-ratio'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'square' => ['title' => 'Ratios', 'preview' => 'block'],
+            ],
+            'notes' => 'Uses the CSS `aspect-ratio` property. A direct `<img>` child is stretched to cover the box.',
+            'props' => [
+                'ui.aspect-ratio' => [
+                    'ratio' => 'Width / height as a number (`1.5`) or a string (`"16/9"`, `"4:3"`).',
+                    'class' => 'Extra classes for the box.',
+                ],
+            ],
+        ],
+
+        'button-group' => [
+            'title' => 'Button Group',
+            'description' => 'A container that groups related buttons together with consistent styling.',
+            'components' => ['ui.button-group', 'ui.button-group-text', 'ui.button-group-separator'],
+            'examples' => [
+                'default' => 'Default',
+                'orientation' => ['title' => 'Orientation and separator', 'description' => 'Use a separator between buttons that don\'t have a border, such as `secondary` ones.'],
+                'nested' => ['title' => 'Nested', 'description' => 'Nest groups to add spacing between them; inputs and text addons join seamlessly.'],
+            ],
+            'notes' => 'The group has `role="group"`; give it an `aria-label`. Children lose their inner borders and radii.',
+            'props' => [
+                'ui.button-group' => [
+                    'orientation' => '`horizontal` or `vertical`.',
+                    'class' => 'Extra classes for the group.',
+                ],
+                'ui.button-group-text' => ['class' => 'Extra classes for the text addon.'],
+                'ui.button-group-separator' => [
+                    'orientation' => 'Orientation of the separator line; `vertical` in a horizontal group.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+        ],
+
+        'calendar' => [
+            'title' => 'Calendar',
+            'description' => 'A date field component that allows users to enter and edit a date.',
+            'components' => ['ui.calendar'],
+            'examples' => [
+                'default' => 'Default',
+                'min-max' => ['title' => 'Min / max and x-model', 'description' => 'Dates outside `min`…`max` are disabled; `week-starts-on="1"` starts weeks on Monday.'],
+            ],
+            'notes' => <<<'MD'
+- Values are `Y-m-d` strings (anything Carbon can parse is accepted as a prop). With `name` a hidden input is submitted; `x-model` binds the value.
+- Keyboard: arrows move by day/week, <kbd>PageUp</kbd>/<kbd>PageDown</kbd> by month (with <kbd>Shift</kbd> by year), <kbd>Home</kbd>/<kbd>End</kbd> to the week edges, <kbd>Enter</kbd>/<kbd>Space</kbd> select.
+- Month and weekday names come from `Intl` in the app locale (or `locale`). Dispatches a bubbling `change` event with `{ value }`.
+MD,
+            'props' => [
+                'ui.calendar' => [
+                    'value' => 'Selected date.',
+                    'name' => 'Name of the hidden input.',
+                    'min' => 'Earliest selectable date.',
+                    'max' => 'Latest selectable date.',
+                    'week-starts-on' => '`0` = Sunday … `6` = Saturday.',
+                    'locale' => 'BCP 47 locale for month/day names. Defaults to `app()->getLocale()`.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+        ],
+
+        'collapsible' => [
+            'title' => 'Collapsible',
+            'description' => 'An interactive component which expands/collapses a panel.',
+            'components' => ['ui.collapsible', 'ui.collapsible-trigger', 'ui.collapsible-content'],
+            'examples' => [
+                'default' => 'Default',
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.collapsible>
+    <x-ui.collapsible-trigger>...</x-ui.collapsible-trigger>
+    <x-ui.collapsible-content>...</x-ui.collapsible-content>
+</x-ui.collapsible>
+BLADE,
+            'composition' => 'The trigger is a `<button>` with `aria-expanded` and `aria-controls`. Give it a `variant` to render it as an `<x-ui.button>`. Use `x-model` on the root to control `open`.',
+            'props' => [
+                'ui.collapsible' => [
+                    'open' => 'Initial open state (also rendered server-side).',
+                    'disabled' => 'Disable the trigger.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.collapsible-trigger' => [
+                    'variant' => 'Render as an `<x-ui.button>` with this variant. Omit for an unstyled `<button>`.',
+                    'size' => 'Button size when `variant` is set.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.collapsible-content' => ['class' => 'Extra classes for the panel.'],
+            ],
+        ],
+
+        'combobox' => [
+            'title' => 'Combobox',
+            'description' => 'Autocomplete input and command palette with a list of suggestions.',
+            'components' => ['ui.combobox'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'Selecting the current value again clears it, as in shadcn/ui.'],
+                'x-model' => ['title' => 'With x-model'],
+            ],
+            'notes' => 'Built from Popover + Command, so filtering and keyboard navigation work the same way. With `name`, the selected value is submitted through a hidden input. For a custom layout, compose `x-ui.popover` and `x-ui.command` yourself and listen for `command-select`.',
+            'props' => [
+                'ui.combobox' => [
+                    'options' => "`['value' => 'Label']`, a list of strings, or a list of `['value' => ..., 'label' => ...]`.",
+                    'value' => 'Initially selected value.',
+                    'name' => 'Name of the hidden input.',
+                    'placeholder' => 'Trigger text when nothing is selected.',
+                    'search-placeholder' => 'Placeholder of the search input.',
+                    'empty' => 'Text shown when no option matches.',
+                    'disabled' => 'Disable the trigger.',
+                    'class' => 'Extra classes for the trigger button (e.g. a width).',
+                ],
+            ],
+        ],
+
+        'command' => [
+            'title' => 'Command',
+            'description' => 'Fast, composable command menu with filtering and keyboard navigation.',
+            'components' => ['ui.command', 'ui.command-input', 'ui.command-list', 'ui.command-empty', 'ui.command-group', 'ui.command-item', 'ui.command-separator', 'ui.command-shortcut', 'ui.command-dialog'],
+            'examples' => [
+                'default' => 'Default',
+                'dialog' => ['title' => 'Dialog', 'description' => 'Press <kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd>. Items with `href` navigate; listen for `command-select` to run an action.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.command>
+    <x-ui.command-input />
+    <x-ui.command-list>
+        <x-ui.command-empty>...</x-ui.command-empty>
+        <x-ui.command-group heading="...">
+            <x-ui.command-item>...</x-ui.command-item>
+        </x-ui.command-group>
+        <x-ui.command-separator />
+    </x-ui.command-list>
+</x-ui.command>
+BLADE,
+            'notes' => <<<'MD'
+- Typing filters items by their text, `value` and `keywords` (all words must match); empty groups hide and `command-empty` shows when nothing matches.
+- <kbd>↑</kbd>/<kbd>↓</kbd> move the highlighted item (`aria-activedescendant` on the `role="combobox"` input), <kbd>Enter</kbd> selects.
+- Selecting dispatches a bubbling `command-select` event with `{ value }` and follows the item's `href`, if any.
+MD,
+            'props' => [
+                'ui.command' => ['class' => 'Extra classes for the root.'],
+                'ui.command-input' => [
+                    'placeholder' => 'Placeholder text.',
+                    'class' => 'Extra classes for the `<input>`.',
+                ],
+                'ui.command-list' => ['class' => 'Extra classes for the scrollable list.'],
+                'ui.command-empty' => ['class' => 'Extra classes.'],
+                'ui.command-group' => [
+                    'heading' => 'Group heading, also its accessible name.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.command-item' => [
+                    'value' => 'Value passed with `command-select`. Defaults to the item text.',
+                    'keywords' => 'Extra search terms (string or array).',
+                    'href' => 'URL to visit when selected.',
+                    'disabled' => 'Skip the item for filtering results, keyboard and clicks.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.command-separator' => ['class' => 'Extra classes. Hidden while filtering.'],
+                'ui.command-shortcut' => ['class' => 'Extra classes.'],
+                'ui.command-dialog' => [
+                    'shortcut' => 'Key that toggles the dialog with ⌘/Ctrl. Empty to disable.',
+                    'title' => 'Accessible name of the dialog.',
+                    'description' => 'Screen-reader description.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+        ],
+
+        'context-menu' => [
+            'title' => 'Context Menu',
+            'description' => 'Displays a menu to the user, such as a set of actions or functions, triggered by a right click.',
+            'components' => ['ui.context-menu', 'ui.context-menu-trigger', 'ui.context-menu-content', 'ui.context-menu-item', 'ui.context-menu-label', 'ui.context-menu-separator', 'ui.context-menu-shortcut'],
+            'examples' => [
+                'default' => 'Default',
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.context-menu>
+    <x-ui.context-menu-trigger>...</x-ui.context-menu-trigger>
+    <x-ui.context-menu-content>
+        <x-ui.context-menu-label>...</x-ui.context-menu-label>
+        <x-ui.context-menu-item>...</x-ui.context-menu-item>
+        <x-ui.context-menu-separator />
+    </x-ui.context-menu-content>
+</x-ui.context-menu>
+BLADE,
+            'notes' => <<<'MD'
+- Opens at the pointer on right click, or centred on the trigger with <kbd>Shift</kbd>+<kbd>F10</kbd> / the Menu key; it is kept inside the viewport.
+- `role="menu"` with `menuitem`s: <kbd>↑</kbd>/<kbd>↓</kbd>/<kbd>Home</kbd>/<kbd>End</kbd> and typeahead move focus; <kbd>Esc</kbd>, clicking outside, scrolling or choosing an item closes it and returns focus.
+MD,
+            'props' => [
+                'ui.context-menu' => ['class' => 'Extra classes for the root.'],
+                'ui.context-menu-trigger' => ['class' => 'Extra classes for the trigger area.'],
+                'ui.context-menu-content' => ['class' => 'Extra classes for the menu.'],
+                'ui.context-menu-item' => [
+                    'href' => 'Render a link.',
+                    'variant' => '`default` or `destructive`.',
+                    'inset' => 'Indent to line up with items that have an icon.',
+                    'disabled' => 'Disable the item.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.context-menu-label' => [
+                    'inset' => 'Indent the label.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.context-menu-separator' => ['class' => 'Extra classes.'],
+                'ui.context-menu-shortcut' => ['class' => 'Extra classes.'],
+            ],
+        ],
+
+        'date-picker' => [
+            'title' => 'Date Picker',
+            'description' => 'A date picker built from Popover and Calendar.',
+            'components' => ['ui.date-picker'],
+            'examples' => [
+                'default' => 'Default',
+                'form' => ['title' => 'Formatting and x-model', 'description' => '`format` is an `Intl.DateTimeFormat` options array; the bound and submitted value stays `Y-m-d`.'],
+            ],
+            'props' => [
+                'ui.date-picker' => [
+                    'value' => 'Selected date.',
+                    'name' => 'Name of the hidden input.',
+                    'placeholder' => 'Text when no date is selected.',
+                    'min' => 'Earliest selectable date.',
+                    'max' => 'Latest selectable date.',
+                    'week-starts-on' => '`0` = Sunday … `6` = Saturday.',
+                    'locale' => 'Locale for formatting. Defaults to the app locale.',
+                    'format' => "`Intl.DateTimeFormat` options, default `['dateStyle' => 'long']`.",
+                    'class' => 'Extra classes for the trigger button.',
+                ],
+            ],
+        ],
+
+        'field' => [
+            'title' => 'Field',
+            'description' => 'Combine labels, controls, help text and errors into accessible form fields.',
+            'components' => ['ui.field', 'ui.field-set', 'ui.field-legend', 'ui.field-group', 'ui.field-content', 'ui.field-label', 'ui.field-title', 'ui.field-description', 'ui.field-separator', 'ui.field-error'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'switch' => ['title' => 'Horizontal', 'description' => '`orientation="horizontal"` puts the control next to its label and description.'],
+                'error' => ['title' => 'Errors', 'description' => 'Mark the field `invalid` and add `field-error`.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.field-set>
+    <x-ui.field-legend>...</x-ui.field-legend>
+    <x-ui.field-group>
+        <x-ui.field>
+            <x-ui.field-label for="email">...</x-ui.field-label>
+            <x-ui.input id="email" name="email" />
+            <x-ui.field-description>...</x-ui.field-description>
+            <x-ui.field-error name="email" />
+        </x-ui.field>
+    </x-ui.field-group>
+</x-ui.field-set>
+BLADE,
+            'composition' => '`field-error name="email"` reads Laravel\'s validation errors for that field (from the shared `$errors` bag), so a failed form request shows up with no extra code. It renders nothing when there are no messages.',
+            'props' => [
+                'ui.field' => [
+                    'orientation' => '`vertical`, `horizontal` or `responsive` (horizontal from the `md` container size of a `field-group`).',
+                    'invalid' => 'Style the field as invalid.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.field-set' => ['class' => 'Extra classes for the `<fieldset>`.'],
+                'ui.field-legend' => [
+                    'variant' => '`legend` or the smaller `label`.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.field-group' => ['class' => 'Extra classes.'],
+                'ui.field-content' => ['class' => 'Extra classes.'],
+                'ui.field-label' => ['class' => 'Extra classes for the `<label>`.'],
+                'ui.field-title' => ['class' => 'Extra classes.'],
+                'ui.field-description' => ['class' => 'Extra classes.'],
+                'ui.field-separator' => ['class' => 'Extra classes. The slot is optional text on the line.'],
+                'ui.field-error' => [
+                    'name' => 'Field name to read messages for from Laravel\'s error bag.',
+                    'messages' => 'Messages to show (array or `MessageBag`), merged with the bag\'s.',
+                    'bag' => 'Named error bag, for `validateWithBag`.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+        ],
+
+        'hover-card' => [
+            'title' => 'Hover Card',
+            'description' => 'For sighted users to preview content available behind a link.',
+            'components' => ['ui.hover-card', 'ui.hover-card-trigger', 'ui.hover-card-content'],
+            'examples' => [
+                'default' => 'Default',
+            ],
+            'notes' => 'Opens after `open-delay` on hover or keyboard focus, closes after `close-delay` when the pointer leaves both trigger and card, and immediately on blur or <kbd>Esc</kbd>. It is supplementary: keep essential content reachable without it.',
+            'props' => [
+                'ui.hover-card' => [
+                    'open-delay' => 'Milliseconds before opening.',
+                    'close-delay' => 'Milliseconds before closing.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.hover-card-trigger' => [
+                    'href' => 'Link target. Without it the trigger is a focusable `<span>`.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.hover-card-content' => [
+                    'side' => '`top`, `right`, `bottom` or `left`.',
+                    'align' => '`start`, `center` or `end`.',
+                    'side-offset' => 'Gap in pixels between trigger and card.',
+                    'class' => 'Extra classes for the card.',
+                ],
+            ],
+        ],
+
+        'kbd' => [
+            'title' => 'Kbd',
+            'description' => 'Used to display textual user input from keyboard.',
+            'components' => ['ui.kbd', 'ui.kbd-group'],
+            'examples' => [
+                'default' => 'Default',
+                'in-tooltip' => ['title' => 'In buttons and tooltips'],
+            ],
+            'props' => [
+                'ui.kbd' => ['class' => 'Extra classes for the `<kbd>`.'],
+                'ui.kbd-group' => ['class' => 'Extra classes for the group.'],
+            ],
+        ],
+
+        'pagination' => [
+            'title' => 'Pagination',
+            'description' => 'Pagination with page navigation, next and previous links.',
+            'components' => ['ui.pagination', 'ui.pagination-content', 'ui.pagination-item', 'ui.pagination-link', 'ui.pagination-previous', 'ui.pagination-next', 'ui.pagination-ellipsis'],
+            'examples' => [
+                'default' => 'Default',
+                'paginator' => ['title' => 'From a Laravel paginator', 'description' => 'Pass any `LengthAwarePaginator` (`User::paginate()`) and the links are built for you with Laravel\'s own URL window. A simple paginator renders Previous / Next only.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.pagination>
+    <x-ui.pagination-content>
+        <x-ui.pagination-item><x-ui.pagination-previous href="..." /></x-ui.pagination-item>
+        <x-ui.pagination-item><x-ui.pagination-link href="..." is-active>1</x-ui.pagination-link></x-ui.pagination-item>
+        <x-ui.pagination-item><x-ui.pagination-ellipsis /></x-ui.pagination-item>
+        <x-ui.pagination-item><x-ui.pagination-next href="..." /></x-ui.pagination-item>
+    </x-ui.pagination-content>
+</x-ui.pagination>
+BLADE,
+            'props' => [
+                'ui.pagination' => [
+                    'paginator' => 'A Laravel paginator to render automatically.',
+                    'on-each-side' => 'Pages shown on each side of the current one (with `paginator`).',
+                    'class' => 'Extra classes for the `<nav>`.',
+                ],
+                'ui.pagination-content' => ['class' => 'Extra classes for the `<ul>`.'],
+                'ui.pagination-item' => ['class' => 'Extra classes for the `<li>`.'],
+                'ui.pagination-link' => [
+                    'href' => 'Page URL. Without it (or when `disabled`) a non-interactive `<span>` is rendered.',
+                    'is-active' => 'Mark as the current page (`aria-current="page"`).',
+                    'disabled' => 'Render as disabled.',
+                    'size' => '`icon`, `default`, `sm` or `lg`.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.pagination-previous' => [
+                    'href' => 'URL of the previous page.',
+                    'disabled' => 'Disable on the first page.',
+                    'label' => 'Visible text (hidden on small screens).',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.pagination-next' => [
+                    'href' => 'URL of the next page.',
+                    'disabled' => 'Disable on the last page.',
+                    'label' => 'Visible text (hidden on small screens).',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.pagination-ellipsis' => ['class' => 'Extra classes.'],
+            ],
+        ],
+
+        'popover' => [
+            'title' => 'Popover',
+            'description' => 'Displays rich content in a portal, triggered by a button.',
+            'components' => ['ui.popover', 'ui.popover-trigger', 'ui.popover-content'],
+            'examples' => [
+                'default' => 'Default',
+                'sides' => 'Sides',
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.popover>
+    <x-ui.popover-trigger>...</x-ui.popover-trigger>
+    <x-ui.popover-content side="bottom" align="center">...</x-ui.popover-content>
+</x-ui.popover>
+BLADE,
+            'notes' => <<<'MD'
+- Click the trigger to toggle. Opening moves focus into the content; <kbd>Esc</kbd> closes and returns focus to the trigger; clicking or tabbing outside closes it.
+- The content is positioned with CSS relative to the root (`side`, `align`, `side-offset`); it does not flip, so pick a side with room.
+- `popover-trigger` renders an outline `<x-ui.button>` (pass `variant=""` for a bare `<button>`). Use `x-model` on the root to control `open`.
+MD,
+            'props' => [
+                'ui.popover' => [
+                    'open' => 'Initial open state.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.popover-trigger' => [
+                    'variant' => 'Button variant; empty for an unstyled button.',
+                    'size' => 'Button size.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.popover-content' => [
+                    'side' => '`top`, `right`, `bottom` or `left`.',
+                    'align' => '`start`, `center` or `end`.',
+                    'side-offset' => 'Gap in pixels between trigger and content.',
+                    'class' => 'Extra classes for the panel.',
+                ],
+            ],
+        ],
+
+        'scroll-area' => [
+            'title' => 'Scroll Area',
+            'description' => 'A scrollable region with thin, theme-coloured scrollbars.',
+            'components' => ['ui.scroll-area'],
+            'examples' => [
+                'default' => 'Default',
+                'horizontal' => 'Horizontal',
+            ],
+            'notes' => 'Native scrolling (so touch, wheel and keyboard behave as usual) with styled scrollbars via `scrollbar-width`/`scrollbar-color` and `::-webkit-scrollbar`. It is focusable so keyboard users can scroll it. Unlike Radix, there is no custom overlay scrollbar.',
+            'props' => [
+                'ui.scroll-area' => [
+                    'orientation' => '`vertical`, `horizontal` or `both`.',
+                    'class' => 'Extra classes; set a height or width to make it scroll.',
+                ],
+            ],
+        ],
+
+        'skeleton' => [
+            'title' => 'Skeleton',
+            'description' => 'Use to show a placeholder while content is loading.',
+            'components' => ['ui.skeleton'],
+            'examples' => [
+                'default' => 'Default',
+                'card' => 'Card',
+            ],
+            'props' => [
+                'ui.skeleton' => ['class' => 'Size and shape classes (e.g. `h-4 w-48`, `rounded-full`).'],
+            ],
+        ],
+
+        'slider' => [
+            'title' => 'Slider',
+            'description' => 'An input where the user selects a value from within a given range.',
+            'components' => ['ui.slider'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'center'],
+                'x-model' => ['title' => 'With x-model and decimals'],
+                'vertical' => ['title' => 'Vertical and disabled'],
+            ],
+            'notes' => <<<'MD'
+- The thumb has `role="slider"` with `aria-valuenow/min/max`; give it an accessible name with `label`.
+- Drag or click the track; <kbd>←</kbd>/<kbd>→</kbd>/<kbd>↑</kbd>/<kbd>↓</kbd> step, <kbd>PageUp</kbd>/<kbd>PageDown</kbd> jump by 10 %, <kbd>Home</kbd>/<kbd>End</kbd> go to the ends.
+- With `name` the value is submitted through a hidden input; `x-model` binds it; a bubbling `change` event carries `{ value }`.
+MD,
+            'props' => [
+                'ui.slider' => [
+                    'value' => 'Initial value (defaults to `min`).',
+                    'min' => 'Minimum value.',
+                    'max' => 'Maximum value.',
+                    'step' => 'Step between values; decimals are supported.',
+                    'name' => 'Name of the hidden input.',
+                    'disabled' => 'Disable the slider.',
+                    'orientation' => '`horizontal` or `vertical` (set a height).',
+                    'label' => 'Accessible name of the thumb.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+        ],
+
+        'switch' => [
+            'title' => 'Switch',
+            'description' => 'A control that allows the user to toggle between checked and not checked.',
+            'components' => ['ui.switch'],
+            'examples' => [
+                'default' => 'Default',
+                'states' => 'States and sizes',
+                'form' => ['title' => 'In a form', 'description' => 'With `name`, a hidden checkbox submits `value` when on (and nothing when off, like a checkbox). `x-model` binds a boolean.'],
+            ],
+            'notes' => 'A `<button role="switch">` with `aria-checked`. `id` and other attributes go to the button, so `<x-ui.label for="...">` works. Dispatches a bubbling `change` event with `{ checked }`.',
+            'props' => [
+                'ui.switch' => [
+                    'checked' => 'Initial state.',
+                    'name' => 'Form field name.',
+                    'value' => 'Submitted value when on.',
+                    'disabled' => 'Disable the switch.',
+                    'size' => '`default` or `sm`.',
+                    'class' => 'Extra classes for the button.',
+                ],
+            ],
+        ],
+
+        'tabs' => [
+            'title' => 'Tabs',
+            'description' => 'A set of layered sections of content, known as tab panels, that are displayed one at a time.',
+            'components' => ['ui.tabs', 'ui.tabs-list', 'ui.tabs-trigger', 'ui.tabs-content'],
+            'examples' => [
+                'default' => 'Default',
+                'vertical' => ['title' => 'Vertical', 'description' => 'With `orientation="vertical"` the arrow keys are <kbd>↑</kbd>/<kbd>↓</kbd>. Disabled tabs are skipped.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.tabs default-value="a">
+    <x-ui.tabs-list>
+        <x-ui.tabs-trigger value="a">...</x-ui.tabs-trigger>
+        <x-ui.tabs-trigger value="b">...</x-ui.tabs-trigger>
+    </x-ui.tabs-list>
+    <x-ui.tabs-content value="a">...</x-ui.tabs-content>
+    <x-ui.tabs-content value="b">...</x-ui.tabs-content>
+</x-ui.tabs>
+BLADE,
+            'notes' => <<<'MD'
+- WAI-ARIA tabs: `tablist` / `tab` / `tabpanel` with roving `tabindex`. <kbd>←</kbd>/<kbd>→</kbd> (or <kbd>↑</kbd>/<kbd>↓</kbd>), <kbd>Home</kbd>, <kbd>End</kbd> move between tabs and activate them (`activation="manual"` to activate on <kbd>Enter</kbd>/click only).
+- The tab in `default-value` is rendered active on the server. `x-model` on the root binds the active value.
+MD,
+            'props' => [
+                'ui.tabs' => [
+                    'default-value' => 'Initially active tab. Defaults to the first one.',
+                    'orientation' => '`horizontal` or `vertical`.',
+                    'activation' => '`automatic` (focus activates) or `manual`.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.tabs-list' => ['class' => 'Extra classes for the list.'],
+                'ui.tabs-trigger' => [
+                    'value' => 'Value of the tab (required).',
+                    'disabled' => 'Disable the tab.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.tabs-content' => [
+                    'value' => 'Value of the tab this panel belongs to (required).',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+        ],
+
+        'toast' => [
+            'title' => 'Toast',
+            'description' => 'A succinct, Sonner-style message that is displayed temporarily.',
+            'components' => ['ui.toaster'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'This site has `<x-ui.toaster />` in its layout.'],
+                'types' => 'Types',
+            ],
+            'anatomy' => <<<'BLADE'
+{{-- once, in your layout (before @stack('scripts')) --}}
+<x-ui.toaster :flash="session('toast')" />
+
+{{-- anywhere --}}
+<button x-data x-on:click="toast.success('Saved', { description: '...' })">Save</button>
+
+{{-- from a controller --}}
+return back()->with('toast', ['message' => 'Saved', 'type' => 'success']);
+BLADE,
+            'notes' => <<<'MD'
+- `toast(message, options)`, `toast.success/error/warning/info(...)` are defined globally by the toaster's script; from Alpine you can also `$dispatch('toast', { message, ... })`.
+- Options: `description`, `type`, `duration` (ms, `Infinity` to keep it), `action: { label, onClick }` (or `event` to dispatch a window event).
+- Toasts are `role="status"` live regions; timers pause while hovered or focused. `max` limits how many are visible.
+MD,
+            'props' => [
+                'ui.toaster' => [
+                    'position' => '`top-left`, `top-center`, `top-right`, `bottom-left`, `bottom-center` or `bottom-right`.',
+                    'duration' => 'Default auto-dismiss delay in milliseconds.',
+                    'flash' => 'Toasts to show on load: a string, `[\'message\' => ..., \'type\' => ...]`, or a list of them. Pass `session(\'toast\')`.',
+                    'max' => 'Maximum toasts visible at once.',
+                    'class' => 'Extra classes for the container.',
+                ],
+            ],
+        ],
+
+        'toggle' => [
+            'title' => 'Toggle',
+            'description' => 'A two-state button that can be either on or off.',
+            'components' => ['ui.toggle'],
+            'examples' => [
+                'default' => 'Default',
+            ],
+            'notes' => 'A `<button>` with `aria-pressed` and `data-state="on|off"`. `x-model` on the tag binds a boolean.',
+            'props' => [
+                'ui.toggle' => [
+                    'variant' => '`default` or `outline`.',
+                    'size' => '`default`, `sm` or `lg`.',
+                    'pressed' => 'Initial state.',
+                    'disabled' => 'Disable the toggle.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+        ],
+
+        'toggle-group' => [
+            'title' => 'Toggle Group',
+            'description' => 'A set of two-state buttons that can be toggled on or off.',
+            'components' => ['ui.toggle-group', 'ui.toggle-group-item'],
+            'examples' => [
+                'default' => ['title' => 'Multiple'],
+                'single' => ['title' => 'Single, outline, x-model', 'description' => 'With `name`, the value is submitted through hidden inputs (`name[]` for `multiple`).'],
+            ],
+            'notes' => 'Items are `<button>`s with `aria-pressed`; arrow keys move focus between them. `x-model` on the group binds a string (`single`) or an array (`multiple`).',
+            'props' => [
+                'ui.toggle-group' => [
+                    'type' => '`single` or `multiple`.',
+                    'value' => 'Initially pressed value (array for `multiple`).',
+                    'name' => 'Form field name.',
+                    'variant' => '`default` or `outline`, applied to every item.',
+                    'size' => '`default`, `sm` or `lg`, applied to every item.',
+                    'orientation' => '`horizontal` or `vertical`.',
+                    'class' => 'Extra classes for the group.',
+                ],
+                'ui.toggle-group-item' => [
+                    'value' => 'Value of the item (required).',
+                    'disabled' => 'Disable the item.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
         ],
 
         /* -------------------------------------------------------------- */

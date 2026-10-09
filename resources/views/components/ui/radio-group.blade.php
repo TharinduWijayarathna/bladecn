@@ -28,14 +28,14 @@
                 value="{{ $optionValue }}"
                 {{ $isChecked ? 'checked' : '' }}
                 class="sr-only after:absolute after:inset-0"
-                onchange="updateNotificationGroup('{{ $groupId }}', '{{ $optionValue }}')"
+                onchange="updateNotificationGroup(this.closest('[data-radio-group]').dataset.radioGroup, this.value)"
             />
             {{ $optionLabel }}
         </label>
     @endforeach
 </div>
 
-@push('scripts')
+@pushOnce('scripts')
 <script>
     function updateNotificationGroup(groupId, value) {
         const group = document.querySelector(`[data-radio-group="${groupId}"]`);
@@ -68,5 +68,5 @@
         });
     });
 </script>
-@endpush
+@endPushOnce
 

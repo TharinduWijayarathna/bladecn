@@ -15,23 +15,10 @@
         @endforeach
     </div>
 
-    @php $unpublished = $docs->unpublished($page); @endphp
-    @if (count($page['components']) && count($unpublished))
-        <div class="mt-5 rounded-lg border border-amber-300/70 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-            <p>
-                <span class="font-medium">Not published by <code class="font-mono">bladecn:install</code> yet.</span>
-                Copy
-                @foreach ($unpublished as $tag)
-                    <code class="font-mono">{{ str_replace('.', '/', $tag) }}</code>{{ $loop->last ? '' : ',' }}
-                @endforeach
-                from <code class="font-mono">vendor/bladecn/bladecn/resources/views/components/</code> into
-                <code class="font-mono">resources/views/components/</code>, plus any matching class from
-                <code class="font-mono">src/View/Components/Ui/</code> into <code class="font-mono">app/View/Components/Ui/</code>
-                (namespace <code class="font-mono">App\View\Components\Ui</code>, view <code class="font-mono">components.ui.*</code>).
-            </p>
-        </div>
-    @elseif (count($page['components']))
-        <p class="mt-4 text-sm text-muted-foreground">Published to your app by <code class="font-mono">php artisan bladecn:install</code>.</p>
+    @if (count($page['components']))
+        <p class="mt-4 text-sm text-muted-foreground">
+            Works straight from the package; <code class="font-mono">php artisan bladecn:install</code> also publishes it into your app to customise.
+        </p>
     @endif
 
     @if (! empty($page['intro']))

@@ -34,7 +34,7 @@ class Sheet extends Component
      */
     public function contentClasses(): string
     {
-        $base = 'fixed z-50 bg-white shadow-lg p-6 transition-transform duration-500';
+        $base = 'fixed z-50 flex flex-col gap-4 bg-background text-foreground shadow-lg p-6 transition-transform duration-300 ease-in-out';
 
         $sides = [
             'top' => ['base' => 'inset-x-0 top-0 border-b', 'translate_in' => 'translate-y-0', 'translate_out' => '-translate-y-full'],

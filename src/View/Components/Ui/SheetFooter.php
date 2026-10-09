@@ -28,6 +28,6 @@ class SheetFooter extends Component
 
     public function sheetFooterClasses(): string
     {
-        return cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', $this->class);
+        return cn('mt-auto flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', $this->class);
     }
 }

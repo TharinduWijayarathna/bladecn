@@ -1,0 +1,2 @@
+<!-- BladeCN mark: a blade-cut tile with Blade braces. Uses currentColor. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor"><path fill-rule="evenodd" d="M8 0h14l10 10v14a8 8 0 0 1-8 8H8a8 8 0 0 1-8-8V8a8 8 0 0 1 8-8ZM10.2 7.2L10.2 12.831L5.763 16L10.2 19.169L10.2 24.8L14.5 24.8L14.5 22.2L12.8 22.2L12.8 17.831L10.237 16L12.8 14.169L12.8 9.8L14.5 9.8L14.5 7.2ZM19.2 9.8L19.2 14.169L21.763 16L19.2 17.831L19.2 22.2L17.5 22.2L17.5 24.8L21.8 24.8L21.8 19.169L26.237 16L21.8 12.831L21.8 7.2L17.5 7.2L17.5 9.8Z"/></svg>

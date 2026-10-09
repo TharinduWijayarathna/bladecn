@@ -26,7 +26,7 @@
         this.success = false;
 
         try {
-            const response = await fetch('{{ $route }}', {
+            const response = await fetch(@js($route), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,7 +59,7 @@
             x-bind:disabled="!editing" class="!pl-1" />
 
         {{-- Protocol --}}
-        <x-ui.input-group-addon class="pl-0">
+        <x-ui.input-group-addon align="inline-start" class="pl-0">
             <x-ui.native-select x-model="protocol" x-bind:disabled="!editing"
                 class="rounded-r-none border-t-0 border-b-0 border-l-0 shadow-none ring-0 focus-visible:ring-0">
                 <option value="http">http://</option>

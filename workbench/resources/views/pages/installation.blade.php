@@ -75,15 +75,19 @@ BASH;
 
     <h3>1. Install the package</h3>
     <p>
-        The installer publishes the auth views and controllers, routes, the layout and UI components (views and classes),
-        the <code>cn()</code> / <code>getInitials()</code> helpers, and the CSS / JS entry points into your application.
-        It <strong>replaces</strong> <code>resources/css/app.css</code> and <code>resources/js/app.js</code>, so commit
-        your work first.
+        Every component works straight from the package as soon as it is installed: <code>&lt;x-ui.button&gt;</code>,
+        <code>&lt;x-layout.app&gt;</code>, <code>&lt;x-icons.check&gt;</code> and the rest resolve without publishing anything.
     </p>
     <p>
-        The installer publishes the core component set. Components it doesn't publish yet are marked on their page,
-        with instructions to copy them from <code>vendor/bladecn/bladecn</code>.
+        <code>php artisan bladecn:install</code> turns it into a starter kit you own: it publishes the auth views and
+        controllers, routes, <strong>all</strong> layout and UI components (views and classes), the
+        <code>cn()</code> / <code>getInitials()</code> helpers, and the CSS / JS entry points. Published copies take
+        precedence over the package's, so edit them freely.
     </p>
+    <ul>
+        <li>Files that already exist are <strong>kept</strong>; the summary lists them. Run it again with <code>--force</code> to overwrite them (e.g. to pull in upstream changes after <code>composer update</code>).</li>
+        <li>It asks before replacing <code>routes/web.php</code>, <code>resources/css/app.css</code> and <code>resources/js/app.js</code>, which every new Laravel app ships with (the default answer is yes, also with <code>--no-interaction</code>). Commit your work first.</li>
+    </ul>
 </div>
 @include('docs::partials.code', ['code' => $composer, 'language' => 'bash'])
 

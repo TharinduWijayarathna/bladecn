@@ -17,6 +17,8 @@
         })();
     </script>
 
+    <link rel="icon" href="{{ $docs->asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ $docs->asset('favicon-32.png') }}" type="image/png" sizes="32x32">
     <link rel="stylesheet" href="{{ $docs->asset('docs.css') }}">
     <script defer src="{{ $docs->asset('docs.js') }}"></script>
     @stack('styles')
@@ -29,9 +31,7 @@
                 <x-icons.panel-left class="size-5" />
             </button>
             <a href="{{ $docs->url() }}" class="flex items-center gap-2 font-semibold">
-                <span class="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                    <x-icons.app-logo class="size-4" />
-                </span>
+                <x-icons.bladecn class="size-7" />
                 BladeCN
             </a>
             <nav class="ml-4 hidden items-center gap-5 text-sm text-muted-foreground md:flex">
@@ -123,6 +123,8 @@
             </div>
         </main>
     </div>
+
+    <x-ui.toaster />
 
     @stack('scripts')
 </body>

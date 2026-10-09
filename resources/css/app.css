@@ -130,6 +130,10 @@
     --sidebar-ring: oklch(0.439 0 0);
 }
 
+[x-cloak] {
+    display: none !important;
+}
+
 @layer base {
     * {
         @apply border-border outline-ring/50;

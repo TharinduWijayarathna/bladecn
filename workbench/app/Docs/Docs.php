@@ -178,65 +178,6 @@ class Docs
     }
 
     /**
-     * Which components `php artisan bladecn:install` copies into an app, read
-     * from the installer's own lists so the docs stay in sync with it.
-     *
-     * @return array{views: array<int, string>, classes: array<int, string>}
-     */
-    public function publishedByInstaller(): array
-    {
-        static $cache = null;
-
-        if ($cache !== null) {
-            return $cache;
-        }
-
-        $source = (string) @file_get_contents($this->packagePath.'/src/Commands/InstallBladeCNCommand.php');
-        $views = [];
-        $classes = [];
-
-        foreach (['/\'ui\' => \[(.*?)\]/s', '/\$settingsComponents = \[(.*?)\]/s'] as $pattern) {
-            if (preg_match($pattern, $source, $match)) {
-                preg_match_all("/'([a-z0-9-]+)'/", $match[1], $names);
-                $views = array_merge($views, $names[1]);
-            }
-        }
-
-        if (preg_match('/\$essentialUiComponents = \[(.*?)\]/s', $source, $match)) {
-            preg_match_all("/'([A-Za-z0-9]+)'/", $match[1], $names);
-            $classes = $names[1];
-        }
-
-        return $cache = ['views' => array_values(array_unique($views)), 'classes' => $classes];
-    }
-
-    /**
-     * Component tags on a page that the installer does not publish.
-     *
-     * @return array<int, string>
-     */
-    public function unpublished(array $page): array
-    {
-        $published = $this->publishedByInstaller();
-
-        return array_values(array_filter($page['components'], function (string $tag) use ($published) {
-            [$namespace, $name] = explode('.', $tag, 2);
-
-            if ($namespace === 'icons') {
-                return false;
-            }
-
-            if ($namespace !== 'ui' || ! in_array($name, $published['views'], true)) {
-                return true;
-            }
-
-            $class = 'BladeCN\\BladeCN\\View\\Components\\Ui\\'.Str::studly($name);
-
-            return class_exists($class) && ! in_array(Str::studly($name), $published['classes'], true);
-        }));
-    }
-
-    /**
      * @return array<int, string>
      */
     public function icons(): array

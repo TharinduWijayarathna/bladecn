@@ -37,7 +37,7 @@
                                 {{ $breadcrumb['label'] ?? $breadcrumb['title'] ?? '' }}
                             </span>
                         @else
-                            <a data-slot="breadcrumb-link" href="{{ $breadcrumb['href'] }}"
+                            <a data-slot="breadcrumb-link" href="{{ $breadcrumb['href'] ?? '#' }}"
                                 class="hover:text-foreground transition-colors block truncate">
                                 {{ $breadcrumb['label'] ?? $breadcrumb['title'] ?? '' }}
                             </a>

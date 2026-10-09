@@ -1,3 +1,3 @@
-<div {{ $attributes->merge(['class' => $footerClasses()]) }} data-slot="item-header">
+<div {{ $attributes->merge(['class' => $footerClasses()]) }} data-slot="item-footer">
     {{ $slot }}
 </div>
