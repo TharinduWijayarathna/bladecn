@@ -16,6 +16,8 @@
     $initial = min($max, max($min, (float) ($value ?? $min)));
     $percent = $max > $min ? ($initial - $min) / ($max - $min) * 100 : 0;
     $vertical = $orientation === 'vertical';
+    // With wire:model: wire:ignore + input/change events (see BladeCN\BladeCN\Support\Livewire). No-op otherwise.
+    $attributes = \BladeCN\BladeCN\Support\Livewire::attributes($attributes, 'value', ['input']); // `set()` already dispatches change
 @endphp
 
 <div data-slot="slider" data-orientation="{{ $orientation }}" @if ($disabled) data-disabled @endif x-modelable="value"
