@@ -20,6 +20,8 @@
     })->values();
     $labels = $items->pluck('label', 'value')->all();
     $selectedLabel = $value !== null ? ($labels[(string) $value] ?? null) : null;
+    // With wire:model: wire:ignore + input/change events (see BladeCN\BladeCN\Support\Livewire). No-op otherwise.
+    $attributes = \BladeCN\BladeCN\Support\Livewire::attributes($attributes, 'selected');
 @endphp
 
 {{-- A popover + command list. Works with `x-model`; with `name` the value is submitted through a hidden input. --}}
