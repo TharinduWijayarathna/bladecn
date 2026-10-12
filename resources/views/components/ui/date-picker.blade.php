@@ -13,6 +13,8 @@
 @php
     $value = $value ? \Illuminate\Support\Carbon::parse($value)->format('Y-m-d') : null;
     $locale ??= str_replace('_', '-', app()->getLocale());
+    // With wire:model: wire:ignore + input/change events (see BladeCN\BladeCN\Support\Livewire). No-op otherwise.
+    $attributes = \BladeCN\BladeCN\Support\Livewire::attributes($attributes, 'date');
 @endphp
 
 {{-- A popover with a calendar. `format` is an Intl.DateTimeFormat options object; defaults to { dateStyle: 'long' }. --}}
