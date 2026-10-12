@@ -11,11 +11,29 @@ class NativeSelect extends Component
     public $class;
 
     /**
+     * Model (or array) the field reads its value from, by `name`; also turns on inline errors.
+     */
+    public mixed $model;
+
+    /**
+     * Render the field's validation error and aria-invalid. Defaults to true when a `model` is passed.
+     */
+    public ?bool $bind;
+
+    /**
+     * Error bag to read validation messages from.
+     */
+    public string $errorBag;
+
+    /**
      * Create a new component instance.
      */
-    public function __construct(string $class = '')
+    public function __construct(string $class = '', mixed $model = null, ?bool $bind = null, string $errorBag = 'default')
     {
         $this->class = $class;
+        $this->model = $model;
+        $this->bind = $bind;
+        $this->errorBag = $errorBag;
     }
 
     /**
