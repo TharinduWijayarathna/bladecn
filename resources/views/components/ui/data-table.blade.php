@@ -169,7 +169,7 @@
                             $isSorted = $column['sortable'] && $currentSort === $column['key'];
                             $ariaSort = $isSorted ? ($currentDirection === 'asc' ? 'ascending' : 'descending') : ($column['sortable'] ? 'none' : null);
                         @endphp
-                        <x-ui.table-head :class="$column['headerClass']" data-column="{{ $column['key'] }}"
+                        <x-ui.table-head :class="'whitespace-nowrap ps-2 pe-2 '.$column['headerClass']" data-column="{{ $column['key'] }}"
                             x-show="isVisible({{ \Illuminate\Support\Js::from($column['key']) }})"
                             :style="$column['hidden'] ? 'display: none;' : null" :aria-sort="$ariaSort" scope="col">
                             @if ($column['sortable'])
@@ -213,7 +213,7 @@
                                 $value = data_get($row, $column['key']);
                                 $display = is_callable($column['format']) ? ($column['format'])($value, $row) : $value;
                             @endphp
-                            <x-ui.table-cell :class="$column['class']" data-column="{{ $column['key'] }}"
+                            <x-ui.table-cell :class="'whitespace-nowrap px-2 '.$column['class']" data-column="{{ $column['key'] }}"
                                 x-show="isVisible({{ \Illuminate\Support\Js::from($column['key']) }})"
                                 :style="$column['hidden'] ? 'display: none;' : null">
                                 @if ($display instanceof \Illuminate\Contracts\Support\Htmlable)
@@ -241,7 +241,7 @@
 
     @if ($isPaginator && ($rows->hasPages() || $rows instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator))
         <div data-slot="data-table-footer" class="flex flex-col items-center justify-between gap-2 text-sm text-muted-foreground sm:flex-row">
-            <div aria-live="polite">
+            <div aria-live="polite" class="shrink-0 whitespace-nowrap">
                 @if ($rows instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator && $rows->total() > 0)
                     Showing {{ $rows->firstItem() }}–{{ $rows->lastItem() }} of {{ $rows->total() }}
                 @endif
