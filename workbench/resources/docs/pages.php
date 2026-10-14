@@ -2710,5 +2710,203 @@ MD,
 - Dispatches a bubbling `change` event with `{ start, end }`.
 MD,
         ],
+
+        // --- Laravel-native features (feat/laravel-native) ---------------------------
+
+        'form-binding' => [
+            'title' => 'Form Binding',
+            'group' => 'Laravel',
+            'description' => 'Fill fields from old() and an Eloquent model, map dot names to arrays, and show validation errors inline.',
+            'components' => ['ui.input', 'ui.textarea', 'ui.select', 'ui.native-select', 'ui.checkbox', 'ui.switch', 'ui.radio-group'],
+            'intro' => <<<'MD'
+Give a field a `name` and, optionally, a `:model`. Its value then comes from `old(name)` after a failed submit, otherwise from `data_get($model, name)`, otherwise from its own `value`. Dot names work both ways: `name="user.email"` reads `user.email` and is submitted as `user[email]`; `name="user[email]"` reads the same key.
+MD,
+            'examples' => [
+                'model' => ['title' => 'Bound to a model', 'description' => 'Works with Eloquent models, arrays and any object `data_get` can read.', 'preview' => 'block'],
+                'errors' => ['title' => 'Validation errors', 'description' => 'Bound fields (with `:model`, or `bind`) print `$errors->first(name)` through `<x-ui.field-error>` and set `aria-invalid` and `aria-describedby`.', 'preview' => 'block'],
+                'choices' => ['title' => 'Selects, checkboxes and switches', 'description' => 'Options of `select` / `native-select` are marked `selected`; `checkbox` and `switch` are checked when the value is truthy or, for `name="channels[]"`, when the array contains their `value`.', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+{{-- edit.blade.php --}}
+<form method="POST" action="{{ route('profile.update') }}">
+    @csrf
+    @method('PATCH')
+    <x-ui.input name="name" :model="$user" required />
+    <x-ui.input name="address.city" :model="$user" />          {{-- submitted as address[city] --}}
+    <x-ui.textarea name="bio" :model="$user" />
+    <x-ui.native-select name="country" :model="$user">...</x-ui.native-select>
+    <x-ui.checkbox name="newsletter" value="1" :model="$user" />
+    <x-ui.switch name="public" :model="$user" />
+    <x-ui.radio-group name="plan" :options="['free', 'pro']" :model="$user" />
+</form>
+
+{{-- no model, but still show errors inline --}}
+<x-ui.input name="email" bind />
+BLADE,
+            'notes' => <<<'MD'
+- **Backward compatible.** Without a `name` nothing changes, and a named field without `:model` / `bind` only gains the `old()` fallback (which is what `:value="old('email')"` already did). Inline errors are opt-in, so forms that already render `<x-ui.input-error>` don't show the message twice.
+- Old input wins over the model, the model over `value`. Password and file inputs are never refilled.
+- After a submit, a bound checkbox or switch whose key is missing from the old input is unchecked (browsers don't submit unchecked boxes).
+- Fields with `wire:model` or `x-model` are left alone: Livewire / Alpine own their value.
+- Dates are formatted for the input type (`Y-m-d`, `Y-m-d\TH:i` for `datetime-local`, `H:i` for `time`); backed enums use their value.
+- Array errors (`tags.*`) are shown on `name="tags[]"` when there is no `tags` message.
+MD,
+            'props' => [
+                'ui.input' => [
+                    'model' => 'Model, array or object the value is read from by `name` (with `data_get`, so dot names work). Also turns on the inline error.',
+                    'bind' => 'Show the field\'s validation error and `aria-invalid` without a model (`bind`), or hide them with a model (`:bind="false"`).',
+                    'error-bag' => 'Error bag to read messages from, e.g. `login` for `$request->validateWithBag(\'login\', ...)`.',
+                ],
+                'ui.textarea' => [
+                    'model' => 'Model, array or object the value is read from by `name` (with `data_get`, so dot names work). Also turns on the inline error.',
+                    'bind' => 'Show the field\'s validation error and `aria-invalid` without a model (`bind`), or hide them with a model (`:bind="false"`).',
+                    'error-bag' => 'Error bag to read messages from, e.g. `login` for `$request->validateWithBag(\'login\', ...)`.',
+                ],
+                'ui.select' => [
+                    'model' => 'Model, array or object the value is read from by `name` (with `data_get`, so dot names work). Also turns on the inline error.',
+                    'bind' => 'Show the field\'s validation error and `aria-invalid` without a model (`bind`), or hide them with a model (`:bind="false"`).',
+                    'error-bag' => 'Error bag to read messages from, e.g. `login` for `$request->validateWithBag(\'login\', ...)`.',
+                ],
+                'ui.native-select' => [
+                    'model' => 'Model, array or object the value is read from by `name` (with `data_get`, so dot names work). Also turns on the inline error.',
+                    'bind' => 'Show the field\'s validation error and `aria-invalid` without a model (`bind`), or hide them with a model (`:bind="false"`).',
+                    'error-bag' => 'Error bag to read messages from, e.g. `login` for `$request->validateWithBag(\'login\', ...)`.',
+                ],
+                'ui.checkbox' => [
+                    'model' => 'Model, array or object the value is read from by `name` (with `data_get`, so dot names work). Also turns on the inline error.',
+                    'bind' => 'Show the field\'s validation error and `aria-invalid` without a model (`bind`), or hide them with a model (`:bind="false"`).',
+                    'error-bag' => 'Error bag to read messages from, e.g. `login` for `$request->validateWithBag(\'login\', ...)`.',
+                ],
+                'ui.switch' => [
+                    'model' => 'Model, array or object the value is read from by `name` (with `data_get`, so dot names work). Also turns on the inline error.',
+                    'bind' => 'Show the field\'s validation error and `aria-invalid` without a model (`bind`), or hide them with a model (`:bind="false"`).',
+                    'error-bag' => 'Error bag to read messages from, e.g. `login` for `$request->validateWithBag(\'login\', ...)`.',
+                ],
+                'ui.radio-group' => [
+                    'model' => 'Model, array or object the value is read from by `name` (with `data_get`, so dot names work). Also turns on the inline error.',
+                    'bind' => 'Show the field\'s validation error and `aria-invalid` without a model (`bind`), or hide them with a model (`:bind="false"`).',
+                    'error-bag' => 'Error bag to read messages from, e.g. `login` for `$request->validateWithBag(\'login\', ...)`.',
+                ],
+            ],
+        ],
+
+        'flash-toaster' => [
+            'title' => 'Flash Toaster',
+            'group' => 'Laravel',
+            'description' => 'Turns session flash messages (and, optionally, validation errors) into toasts.',
+            'components' => ['ui.flash-toaster'],
+            'examples' => [
+                'default' => ['title' => 'Flash messages', 'description' => 'A preview of what each flash key looks like. Use it in your layout in place of `<x-ui.toaster>`.'],
+                'validation' => ['title' => 'Validation errors', 'description' => 'With `validation`, failed validation shows each message (`true`), the first one (`"first"`) or one summary toast (`"summary"`).'],
+            ],
+            'anatomy' => <<<'BLADE'
+{{-- layouts/app.blade.php, once, before @stack('scripts') --}}
+<x-ui.flash-toaster />                       {{-- or :validation="true" / validation="first" / validation="summary" --}}
+
+{{-- any controller --}}
+return back()->with('success', 'Profile updated.');
+return redirect()->route('login')->with('status', __($status));
+return back()->with('error', ['message' => 'Payment failed', 'description' => 'Your card was declined.']);
+BLADE,
+            'notes' => <<<'MD'
+- Reads `session('success')`, `session('error')`, `session('warning')`, `session('info')` and `session('status')` (shown as success). Change the list with `keys` and the toast type per key with `types`, e.g. `:types="['status' => 'info']"`.
+- A flash value may be a string, an array with `message` / `description` (and any other toast option), or a list of those.
+- `session('toast')` keeps working (set `toast` to another key, or `null` to ignore it).
+- It renders `<x-ui.toaster>`, so `toast()`, `toast.success()` and `$dispatch('toast', ...)` work as usual. Don't add a second toaster.
+MD,
+            'props' => [
+                'ui.flash-toaster' => [
+                    'keys' => 'Session keys to read, in order.',
+                    'types' => 'Toast type per session key, merged over `success/error/warning/info` and `status => success`.',
+                    'toast' => 'Extra session key holding ready-made toasts (the `<x-ui.toaster :flash>` convention). `null` to skip.',
+                    'validation' => '`false` (default), `true` for one toast per message, `"first"` or `"summary"`.',
+                    'error-bag' => 'Error bag used by `validation`.',
+                    'error-title' => 'Title for validation toasts; the message then becomes the description.',
+                    'position' => 'Passed to `<x-ui.toaster>`.',
+                    'duration' => 'Passed to `<x-ui.toaster>`.',
+                    'max' => 'Passed to `<x-ui.toaster>`.',
+                    'class' => 'Extra classes for the toaster.',
+                ],
+            ],
+        ],
+
+        'confirm-delete' => [
+            'title' => 'Confirm Delete',
+            'group' => 'Laravel',
+            'description' => 'An alert dialog wrapping a DELETE form with CSRF, for destructive actions.',
+            'components' => ['ui.confirm-delete'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'Renders `<form method="POST">` with `@csrf` and `@method(\'DELETE\')`; the destructive button submits it.'],
+                'typed' => ['title' => 'Typed confirmation', 'description' => 'With `confirmation`, the button stays disabled (and Enter does nothing) until the text is typed exactly.'],
+                'custom' => ['title' => 'Custom trigger and method', 'description' => 'Replace the button with `<x-slot:trigger>`; the default slot goes in the dialog body, inside the form (extra fields, a warning…).'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.confirm-delete :action="route('projects.destroy', $project)"
+    title="Delete this project?" description="This cannot be undone." confirm-text="Delete project"
+    :confirmation="$project->slug" />
+BLADE,
+            'notes' => <<<'MD'
+- `method` is spoofed with `@method` for anything other than GET / POST; GET forms get no CSRF field.
+- Extra attributes (e.g. `id`, `onsubmit`, `wire:submit`) go on the `<form>`.
+- Built from `alert-dialog`: focus is trapped, <kbd>Esc</kbd> cancels, and clicking outside does nothing.
+MD,
+            'props' => [
+                'ui.confirm-delete' => [
+                    'action' => 'Form action URL.',
+                    'method' => 'HTTP method: `DELETE` (default), `PATCH`, `PUT`, `POST` or `GET`.',
+                    'title' => 'Dialog title.',
+                    'description' => 'Dialog description.',
+                    'trigger' => 'Text of the default trigger button (or a `<x-slot:trigger>` replacing it).',
+                    'trigger-variant' => 'Button variant of the default trigger.',
+                    'trigger-size' => 'Button size of the default trigger.',
+                    'confirm-text' => 'Text of the destructive submit button.',
+                    'cancel-text' => 'Text of the cancel button.',
+                    'confirmation' => 'Text the user must type to enable the submit button.',
+                    'confirmation-label' => 'Label for the confirmation input. Defaults to "Type … to confirm."',
+                    'confirmation-name' => 'Name for the confirmation input, if you also want it submitted.',
+                    'open' => 'Render the dialog open.',
+                    'class' => 'Extra classes for the form.',
+                ],
+            ],
+        ],
+
+        'livewire' => [
+            'title' => 'Livewire',
+            'group' => 'Laravel',
+            'description' => 'Use wire:model on BladeCN controls. Livewire is optional and never required by the package.',
+            'components' => [],
+            'intro' => <<<'MD'
+Native controls (`input`, `textarea`, `select`, `native-select`, `checkbox`) render a real form element, so `wire:model` (with any modifier) lands on it directly. Alpine-driven controls (`switch`, `combobox`, `date-picker`, `slider`, `input-tags`) keep their state in Alpine and expose it with `x-modelable`, which Livewire 3 entangles with `wire:model` automatically.
+MD,
+            'examples' => [
+                'default' => ['title' => 'Alpine-driven controls', 'description' => 'This static site has no Livewire, so the preview binds with `x-model`; `wire:model` binds through the same `x-modelable` state.', 'preview' => 'block'],
+                'native' => ['title' => 'Native controls', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+{{-- app/Livewire/EditPost.php --}}
+public bool $published = false;
+public ?string $category = null;
+public ?string $publishAt = null;
+public int $priority = 3;
+public array $tags = [];
+
+{{-- resources/views/livewire/edit-post.blade.php --}}
+<x-ui.input wire:model.blur="title" />
+<x-ui.native-select wire:model.live="status">...</x-ui.native-select>
+<x-ui.switch wire:model.live="published" />
+<x-ui.combobox wire:model="category" :options="$categories" />
+<x-ui.date-picker wire:model="publishAt" />
+<x-ui.slider wire:model.live.debounce.300ms="priority" :min="1" :max="5" />
+<x-ui.input-tags wire:model="tags">Tags</x-ui.input-tags>
+BLADE,
+            'notes' => <<<'MD'
+- Every `wire:model*` attribute (`.live`, `.blur`, `.debounce.500ms`, …) is forwarded to the element that owns the value; other attributes (`wire:key`, `wire:loading`, …) go where they always did.
+- With `wire:model`, Alpine-driven controls get `wire:ignore` so Livewire's DOM morph doesn't overwrite markup Alpine renders (the selected label, hidden inputs). The value still syncs both ways. Pass `wire:ignore.self` yourself to let Livewire re-render the children (e.g. when `:options` change).
+- They also dispatch `input` and `change` events with the new value as `detail`, so `x-on:change="..."` / `wire:change` listeners and older `wire:model` implementations see updates.
+- `input-tags` switches to an Alpine version when it has `wire:model` or `x-model`: the bound value is an array of strings, and with `name` each tag is submitted as `name[]`. Without them it renders exactly as before.
+- Server-side binding (`:model`, `old()`) is skipped for fields with `wire:model` or `x-model`.
+- Nothing references Livewire classes; the package works the same without it.
+MD,
+        ],
     ],
 ];

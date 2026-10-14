@@ -7,9 +7,16 @@
 
 @php
     $groupId = uniqid('radio-group-');
+
+    // Laravel form binding (see BladeCN\BladeCN\Support\FormField): old input, then `model`, then `value`.
+    if (! \BladeCN\BladeCN\Support\FormField::isModelBound($attributes)) {
+        $value = (string) \BladeCN\BladeCN\Support\FormField::toString(\BladeCN\BladeCN\Support\FormField::value($name, $model ?? null, $value));
+    }
+    [, $fieldError, $fieldErrorId] = \BladeCN\BladeCN\Support\FormField::withError(new \Illuminate\View\ComponentAttributeBag, (string) \BladeCN\BladeCN\Support\FormField::key($name), ($model ?? null) !== null || ($bind ?? null) === true, $errorBag ?? 'default', $bind ?? null);
+    $name = \BladeCN\BladeCN\Support\FormField::htmlName($name);
 @endphp
 
-<div class="flex gap-0 -space-x-px rounded-md shadow-xs {{ $class }}" data-radio-group="{{ $groupId }}" data-name="{{ $name }}" data-value="{{ $value }}">
+<div class="flex gap-0 -space-x-px rounded-md shadow-xs {{ $class }}" data-radio-group="{{ $groupId }}" data-name="{{ $name }}" data-value="{{ $value }}"@if ($fieldError) role="radiogroup" aria-invalid="true" aria-describedby="{{ $fieldErrorId }}"@endif>
     @foreach($options as $index => $option)
         @php
             $optionValue = is_array($option) ? ($option['value'] ?? $option) : $option;
@@ -34,6 +41,9 @@
         </label>
     @endforeach
 </div>
+@if ($fieldError)
+    <x-ui.field-error :id="$fieldErrorId" class="mt-2">{{ $fieldError }}</x-ui.field-error>
+@endif
 
 @pushOnce('scripts')
 <script>
