@@ -1861,5 +1861,218 @@ BLADE,
                 'default' => ['title' => 'All icons', 'preview' => 'block', 'description' => 'Every file in `resources/views/components/icons`. Use as `<x-icons.name class="size-4" />`; attributes are forwarded to the `<svg>`.'],
             ],
         ],
+
+        'data-table' => [
+            'title' => 'Data Table',
+            'description' => 'A server-driven table for a Laravel paginator or collection: sortable headers, search, column visibility, row selection with bulk actions and pagination.',
+            'components' => ['ui.data-table'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'Sorting and search are plain links / a GET form (`?search=&sort=&direction=`), so your controller does the querying. Column visibility and selection are Alpine. Select rows to reveal the bulk actions.', 'preview' => 'block'],
+                'empty' => ['title' => 'Empty state', 'description' => 'Rendered when there are no rows; use the `empty` slot or `empty-message`.', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.data-table :rows="$users" :columns="[
+    ['key' => 'name', 'label' => 'Name', 'sortable' => true, 'hideable' => false],
+    ['key' => 'email', 'label' => 'Email', 'sortable' => true],
+    ['key' => 'created_at', 'label' => 'Joined', 'format' => fn ($date) => $date->diffForHumans()],
+]" selectable form="bulk">
+    <x-slot:toolbar>...</x-slot:toolbar>
+    <x-slot:bulk-actions>...</x-slot:bulk-actions>
+    <x-slot:empty>...</x-slot:empty>
+</x-ui.data-table>
+BLADE,
+            'composition' => <<<'MD'
+- Built from `table`, `table-*`, `input`, `button` and `pagination`.
+- A column is `'key' => 'Label'` or an array with `key`, `label`, `sortable`, `hideable` (default `true`), `hidden` (start hidden), `class`, `headerClass` and `format` (`fn ($value, $row)`; return an `HtmlString` to output HTML). Values are read with `data_get()`, so `'author.name'` works for relations and arrays.
+- A controller for it:
+
+```php
+$users = User::query()
+    ->when($request->search, fn ($q, $s) => $q->where('name', 'like', "%{$s}%"))
+    ->orderBy(in_array($request->sort, ['name', 'email']) ? $request->sort : 'name', $request->direction === 'desc' ? 'desc' : 'asc')
+    ->paginate(15);
+```
+MD,
+            'props' => [
+                'ui.data-table' => [
+                    'rows' => 'A `LengthAwarePaginator` / `Paginator`, a `Collection` or an array of rows (models or arrays). Paginators get `withQueryString()` and the pagination footer.',
+                    'columns' => 'Column definitions (see Composition).',
+                    'row-key' => 'Attribute used as the row id for selection (`data_get`), falls back to the row index.',
+                    'searchable' => 'Show the search form.',
+                    'search-param' => 'Query parameter of the search input.',
+                    'search-placeholder' => 'Placeholder and accessible label of the search input.',
+                    'sort-param' => 'Query parameter holding the sorted column key.',
+                    'direction-param' => 'Query parameter holding `asc` / `desc`.',
+                    'action' => 'URL the search form submits to. Defaults to the current URL; other query parameters (except `page`) are kept.',
+                    'selectable' => 'Add a checkbox column with select-all.',
+                    'select-name' => 'Name of the row checkboxes (submitted as `name[]`).',
+                    'form' => 'Id of a `<form>` the row checkboxes belong to (HTML `form` attribute), so bulk-action buttons can submit the selection from anywhere.',
+                    'column-toggle' => 'Show the "Columns" visibility menu (for hideable columns).',
+                    'storage-key' => 'When set, hidden columns are remembered in `localStorage` under this key.',
+                    'empty-message' => 'Text shown when there are no rows and no `empty` slot.',
+                    'on-each-side' => 'Page links on each side of the current page.',
+                    'class' => 'Extra classes for the wrapper.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- Sort headers are links with `aria-sort` and toggle `asc` → `desc`; sorting resets `page`. Only whitelist sortable columns in your query.
+- The `bulk-actions` slot appears while rows are selected and sees the Alpine `selected` array (row keys), e.g. `x-text="selected.length"`.
+- Selected rows get `data-state="selected"`; the select-all checkbox becomes indeterminate for a partial selection.
+- The search form is a sibling of the table (forms can't nest), which is why row checkboxes join your bulk form through `form="..."`.
+MD,
+        ],
+
+        'file-dropzone' => [
+            'title' => 'File Dropzone',
+            'description' => 'Multi-file drag-and-drop upload with previews, validation and optional upload progress that works with a normal multipart form.',
+            'components' => ['ui.file-dropzone'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'Drop or pick files: images get a thumbnail, files can be removed, and the hidden `<input type="file">` always holds the current list.', 'preview' => 'block'],
+                'single' => ['title' => 'Single file', 'description' => 'With `:multiple="false"` a new file replaces the current one.', 'preview' => 'block'],
+            ],
+            'composition' => <<<'MD'
+Put it in a regular form; nothing else is needed:
+
+```blade
+<form method="POST" action="{{ route('attachments.store') }}" enctype="multipart/form-data">
+    @csrf
+    <x-ui.file-dropzone name="attachments" accept="image/*,.pdf" :max-files="5" :max-size="10" progress />
+    <x-ui.button type="submit">Upload</x-ui.button>
+</form>
+```
+
+```php
+$request->validate(['attachments' => 'array|max:5', 'attachments.*' => 'file|mimes:jpg,png,pdf|max:10240']);
+```
+MD,
+            'props' => [
+                'ui.file-dropzone' => [
+                    'name' => 'Input name. `[]` is appended automatically when `multiple`.',
+                    'id' => 'Id of the file input (random when omitted).',
+                    'multiple' => 'Allow several files.',
+                    'accept' => 'Accepted types, same syntax as the `accept` attribute (`image/*`, `.pdf`, `application/zip`).',
+                    'max-files' => 'Maximum number of files.',
+                    'max-size' => 'Maximum size per file, in MB.',
+                    'disabled' => 'Disable the dropzone.',
+                    'required' => 'Mark the file input as required.',
+                    'label' => 'Optional label above the dropzone.',
+                    'description' => 'Hint under the prompt. Defaults to a summary of `accept`, `max-size` and `max-files`.',
+                    'progress' => 'Submit the enclosing form with XHR and show an upload progress bar. The HTML the server answers with (e.g. after a redirect) replaces the page.',
+                    'class' => 'Extra classes for the wrapper.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- Files are synced into the real file input with `DataTransfer`, so the browser submits exactly the listed files.
+- Rejected files (type, size, count) are listed in a `role="alert"` region. Client-side checks are a convenience: validate on the server too.
+- The drop area is a keyboard-focusable `role="button"` (<kbd>Enter</kbd> / <kbd>Space</kbd> opens the picker); each file has a labelled remove button.
+- Events: `dropzone-change` (`detail.files`) after every change and `dropzone-uploaded` (`detail.status`, `detail.response`) after a `progress` upload. Resetting the form clears the list.
+MD,
+        ],
+
+        'sidebar' => [
+            'title' => 'Sidebar',
+            'description' => 'Composable, themeable sidebar primitives: collapsible to icons or off-canvas, a sheet on mobile, with persisted state.',
+            'components' => [
+                'ui.sidebar-provider', 'ui.sidebar', 'ui.sidebar-header', 'ui.sidebar-content', 'ui.sidebar-footer',
+                'ui.sidebar-group', 'ui.sidebar-group-label', 'ui.sidebar-group-content', 'ui.sidebar-separator',
+                'ui.sidebar-menu', 'ui.sidebar-menu-item', 'ui.sidebar-menu-button',
+                'ui.sidebar-menu-sub', 'ui.sidebar-menu-sub-item', 'ui.sidebar-menu-sub-button',
+                'ui.sidebar-trigger', 'ui.sidebar-inset',
+            ],
+            'examples' => [
+                'default' => ['title' => 'Collapsible to icons', 'description' => 'Click the trigger (or press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>B</kbd>): the sidebar shrinks to icons and remembers it. On small screens it opens as a sheet.', 'preview' => 'block'],
+                'floating' => ['title' => 'Floating, off-canvas', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.sidebar-provider>
+    <x-ui.sidebar collapsible="icon">
+        <x-ui.sidebar-header>...</x-ui.sidebar-header>
+        <x-ui.sidebar-content>
+            <x-ui.sidebar-group>
+                <x-ui.sidebar-group-label>Platform</x-ui.sidebar-group-label>
+                <x-ui.sidebar-group-content>
+                    <x-ui.sidebar-menu>
+                        <x-ui.sidebar-menu-item>
+                            <x-ui.sidebar-menu-button href="/dashboard" :is-active="request()->routeIs('dashboard')" tooltip="Dashboard">
+                                <x-icons.layout-grid />
+                                <span>Dashboard</span>
+                            </x-ui.sidebar-menu-button>
+                            <x-ui.sidebar-menu-sub>
+                                <x-ui.sidebar-menu-sub-item>
+                                    <x-ui.sidebar-menu-sub-button href="...">...</x-ui.sidebar-menu-sub-button>
+                                </x-ui.sidebar-menu-sub-item>
+                            </x-ui.sidebar-menu-sub>
+                        </x-ui.sidebar-menu-item>
+                    </x-ui.sidebar-menu>
+                </x-ui.sidebar-group-content>
+            </x-ui.sidebar-group>
+        </x-ui.sidebar-content>
+        <x-ui.sidebar-footer>...</x-ui.sidebar-footer>
+    </x-ui.sidebar>
+
+    <x-ui.sidebar-inset>
+        <header><x-ui.sidebar-trigger /></header>
+        ...
+    </x-ui.sidebar-inset>
+</x-ui.sidebar-provider>
+BLADE,
+            'composition' => <<<'MD'
+- `sidebar-provider` owns the Alpine state (`open`, `openMobile`, `isMobile`, `toggleSidebar()`), so `sidebar-trigger` can live anywhere inside it.
+- Wrap a menu item in `<x-ui.collapsible>` for expandable sub-menus; use `<x-ui.sidebar-menu-button tag="span">` inside the `collapsible-trigger` to avoid nesting buttons.
+- These primitives are independent of the installer's `<x-layout.app-sidebar>`, which is unchanged.
+MD,
+            'props' => [
+                'ui.sidebar-provider' => [
+                    'default-open' => 'Initial desktop state when nothing is persisted yet.',
+                    'open' => 'Force the initial state (ignores the cookie).',
+                    'storage-key' => 'Cookie and `localStorage` key for the expanded / collapsed state. Pass an empty string to disable persistence.',
+                    'width' => 'Desktop width (`--sidebar-width`).',
+                    'width-icon' => 'Width in icon mode (`--sidebar-width-icon`).',
+                    'width-mobile' => 'Width of the mobile sheet (`--sidebar-width-mobile`).',
+                    'keyboard-shortcut' => 'Key that toggles the sidebar with <kbd>Ctrl</kbd>/<kbd>⌘</kbd>; `null` disables it.',
+                    'class' => 'Extra classes for the wrapper.',
+                ],
+                'ui.sidebar' => [
+                    'side' => '`left` or `right`.',
+                    'variant' => '`sidebar`, `floating` or `inset`.',
+                    'collapsible' => '`offcanvas` (slides out), `icon` (shrinks to icons) or `none`.',
+                    'label' => 'Accessible name of the navigation landmark / mobile dialog.',
+                    'class' => 'Extra classes for the fixed sidebar container.',
+                ],
+                'ui.sidebar-header' => ['class' => 'Extra classes.'],
+                'ui.sidebar-content' => ['class' => 'Extra classes for the scrollable area.'],
+                'ui.sidebar-footer' => ['class' => 'Extra classes.'],
+                'ui.sidebar-group' => ['class' => 'Extra classes.'],
+                'ui.sidebar-group-label' => ['class' => 'Extra classes. Hidden in icon mode.'],
+                'ui.sidebar-group-content' => ['class' => 'Extra classes.'],
+                'ui.sidebar-separator' => ['class' => 'Extra classes.'],
+                'ui.sidebar-menu' => ['class' => 'Extra classes for the `<ul>`.'],
+                'ui.sidebar-menu-item' => ['class' => 'Extra classes for the `<li>`.'],
+                'ui.sidebar-menu-button' => [
+                    'href' => 'Renders an `<a>` when set, otherwise a `<button>`.',
+                    'tag' => 'Override the element (e.g. `span` inside a collapsible trigger).',
+                    'is-active' => 'Highlight the item (`data-active`, plus `aria-current="page"` on links).',
+                    'size' => '`default`, `sm` or `lg`.',
+                    'variant' => '`default` or `outline`.',
+                    'tooltip' => 'Text shown as a tooltip when the sidebar is collapsed to icons.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.sidebar-menu-sub' => ['class' => 'Extra classes. Hidden in icon mode.'],
+                'ui.sidebar-menu-sub-item' => ['class' => 'Extra classes.'],
+                'ui.sidebar-menu-sub-button' => [
+                    'href' => 'Renders an `<a>` when set, otherwise a `<button>`.',
+                    'is-active' => 'Highlight the item.',
+                    'size' => '`sm` or `md`.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.sidebar-trigger' => ['class' => 'Extra classes for the ghost icon button.'],
+                'ui.sidebar-inset' => ['class' => 'Extra classes for the `<main>` content area.'],
+            ],
+            'notes' => <<<'MD'
+- State is saved in a `sidebar_state` cookie (7 days) and `localStorage`. The provider reads the cookie on the server to render the right state without a flash; add `sidebar_state` to `EncryptCookies` exceptions (`$middleware->encryptCookies(except: ['sidebar_state'])` in `bootstrap/app.php`) so Laravel can read it.
+- Below `md` the sidebar becomes a sheet: `role="dialog"`, `aria-modal`, overlay, focus trap (`x-trap`, from `@alpinejs/focus`) and <kbd>Esc</kbd> to close.
+- Uses the `--sidebar*` colour tokens, so it follows dark mode. The trigger exposes `aria-expanded`; active links get `aria-current="page"`.
+MD,
+        ],
     ],
 ];
