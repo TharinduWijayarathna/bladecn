@@ -2,6 +2,39 @@
 
 All notable changes to `bladecn/bladecn` will be documented in this file.
 
+## v1.1 - 2026-10-14
+
+### What's new
+
+#### Components
+
+- **Data Table**: works with a Laravel paginator or collection, with sortable headers, search, column visibility, row selection with bulk actions, and pagination (#16)
+- **File Dropzone** (#16)
+- **Sidebar**: 17 primitives covering a collapsible sidebar, a mobile sheet, and a floating variant (#16)
+- **Carousel, Drawer, Navigation Menu, Menubar, Resizable** (#17)
+- **Line, Bar and Area charts** (#17)
+- **Stepper, Timeline, Sortable, Kanban, Rating, Tree View, Rich Text Editor, Code Block, Date Range Picker** (#18)
+
+#### Laravel-native (#19)
+
+- Model-bound form fields: `:model` and `old()` fill them in automatically
+- Flash Toaster, which turns `session()->flash()` into toasts
+- Confirm Delete dialog
+- Livewire-safe controls (`wire:model` is forwarded and `wire:ignore` is applied where it's needed)
+
+#### Fixes
+
+- Data Table cells, headers and the footer summary no longer wrap
+- Kanban columns flex to fit their container
+- Popovers and Navigation Menu panels shift to stay inside the viewport
+- Date Range Picker fits on small screens
+
+#### Upgrade note
+
+- Sidebar keeps its state in a `sidebar_state` cookie. Add it to the cookie encryption exceptions: `$middleware->encryptCookies(except: ['sidebar_state'])` in `bootstrap/app.php`.
+
+**Full changelog**: https://github.com/TharinduWijayarathna/bladecn/compare/v1.0...v1.1
+
 ## Unreleased
 
 ### Added
