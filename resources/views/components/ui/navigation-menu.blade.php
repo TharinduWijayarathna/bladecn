@@ -15,6 +15,20 @@
         navEl: null,
         // Items have their own x-data scope, so keep a handle on the <nav> instead of using $root / $refs.
         init() { this.navEl = this.$el },
+        // Nudge an open panel sideways so it stays inside the viewport (the enter transition scales from the centre).
+        fit(panel) {
+            panel.style.marginLeft = '0px';
+            const rect = panel.getBoundingClientRect();
+            const centre = (rect.left + rect.right) / 2;
+            const left = centre - panel.offsetWidth / 2;
+            const right = centre + panel.offsetWidth / 2;
+            const gutter = 8;
+            const viewport = document.documentElement.clientWidth;
+            let shift = 0;
+            if (right > viewport - gutter) shift = viewport - gutter - right;
+            if (left + shift < gutter) shift = gutter - left;
+            if (shift) panel.style.marginLeft = shift + 'px';
+        },
         open(value, delay = 0) {
             clearTimeout(this.timer);
             // Once a menu is open, moving to another trigger switches instantly.
