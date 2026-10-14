@@ -1830,6 +1830,353 @@ BLADE,
             ],
         ],
 
+        'carousel' => [
+            'title' => 'Carousel',
+            'description' => 'A carousel with motion and swipe built on native CSS scroll-snap and Alpine.js.',
+            'components' => ['ui.carousel', 'ui.carousel-content', 'ui.carousel-item', 'ui.carousel-previous', 'ui.carousel-next', 'ui.carousel-dots'],
+            'examples' => [
+                'default' => 'Default',
+                'sizes' => ['title' => 'Sizes', 'description' => 'Set a `basis-*` class on `carousel-item` to show several slides at once.'],
+                'orientation' => ['title' => 'Orientation', 'description' => 'Use `orientation="vertical"` and give `carousel-content` a height.'],
+                'autoplay' => ['title' => 'Autoplay & dots', 'description' => '`autoplay` advances every _n_ ms (paused on hover / focus and when the visitor prefers reduced motion); `carousel-dots` shows one dot per slide.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.carousel>
+    <x-ui.carousel-content>
+        <x-ui.carousel-item>...</x-ui.carousel-item>
+        <x-ui.carousel-item>...</x-ui.carousel-item>
+    </x-ui.carousel-content>
+    <x-ui.carousel-previous />
+    <x-ui.carousel-next />
+    <x-ui.carousel-dots />
+</x-ui.carousel>
+BLADE,
+            'notes' => <<<'MD'
+- Scrolling is native: touch swipe, trackpads and the mouse wheel work out of the box, and slides snap with `scroll-snap`.
+- Slides are spaced by a 1rem gutter (`pl-4` / `pt-4` on each item, `-ml-4` / `-mt-4` on the content).
+- `role="region"` with `aria-roledescription="carousel"`; slides are `role="group"` labelled "n of m". <kbd>←</kbd>/<kbd>→</kbd> (<kbd>↑</kbd>/<kbd>↓</kbd> when vertical), <kbd>Home</kbd> and <kbd>End</kbd> move between slides while focus is inside.
+- Previous / next are disabled at the ends unless `loop` is set.
+MD,
+            'props' => [
+                'ui.carousel' => [
+                    'orientation' => '`horizontal` or `vertical`.',
+                    'loop' => 'Wrap around from the last slide to the first (and back).',
+                    'autoplay' => 'Advance automatically every this many milliseconds. `0` turns it off.',
+                    'label' => 'Accessible name of the carousel region.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.carousel-content' => ['class' => 'Extra classes for the scrolling viewport (e.g. a height when vertical).'],
+                'ui.carousel-item' => ['class' => 'Extra classes, e.g. `basis-1/3` to show three slides.'],
+                'ui.carousel-previous' => ['variant' => 'Button variant.', 'size' => 'Button size.', 'class' => 'Extra classes.'],
+                'ui.carousel-next' => ['variant' => 'Button variant.', 'size' => 'Button size.', 'class' => 'Extra classes.'],
+                'ui.carousel-dots' => ['class' => 'Extra classes for the dot row.'],
+            ],
+        ],
+
+        'drawer' => [
+            'title' => 'Drawer',
+            'description' => 'A panel that slides in from the edge of the screen, with a drag-to-close handle on touch devices.',
+            'components' => ['ui.drawer', 'ui.drawer-trigger', 'ui.drawer-content', 'ui.drawer-header', 'ui.drawer-title', 'ui.drawer-description', 'ui.drawer-footer', 'ui.drawer-close'],
+            'examples' => [
+                'default' => 'Default',
+                'directions' => ['title' => 'Directions', 'description' => 'Set `direction` on the root to `top`, `right`, `bottom` (default) or `left`.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.drawer>
+    <x-ui.drawer-trigger>Open</x-ui.drawer-trigger>
+    <x-ui.drawer-content>
+        <x-ui.drawer-header>
+            <x-ui.drawer-title>...</x-ui.drawer-title>
+            <x-ui.drawer-description>...</x-ui.drawer-description>
+        </x-ui.drawer-header>
+        ...
+        <x-ui.drawer-footer>
+            <x-ui.drawer-close>Cancel</x-ui.drawer-close>
+        </x-ui.drawer-footer>
+    </x-ui.drawer-content>
+</x-ui.drawer>
+BLADE,
+            'composition' => 'The root holds an Alpine `open` state (bind it with `x-model`). Any element inside can close the drawer with `x-on:click="open = false"`.',
+            'notes' => <<<'MD'
+- Drag the handle (or, on touch screens, the header) towards the edge to close: past 30% of the drawer, or with a quick flick, it closes; otherwise it springs back.
+- `role="dialog"` with `aria-modal`, labelled by the title and described by the description. Focus is trapped while open (`x-trap.inert.noscroll`, from `@alpinejs/focus`) and returns to the trigger.
+- <kbd>Esc</kbd> or clicking the overlay closes it, unless `:dismissible="false"`.
+MD,
+            'props' => [
+                'ui.drawer' => [
+                    'open' => 'Initial open state.',
+                    'direction' => '`bottom`, `top`, `left` or `right`.',
+                    'dismissible' => 'Whether Esc, the overlay and dragging close the drawer.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.drawer-trigger' => ['variant' => 'Button variant.', 'size' => 'Button size.', 'class' => 'Extra classes.'],
+                'ui.drawer-content' => [
+                    'handle' => 'Show the grab handle. Defaults to `true` for bottom drawers.',
+                    'class' => 'Extra classes for the panel.',
+                ],
+                'ui.drawer-header' => ['class' => 'Extra classes.'],
+                'ui.drawer-title' => ['class' => 'Extra classes.'],
+                'ui.drawer-description' => ['class' => 'Extra classes.'],
+                'ui.drawer-footer' => ['class' => 'Extra classes.'],
+                'ui.drawer-close' => ['variant' => 'Button variant.', 'size' => 'Button size.', 'class' => 'Extra classes.'],
+            ],
+        ],
+
+        'menubar' => [
+            'title' => 'Menubar',
+            'description' => 'A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands.',
+            'components' => [
+                'ui.menubar', 'ui.menubar-menu', 'ui.menubar-trigger', 'ui.menubar-content', 'ui.menubar-item', 'ui.menubar-checkbox-item',
+                'ui.menubar-radio-group', 'ui.menubar-radio-item', 'ui.menubar-label', 'ui.menubar-separator', 'ui.menubar-shortcut',
+                'ui.menubar-sub', 'ui.menubar-sub-trigger', 'ui.menubar-sub-content',
+            ],
+            'examples' => [
+                'default' => 'Default',
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.menubar>
+    <x-ui.menubar-menu>
+        <x-ui.menubar-trigger>File</x-ui.menubar-trigger>
+        <x-ui.menubar-content>
+            <x-ui.menubar-item>New <x-ui.menubar-shortcut>⌘N</x-ui.menubar-shortcut></x-ui.menubar-item>
+            <x-ui.menubar-separator />
+            <x-ui.menubar-checkbox-item checked>...</x-ui.menubar-checkbox-item>
+            <x-ui.menubar-radio-group value="a">
+                <x-ui.menubar-radio-item value="a">...</x-ui.menubar-radio-item>
+            </x-ui.menubar-radio-group>
+            <x-ui.menubar-sub>
+                <x-ui.menubar-sub-trigger>...</x-ui.menubar-sub-trigger>
+                <x-ui.menubar-sub-content>...</x-ui.menubar-sub-content>
+            </x-ui.menubar-sub>
+        </x-ui.menubar-content>
+    </x-ui.menubar-menu>
+</x-ui.menubar>
+BLADE,
+            'notes' => <<<'MD'
+- Items share the look and keyboard model of the dropdown / context menu: `menuitem`, `menuitemcheckbox` and `menuitemradio` roles, <kbd>↑</kbd>/<kbd>↓</kbd>/<kbd>Home</kbd>/<kbd>End</kbd> and typeahead.
+- The bar is a `role="menubar"` with a roving tab stop: <kbd>←</kbd>/<kbd>→</kbd> move between menus (and switch the open one), <kbd>↓</kbd>/<kbd>Enter</kbd> open a menu, <kbd>→</kbd> opens a sub menu and <kbd>←</kbd> closes it, <kbd>Esc</kbd> closes and returns focus.
+- Once a menu is open, hovering another trigger switches to it.
+- Checkbox items and radio groups keep their state in Alpine (`checked` / `selected`), so they work with `x-model`.
+MD,
+            'props' => [
+                'ui.menubar' => ['class' => 'Extra classes for the bar.'],
+                'ui.menubar-menu' => ['value' => 'Identifier of the menu. Generated when omitted.', 'class' => 'Extra classes.'],
+                'ui.menubar-trigger' => ['class' => 'Extra classes.'],
+                'ui.menubar-content' => ['align' => '`start` or `end` edge of the trigger to align to.', 'class' => 'Extra classes for the menu.'],
+                'ui.menubar-item' => [
+                    'href' => 'Render a link.',
+                    'variant' => '`default` or `destructive`.',
+                    'inset' => 'Indent to line up with checkbox / radio items.',
+                    'disabled' => 'Disable the item.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.menubar-checkbox-item' => ['checked' => 'Initial checked state.', 'disabled' => 'Disable the item.', 'class' => 'Extra classes.'],
+                'ui.menubar-radio-group' => ['value' => 'Initially selected value.', 'class' => 'Extra classes.'],
+                'ui.menubar-radio-item' => [
+                    'value' => 'Value selected by this item.',
+                    'checked' => 'Server-rendered checked state (match it to the group\'s `value`).',
+                    'disabled' => 'Disable the item.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.menubar-label' => ['inset' => 'Indent the label.', 'class' => 'Extra classes.'],
+                'ui.menubar-separator' => ['class' => 'Extra classes.'],
+                'ui.menubar-shortcut' => ['class' => 'Extra classes.'],
+                'ui.menubar-sub' => ['class' => 'Extra classes.'],
+                'ui.menubar-sub-trigger' => ['inset' => 'Indent the trigger.', 'class' => 'Extra classes.'],
+                'ui.menubar-sub-content' => ['class' => 'Extra classes for the sub menu.'],
+            ],
+        ],
+
+        'navigation-menu' => [
+            'title' => 'Navigation Menu',
+            'description' => 'A collection of links for navigating websites, with dropdown panels.',
+            'components' => ['ui.navigation-menu', 'ui.navigation-menu-list', 'ui.navigation-menu-item', 'ui.navigation-menu-trigger', 'ui.navigation-menu-content', 'ui.navigation-menu-link'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.navigation-menu>
+    <x-ui.navigation-menu-list>
+        <x-ui.navigation-menu-item>
+            <x-ui.navigation-menu-trigger>...</x-ui.navigation-menu-trigger>
+            <x-ui.navigation-menu-content>
+                <x-ui.navigation-menu-link href="...">...</x-ui.navigation-menu-link>
+            </x-ui.navigation-menu-content>
+        </x-ui.navigation-menu-item>
+        <x-ui.navigation-menu-item>
+            <x-ui.navigation-menu-link href="..." variant="trigger">...</x-ui.navigation-menu-link>
+        </x-ui.navigation-menu-item>
+    </x-ui.navigation-menu-list>
+</x-ui.navigation-menu>
+BLADE,
+            'notes' => <<<'MD'
+- Panels open on hover (after `delay` ms) and on click; once one is open, moving to another trigger switches immediately. Leaving the menu closes it after `close-delay` ms.
+- `<nav>` landmark with a list of links. Triggers expose `aria-expanded` / `aria-controls`; <kbd>←</kbd>/<kbd>→</kbd>/<kbd>Home</kbd>/<kbd>End</kbd> move between top-level items, <kbd>↓</kbd> opens a panel and focuses its first link, <kbd>↑</kbd>/<kbd>↓</kbd> move inside it and <kbd>Esc</kbd> closes it.
+- `indicator` adds an arrow under the open trigger.
+MD,
+            'props' => [
+                'ui.navigation-menu' => [
+                    'delay' => 'Hover delay in ms before the first panel opens.',
+                    'close-delay' => 'Delay in ms before closing after the pointer leaves.',
+                    'indicator' => 'Show an arrow under the active trigger.',
+                    'label' => 'Accessible name of the `<nav>`.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.navigation-menu-list' => ['class' => 'Extra classes.'],
+                'ui.navigation-menu-item' => ['value' => 'Identifier of the item. Generated when omitted.', 'class' => 'Extra classes.'],
+                'ui.navigation-menu-trigger' => ['class' => 'Extra classes.'],
+                'ui.navigation-menu-content' => ['align' => '`start`, `center` or `end` relative to the item.', 'class' => 'Extra classes for the panel.'],
+                'ui.navigation-menu-link' => [
+                    'href' => 'Link target.',
+                    'active' => 'Mark as the current page (`aria-current="page"`).',
+                    'variant' => '`default` for links in a panel, `trigger` for a top-level link styled like a trigger.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+        ],
+
+        'resizable' => [
+            'title' => 'Resizable',
+            'description' => 'Accessible resizable panel groups and layouts with keyboard support.',
+            'components' => ['ui.resizable-panel-group', 'ui.resizable-panel', 'ui.resizable-handle'],
+            'examples' => [
+                'default' => 'Default',
+                'vertical' => ['title' => 'Vertical', 'description' => 'Use `direction="vertical"`.'],
+                'handle' => ['title' => 'Handle, limits & persistence', 'description' => '`with-handle` shows a grip, `min-size` / `max-size` limit each panel and `auto-save-id` remembers the layout in `localStorage`.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.resizable-panel-group direction="horizontal">
+    <x-ui.resizable-panel :default-size="50">...</x-ui.resizable-panel>
+    <x-ui.resizable-handle />
+    <x-ui.resizable-panel :default-size="50">...</x-ui.resizable-panel>
+</x-ui.resizable-panel-group>
+BLADE,
+            'notes' => <<<'MD'
+- Sizes are percentages of the group. Panels without a `default-size` share what is left; the server renders the default sizes so there is no layout shift.
+- Each handle is a focusable `role="separator"` with `aria-valuenow` / `aria-valuemin` / `aria-valuemax`. Drag it, or use <kbd>←</kbd>/<kbd>→</kbd> (<kbd>↑</kbd>/<kbd>↓</kbd> when vertical) to move it by `keyboard-step` percent and <kbd>Home</kbd>/<kbd>End</kbd> to jump to the limits.
+- Groups nest. A `resizable-change` event with `{ sizes }` is dispatched after every resize.
+MD,
+            'props' => [
+                'ui.resizable-panel-group' => [
+                    'direction' => '`horizontal` or `vertical`.',
+                    'auto-save-id' => 'Remember the sizes in `localStorage` under this key.',
+                    'keyboard-step' => 'Percent moved per arrow key press.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.resizable-panel' => [
+                    'default-size' => 'Initial size in percent.',
+                    'min-size' => 'Minimum size in percent.',
+                    'max-size' => 'Maximum size in percent.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.resizable-handle' => [
+                    'with-handle' => 'Show a visible grip.',
+                    'label' => 'Accessible name of the separator.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+        ],
+
+        'line-chart' => [
+            'title' => 'Line Chart',
+            'group' => 'Extras',
+            'description' => 'A responsive line chart rendered as SVG on the server, with an Alpine tooltip.',
+            'components' => ['charts.line'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'linear' => ['title' => 'Linear with dots', 'preview' => 'block', 'description' => '`curve="linear"`, `dots`, a custom colour and a `$` prefix; the y-axis and legend are hidden.'],
+            ],
+            'props' => [
+                'charts.line' => [
+                    'id' => 'Id of the chart element. Generated when omitted.',
+                    'labels' => 'X-axis labels, one per point.',
+                    'series' => 'Either `[\'Name\' => [values…]]` or a list of `[\'name\' => …, \'data\' => […], \'color\' => …]`. `null` values leave a gap.',
+                    'colors' => 'Colour per series (any CSS colour). Defaults to the theme\'s `--chart-1` … `--chart-5`.',
+                    'height' => 'Height in px; the width is fluid.',
+                    'curve' => '`smooth` (monotone, never overshoots), `linear` or `step`.',
+                    'dots' => 'Draw a dot on every point.',
+                    'grid' => 'Show horizontal grid lines.',
+                    'xAxis' => 'Show the x-axis labels (`:x-axis="false"` hides them).',
+                    'yAxis' => 'Show the y-axis labels (`:y-axis="false"` hides them).',
+                    'legend' => 'Show the legend.',
+                    'tooltip' => 'Show the hover / keyboard tooltip.',
+                    'prefix' => 'Text before values (e.g. `$`).',
+                    'suffix' => 'Text after values (e.g. `%`).',
+                    'label' => 'Accessible name of the chart.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- No JavaScript library: the chart is SVG computed in Blade, so it renders without JS and in emails / PDFs (the tooltip needs Alpine).
+- Colours are CSS variables (`--color-0`, `--color-1`, … on the root), defaulting to the theme's `--chart-*` tokens, so light and dark mode both work.
+- `role="figure"` with a screen-reader data table; focus the plot and use <kbd>←</kbd>/<kbd>→</kbd> to read values, which are announced.
+- Line, bar and area charts share one renderer, `<x-charts.cartesian>`.
+MD,
+        ],
+
+        'bar-chart' => [
+            'title' => 'Bar Chart',
+            'group' => 'Extras',
+            'description' => 'A responsive grouped or stacked bar chart rendered as SVG on the server, with an Alpine tooltip.',
+            'components' => ['charts.bar'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'stacked' => ['title' => 'Stacked', 'preview' => 'block', 'description' => 'Set `stacked` to stack the series.'],
+            ],
+            'props' => [
+                'charts.bar' => [
+                    'id' => 'Id of the chart element. Generated when omitted.',
+                    'labels' => 'X-axis labels, one per bar group.',
+                    'series' => 'Either `[\'Name\' => [values…]]` or a list of `[\'name\' => …, \'data\' => […], \'color\' => …]`. Negative values draw below zero.',
+                    'colors' => 'Colour per series (any CSS colour). Defaults to the theme\'s `--chart-1` … `--chart-5`.',
+                    'height' => 'Height in px; the width is fluid.',
+                    'stacked' => 'Stack the series instead of grouping them.',
+                    'grid' => 'Show horizontal grid lines.',
+                    'xAxis' => 'Show the x-axis labels (`:x-axis="false"` hides them).',
+                    'yAxis' => 'Show the y-axis labels (`:y-axis="false"` hides them).',
+                    'legend' => 'Show the legend.',
+                    'tooltip' => 'Show the hover / keyboard tooltip.',
+                    'prefix' => 'Text before values (e.g. `$`).',
+                    'suffix' => 'Text after values (e.g. `%`).',
+                    'label' => 'Accessible name of the chart.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => 'Rendered by the same SVG renderer as the line chart; see its notes for theming and accessibility.',
+        ],
+
+        'area-chart' => [
+            'title' => 'Area Chart',
+            'group' => 'Extras',
+            'description' => 'A responsive area chart, optionally stacked, rendered as SVG on the server, with an Alpine tooltip.',
+            'components' => ['charts.area'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'stacked' => ['title' => 'Stacked', 'preview' => 'block', 'description' => 'Set `stacked` to pile the series on top of each other.'],
+            ],
+            'props' => [
+                'charts.area' => [
+                    'id' => 'Id of the chart element. Generated when omitted.',
+                    'labels' => 'X-axis labels, one per point.',
+                    'series' => 'Either `[\'Name\' => [values…]]` or a list of `[\'name\' => …, \'data\' => […], \'color\' => …]`.',
+                    'colors' => 'Colour per series (any CSS colour). Defaults to the theme\'s `--chart-1` … `--chart-5`.',
+                    'height' => 'Height in px; the width is fluid.',
+                    'curve' => '`smooth` (monotone, never overshoots), `linear` or `step`.',
+                    'stacked' => 'Stack the series.',
+                    'grid' => 'Show horizontal grid lines.',
+                    'xAxis' => 'Show the x-axis labels (`:x-axis="false"` hides them).',
+                    'yAxis' => 'Show the y-axis labels (`:y-axis="false"` hides them).',
+                    'legend' => 'Show the legend.',
+                    'tooltip' => 'Show the hover / keyboard tooltip.',
+                    'prefix' => 'Text before values (e.g. `$`).',
+                    'suffix' => 'Text after values (e.g. `%`).',
+                    'label' => 'Accessible name of the chart.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => 'Rendered by the same SVG renderer as the line chart; see its notes for theming and accessibility.',
+        ],
+
         'donut-chart' => [
             'title' => 'Donut Chart',
             'group' => 'Extras',
@@ -1860,6 +2207,508 @@ BLADE,
             'examples' => [
                 'default' => ['title' => 'All icons', 'preview' => 'block', 'description' => 'Every file in `resources/views/components/icons`. Use as `<x-icons.name class="size-4" />`; attributes are forwarded to the `<svg>`.'],
             ],
+        ],
+
+        'data-table' => [
+            'title' => 'Data Table',
+            'description' => 'A server-driven table for a Laravel paginator or collection: sortable headers, search, column visibility, row selection with bulk actions and pagination.',
+            'components' => ['ui.data-table'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'Sorting and search are plain links / a GET form (`?search=&sort=&direction=`), so your controller does the querying. Column visibility and selection are Alpine. Select rows to reveal the bulk actions.', 'preview' => 'block'],
+                'empty' => ['title' => 'Empty state', 'description' => 'Rendered when there are no rows; use the `empty` slot or `empty-message`.', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.data-table :rows="$users" :columns="[
+    ['key' => 'name', 'label' => 'Name', 'sortable' => true, 'hideable' => false],
+    ['key' => 'email', 'label' => 'Email', 'sortable' => true],
+    ['key' => 'created_at', 'label' => 'Joined', 'format' => fn ($date) => $date->diffForHumans()],
+]" selectable form="bulk">
+    <x-slot:toolbar>...</x-slot:toolbar>
+    <x-slot:bulk-actions>...</x-slot:bulk-actions>
+    <x-slot:empty>...</x-slot:empty>
+</x-ui.data-table>
+BLADE,
+            'composition' => <<<'MD'
+- Built from `table`, `table-*`, `input`, `button` and `pagination`.
+- A column is `'key' => 'Label'` or an array with `key`, `label`, `sortable`, `hideable` (default `true`), `hidden` (start hidden), `class`, `headerClass` and `format` (`fn ($value, $row)`; return an `HtmlString` to output HTML). Values are read with `data_get()`, so `'author.name'` works for relations and arrays.
+- A controller for it:
+
+```php
+$users = User::query()
+    ->when($request->search, fn ($q, $s) => $q->where('name', 'like', "%{$s}%"))
+    ->orderBy(in_array($request->sort, ['name', 'email']) ? $request->sort : 'name', $request->direction === 'desc' ? 'desc' : 'asc')
+    ->paginate(15);
+```
+MD,
+            'props' => [
+                'ui.data-table' => [
+                    'rows' => 'A `LengthAwarePaginator` / `Paginator`, a `Collection` or an array of rows (models or arrays). Paginators get `withQueryString()` and the pagination footer.',
+                    'columns' => 'Column definitions (see Composition).',
+                    'row-key' => 'Attribute used as the row id for selection (`data_get`), falls back to the row index.',
+                    'searchable' => 'Show the search form.',
+                    'search-param' => 'Query parameter of the search input.',
+                    'search-placeholder' => 'Placeholder and accessible label of the search input.',
+                    'sort-param' => 'Query parameter holding the sorted column key.',
+                    'direction-param' => 'Query parameter holding `asc` / `desc`.',
+                    'action' => 'URL the search form submits to. Defaults to the current URL; other query parameters (except `page`) are kept.',
+                    'selectable' => 'Add a checkbox column with select-all.',
+                    'select-name' => 'Name of the row checkboxes (submitted as `name[]`).',
+                    'form' => 'Id of a `<form>` the row checkboxes belong to (HTML `form` attribute), so bulk-action buttons can submit the selection from anywhere.',
+                    'column-toggle' => 'Show the "Columns" visibility menu (for hideable columns).',
+                    'storage-key' => 'When set, hidden columns are remembered in `localStorage` under this key.',
+                    'empty-message' => 'Text shown when there are no rows and no `empty` slot.',
+                    'on-each-side' => 'Page links on each side of the current page.',
+                    'class' => 'Extra classes for the wrapper.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- Sort headers are links with `aria-sort` and toggle `asc` → `desc`; sorting resets `page`. Only whitelist sortable columns in your query.
+- The `bulk-actions` slot appears while rows are selected and sees the Alpine `selected` array (row keys), e.g. `x-text="selected.length"`.
+- Selected rows get `data-state="selected"`; the select-all checkbox becomes indeterminate for a partial selection.
+- The search form is a sibling of the table (forms can't nest), which is why row checkboxes join your bulk form through `form="..."`.
+MD,
+        ],
+
+        'file-dropzone' => [
+            'title' => 'File Dropzone',
+            'description' => 'Multi-file drag-and-drop upload with previews, validation and optional upload progress that works with a normal multipart form.',
+            'components' => ['ui.file-dropzone'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'Drop or pick files: images get a thumbnail, files can be removed, and the hidden `<input type="file">` always holds the current list.', 'preview' => 'block'],
+                'single' => ['title' => 'Single file', 'description' => 'With `:multiple="false"` a new file replaces the current one.', 'preview' => 'block'],
+            ],
+            'composition' => <<<'MD'
+Put it in a regular form; nothing else is needed:
+
+```blade
+<form method="POST" action="{{ route('attachments.store') }}" enctype="multipart/form-data">
+    @csrf
+    <x-ui.file-dropzone name="attachments" accept="image/*,.pdf" :max-files="5" :max-size="10" progress />
+    <x-ui.button type="submit">Upload</x-ui.button>
+</form>
+```
+
+```php
+$request->validate(['attachments' => 'array|max:5', 'attachments.*' => 'file|mimes:jpg,png,pdf|max:10240']);
+```
+MD,
+            'props' => [
+                'ui.file-dropzone' => [
+                    'name' => 'Input name. `[]` is appended automatically when `multiple`.',
+                    'id' => 'Id of the file input (random when omitted).',
+                    'multiple' => 'Allow several files.',
+                    'accept' => 'Accepted types, same syntax as the `accept` attribute (`image/*`, `.pdf`, `application/zip`).',
+                    'max-files' => 'Maximum number of files.',
+                    'max-size' => 'Maximum size per file, in MB.',
+                    'disabled' => 'Disable the dropzone.',
+                    'required' => 'Mark the file input as required.',
+                    'label' => 'Optional label above the dropzone.',
+                    'description' => 'Hint under the prompt. Defaults to a summary of `accept`, `max-size` and `max-files`.',
+                    'progress' => 'Submit the enclosing form with XHR and show an upload progress bar. The HTML the server answers with (e.g. after a redirect) replaces the page.',
+                    'class' => 'Extra classes for the wrapper.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- Files are synced into the real file input with `DataTransfer`, so the browser submits exactly the listed files.
+- Rejected files (type, size, count) are listed in a `role="alert"` region. Client-side checks are a convenience: validate on the server too.
+- The drop area is a keyboard-focusable `role="button"` (<kbd>Enter</kbd> / <kbd>Space</kbd> opens the picker); each file has a labelled remove button.
+- Events: `dropzone-change` (`detail.files`) after every change and `dropzone-uploaded` (`detail.status`, `detail.response`) after a `progress` upload. Resetting the form clears the list.
+MD,
+        ],
+
+        'sidebar' => [
+            'title' => 'Sidebar',
+            'description' => 'Composable, themeable sidebar primitives: collapsible to icons or off-canvas, a sheet on mobile, with persisted state.',
+            'components' => [
+                'ui.sidebar-provider', 'ui.sidebar', 'ui.sidebar-header', 'ui.sidebar-content', 'ui.sidebar-footer',
+                'ui.sidebar-group', 'ui.sidebar-group-label', 'ui.sidebar-group-content', 'ui.sidebar-separator',
+                'ui.sidebar-menu', 'ui.sidebar-menu-item', 'ui.sidebar-menu-button',
+                'ui.sidebar-menu-sub', 'ui.sidebar-menu-sub-item', 'ui.sidebar-menu-sub-button',
+                'ui.sidebar-trigger', 'ui.sidebar-inset',
+            ],
+            'examples' => [
+                'default' => ['title' => 'Collapsible to icons', 'description' => 'Click the trigger (or press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>B</kbd>): the sidebar shrinks to icons and remembers it. On small screens it opens as a sheet.', 'preview' => 'block'],
+                'floating' => ['title' => 'Floating, off-canvas', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.sidebar-provider>
+    <x-ui.sidebar collapsible="icon">
+        <x-ui.sidebar-header>...</x-ui.sidebar-header>
+        <x-ui.sidebar-content>
+            <x-ui.sidebar-group>
+                <x-ui.sidebar-group-label>Platform</x-ui.sidebar-group-label>
+                <x-ui.sidebar-group-content>
+                    <x-ui.sidebar-menu>
+                        <x-ui.sidebar-menu-item>
+                            <x-ui.sidebar-menu-button href="/dashboard" :is-active="request()->routeIs('dashboard')" tooltip="Dashboard">
+                                <x-icons.layout-grid />
+                                <span>Dashboard</span>
+                            </x-ui.sidebar-menu-button>
+                            <x-ui.sidebar-menu-sub>
+                                <x-ui.sidebar-menu-sub-item>
+                                    <x-ui.sidebar-menu-sub-button href="...">...</x-ui.sidebar-menu-sub-button>
+                                </x-ui.sidebar-menu-sub-item>
+                            </x-ui.sidebar-menu-sub>
+                        </x-ui.sidebar-menu-item>
+                    </x-ui.sidebar-menu>
+                </x-ui.sidebar-group-content>
+            </x-ui.sidebar-group>
+        </x-ui.sidebar-content>
+        <x-ui.sidebar-footer>...</x-ui.sidebar-footer>
+    </x-ui.sidebar>
+
+    <x-ui.sidebar-inset>
+        <header><x-ui.sidebar-trigger /></header>
+        ...
+    </x-ui.sidebar-inset>
+</x-ui.sidebar-provider>
+BLADE,
+            'composition' => <<<'MD'
+- `sidebar-provider` owns the Alpine state (`open`, `openMobile`, `isMobile`, `toggleSidebar()`), so `sidebar-trigger` can live anywhere inside it.
+- Wrap a menu item in `<x-ui.collapsible>` for expandable sub-menus; use `<x-ui.sidebar-menu-button tag="span">` inside the `collapsible-trigger` to avoid nesting buttons.
+- These primitives are independent of the installer's `<x-layout.app-sidebar>`, which is unchanged.
+MD,
+            'props' => [
+                'ui.sidebar-provider' => [
+                    'default-open' => 'Initial desktop state when nothing is persisted yet.',
+                    'open' => 'Force the initial state (ignores the cookie).',
+                    'storage-key' => 'Cookie and `localStorage` key for the expanded / collapsed state. Pass an empty string to disable persistence.',
+                    'width' => 'Desktop width (`--sidebar-width`).',
+                    'width-icon' => 'Width in icon mode (`--sidebar-width-icon`).',
+                    'width-mobile' => 'Width of the mobile sheet (`--sidebar-width-mobile`).',
+                    'keyboard-shortcut' => 'Key that toggles the sidebar with <kbd>Ctrl</kbd>/<kbd>⌘</kbd>; `null` disables it.',
+                    'class' => 'Extra classes for the wrapper.',
+                ],
+                'ui.sidebar' => [
+                    'side' => '`left` or `right`.',
+                    'variant' => '`sidebar`, `floating` or `inset`.',
+                    'collapsible' => '`offcanvas` (slides out), `icon` (shrinks to icons) or `none`.',
+                    'label' => 'Accessible name of the navigation landmark / mobile dialog.',
+                    'class' => 'Extra classes for the fixed sidebar container.',
+                ],
+                'ui.sidebar-header' => ['class' => 'Extra classes.'],
+                'ui.sidebar-content' => ['class' => 'Extra classes for the scrollable area.'],
+                'ui.sidebar-footer' => ['class' => 'Extra classes.'],
+                'ui.sidebar-group' => ['class' => 'Extra classes.'],
+                'ui.sidebar-group-label' => ['class' => 'Extra classes. Hidden in icon mode.'],
+                'ui.sidebar-group-content' => ['class' => 'Extra classes.'],
+                'ui.sidebar-separator' => ['class' => 'Extra classes.'],
+                'ui.sidebar-menu' => ['class' => 'Extra classes for the `<ul>`.'],
+                'ui.sidebar-menu-item' => ['class' => 'Extra classes for the `<li>`.'],
+                'ui.sidebar-menu-button' => [
+                    'href' => 'Renders an `<a>` when set, otherwise a `<button>`.',
+                    'tag' => 'Override the element (e.g. `span` inside a collapsible trigger).',
+                    'is-active' => 'Highlight the item (`data-active`, plus `aria-current="page"` on links).',
+                    'size' => '`default`, `sm` or `lg`.',
+                    'variant' => '`default` or `outline`.',
+                    'tooltip' => 'Text shown as a tooltip when the sidebar is collapsed to icons.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.sidebar-menu-sub' => ['class' => 'Extra classes. Hidden in icon mode.'],
+                'ui.sidebar-menu-sub-item' => ['class' => 'Extra classes.'],
+                'ui.sidebar-menu-sub-button' => [
+                    'href' => 'Renders an `<a>` when set, otherwise a `<button>`.',
+                    'is-active' => 'Highlight the item.',
+                    'size' => '`sm` or `md`.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.sidebar-trigger' => ['class' => 'Extra classes for the ghost icon button.'],
+                'ui.sidebar-inset' => ['class' => 'Extra classes for the `<main>` content area.'],
+            ],
+            'notes' => <<<'MD'
+- State is saved in a `sidebar_state` cookie (7 days) and `localStorage`. The provider reads the cookie on the server to render the right state without a flash; add `sidebar_state` to `EncryptCookies` exceptions (`$middleware->encryptCookies(except: ['sidebar_state'])` in `bootstrap/app.php`) so Laravel can read it.
+- Below `md` the sidebar becomes a sheet: `role="dialog"`, `aria-modal`, overlay, focus trap (`x-trap`, from `@alpinejs/focus`) and <kbd>Esc</kbd> to close.
+- Uses the `--sidebar*` colour tokens, so it follows dark mode. The trigger exposes `aria-expanded`; active links get `aria-current="page"`.
+MD,
+        ],
+
+        // Extra components (feat/extra-components): stepper, timeline, sortable, kanban, rating,
+        // tree view, rich text editor, code block, date range picker.
+
+        'stepper' => [
+            'title' => 'Stepper',
+            'description' => 'Shows progress through a multi-step flow, horizontally or vertically, with optional clickable steps.',
+            'components' => ['ui.stepper'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'clickable' => ['title' => 'Clickable with x-model', 'preview' => 'block', 'description' => '`clickable="completed"` lets people jump back to finished steps only; `clickable` allows any step.'],
+                'vertical' => ['title' => 'Vertical', 'preview' => 'block'],
+            ],
+            'props' => [
+                'ui.stepper' => [
+                    'steps' => 'Step titles, or arrays with `title` and optional `description`.',
+                    'current' => 'Zero-based index of the current step. Earlier steps are completed, later ones upcoming. Bind with `x-model`.',
+                    'orientation' => '`horizontal` or `vertical`.',
+                    'clickable' => '`false`, `true` (any step) or `completed` (finished steps and the current one). Clicking dispatches `change` with `{ value }`.',
+                    'label' => 'Accessible name of the `<nav>`.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- Renders a `<nav>` with an ordered list; the current step has `aria-current="step"` and every step carries a screen-reader status (Completed, Current step, Not started).
+- Each step exposes `data-state="completed|current|upcoming"` for styling.
+MD,
+        ],
+
+        'timeline' => [
+            'title' => 'Timeline',
+            'description' => 'A vertical list of events with a dot or icon, time, title and content, with an alternating layout.',
+            'components' => ['ui.timeline', 'ui.timeline-item'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'icons' => ['title' => 'With icons', 'preview' => 'block'],
+                'alternate' => ['title' => 'Alternate', 'preview' => 'block', 'description' => 'Items zig-zag around a centred line from the `md` breakpoint; on small screens they stack.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.timeline>
+    <x-ui.timeline-item time="..." title="...">
+        <x-slot:icon>...</x-slot:icon>
+        ...
+    </x-ui.timeline-item>
+</x-ui.timeline>
+BLADE,
+            'props' => [
+                'ui.timeline' => [
+                    'alternate' => 'Alternate items left and right of a centred line (from `md` up).',
+                    'class' => 'Extra classes for the `<ol>`.',
+                ],
+                'ui.timeline-item' => [
+                    'time' => 'Time label, rendered in a `<time>` element.',
+                    'datetime' => 'Machine-readable `datetime` attribute for the `<time>` element.',
+                    'title' => 'Event title (`<h3>`).',
+                    'variant' => '`default`, `muted`, `success`, `warning` or `destructive`; colours the dot or icon ring.',
+                    'class' => 'Extra classes for the `<li>`.',
+                ],
+            ],
+            'notes' => 'The default slot is the event body. An `icon` slot replaces the dot with a ringed icon.',
+        ],
+
+        'sortable' => [
+            'title' => 'Sortable List',
+            'description' => 'A reorderable list using native HTML5 drag and drop, with keyboard support and form posting.',
+            'components' => ['ui.sortable', 'ui.sortable-item'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block', 'description' => 'Drag a row, or focus its handle and press the arrow keys, <kbd>Home</kbd> or <kbd>End</kbd>.'],
+                'handle' => ['title' => 'Drag handle and sorted event', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.sortable name="...">
+    <x-ui.sortable-item value="...">...</x-ui.sortable-item>
+</x-ui.sortable>
+BLADE,
+            'props' => [
+                'ui.sortable' => [
+                    'name' => 'When set, every item renders a hidden `{name}[]` input, so the form posts values in the current order (works without JavaScript too).',
+                    'handle' => 'Only start dragging from the grip handle instead of the whole row.',
+                    'orientation' => '`vertical` or `horizontal` (wrapping row).',
+                    'label' => 'Accessible name of the list.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.sortable-item' => [
+                    'value' => 'Identifier posted and reported in the `sorted` event.',
+                    'label' => 'Text used for the handle label and announcements. Defaults to the slot text.',
+                    'class' => 'Extra classes for the `<li>`.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- No dependencies: uses the browser's drag and drop events and moves the DOM nodes, so Blade content inside items is kept as is.
+- Dispatches a bubbling `sorted` event with `{ order, item, from, to }`. `x-model` receives the order array (the DOM is the source of truth).
+- Moves are announced through a live region. Native drag and drop does not fire on most touch devices; the keyboard handles still work there.
+MD,
+        ],
+
+        'kanban' => [
+            'title' => 'Kanban Board',
+            'description' => 'Columns of draggable cards, reordered and moved between columns with native drag and drop or the keyboard.',
+            'components' => ['ui.kanban', 'ui.kanban-column', 'ui.kanban-card'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block', 'description' => 'Drag cards between columns, or focus a handle and use the arrow keys (left/right moves across columns).'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.kanban name="...">
+    <x-ui.kanban-column value="..." title="...">
+        <x-slot:actions>...</x-slot:actions>
+        <x-ui.kanban-card value="...">...</x-ui.kanban-card>
+    </x-ui.kanban-column>
+</x-ui.kanban>
+BLADE,
+            'props' => [
+                'ui.kanban' => [
+                    'name' => 'When set, hidden `{name}[{column}][]` inputs post every card id per column, in order.',
+                    'label' => 'Accessible name of the board.',
+                    'class' => 'Extra classes for the root (a horizontally scrolling flex row).',
+                ],
+                'ui.kanban-column' => [
+                    'value' => 'Column key used in the posted data and the `sorted` event.',
+                    'title' => 'Column heading; defaults to `value`.',
+                    'class' => 'Extra classes for the column.',
+                ],
+                'ui.kanban-card' => [
+                    'value' => 'Card identifier.',
+                    'label' => 'Text used for the handle label and announcements. Defaults to the slot text.',
+                    'class' => 'Extra classes for the card.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- Dispatches a bubbling `sorted` event with `{ columns, item, from, to, index }`; `x-model` receives `{ column: [ids] }`. Column counts update live.
+- The hidden inputs are rendered by Alpine, so posting the board needs JavaScript (unlike the Sortable List). Empty columns post nothing.
+MD,
+        ],
+
+        'rating' => [
+            'title' => 'Rating',
+            'description' => 'A star rating: read-only with fractional stars, or interactive with mouse and keyboard.',
+            'components' => ['ui.rating'],
+            'examples' => [
+                'default' => ['title' => 'Interactive', 'description' => 'Click a star (click it again to clear), or focus and use the arrow keys, <kbd>Home</kbd>, <kbd>End</kbd> or a number key.'],
+                'readonly' => ['title' => 'Read-only and sizes'],
+                'half' => ['title' => 'Half stars, max and disabled'],
+            ],
+            'props' => [
+                'ui.rating' => [
+                    'value' => 'Current rating, `0` to `max`. Read-only ratings show fractions (e.g. `3.7`).',
+                    'max' => 'Number of stars.',
+                    'step' => '`1` or `0.5`; with `0.5`, clicking the left half of a star picks a half star.',
+                    'name' => 'Name of the hidden input.',
+                    'readonly' => 'Display only: rendered as `role="img"` with an accessible label.',
+                    'disabled' => 'Shown but not editable.',
+                    'size' => '`sm`, `default` or `lg`.',
+                    'label' => 'Accessible name.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => 'Interactive ratings are a `role="slider"` with `aria-valuenow` / `aria-valuetext`. Works with `x-model` and dispatches a bubbling `change` event with `{ value }`.',
+        ],
+
+        'tree-view' => [
+            'title' => 'Tree View',
+            'description' => 'A hierarchical list with expand / collapse, keyboard navigation and optional tri-state checkboxes.',
+            'components' => ['ui.tree-view'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'Arrow keys move and expand / collapse, <kbd>Home</kbd> / <kbd>End</kbd> jump, <kbd>Enter</kbd> selects.'],
+                'checkboxes' => ['title' => 'Checkboxes', 'description' => 'Checking a branch checks everything under it; partly checked branches are indeterminate. <kbd>Space</kbd> toggles.'],
+            ],
+            'props' => [
+                'ui.tree-view' => [
+                    'items' => 'Nested arrays: `id`, `label`, optional `children` and `disabled`.',
+                    'checkboxes' => 'Show tri-state checkboxes.',
+                    'name' => 'Checkbox name; fully checked nodes post as `{name}[]` (branches included).',
+                    'checked' => 'Initially checked ids. A branch id checks all of its descendants.',
+                    'expanded' => 'Ids of initially expanded branches, or `true` to expand everything.',
+                    'selected' => 'Initially selected id (without checkboxes).',
+                    'label' => 'Accessible name of the tree.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- Rendered as a flat `role="tree"` with `aria-level`, `aria-setsize` and `aria-posinset`, a roving `tabindex`, and `aria-expanded` / `aria-checked` (`mixed` for partial) on each `treeitem`.
+- Dispatches bubbling `select` (`{ id }`), `toggle` (`{ id, expanded }`) and `change` (`{ checked }`) events.
+MD,
+        ],
+
+        'rich-text-editor' => [
+            'title' => 'Rich Text Editor',
+            'description' => 'An optional Tiptap editor with a formatting toolbar that syncs HTML to a form field and degrades to a textarea.',
+            'components' => ['ui.rich-text-editor'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block', 'description' => 'Tiptap loads from esm.sh on demand; until then (or without JavaScript) the field is a plain textarea.'],
+                'toolbar' => ['title' => 'Custom toolbar', 'preview' => 'block'],
+            ],
+            'props' => [
+                'ui.rich-text-editor' => [
+                    'name' => 'Name of the field. The `<textarea>` is the form field: hidden once the editor is ready and kept in sync with its HTML.',
+                    'value' => 'Initial HTML.',
+                    'placeholder' => 'Placeholder text (uses Tiptap\'s Placeholder extension when it loads).',
+                    'label' => 'Accessible name of the editing area.',
+                    'toolbar' => 'Buttons in order: `bold`, `italic`, `underline`, `strike`, `heading`, `bulletList`, `orderedList`, `blockquote`, `code`, `codeBlock`, `undo`, `redo`; `|` adds a separator.',
+                    'cdn' => 'ES module CDN Tiptap is imported from.',
+                    'version' => 'Tiptap version to import (v3).',
+                    'rows' => 'Rows of the fallback textarea.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- BladeCN has no hard JavaScript dependency on Tiptap: it is only fetched when an editor is on the page. To bundle it instead, install it and expose it before Alpine starts:
+
+```js
+// npm install @tiptap/core @tiptap/starter-kit @tiptap/extensions
+import { Editor } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
+import { Placeholder } from '@tiptap/extensions';
+
+window.BladeCNTiptap = { Editor, StarterKit, Placeholder };
+```
+
+- Works with `x-model` (HTML string) and dispatches a bubbling `change` event with `{ value }`. The toolbar is a `role="toolbar"` with arrow-key navigation and `aria-pressed` toggles.
+- **Sanitize the submitted HTML on the server** (e.g. with HTML Purifier) before rendering it.
+MD,
+        ],
+
+        'code-block' => [
+            'title' => 'Code Block',
+            'description' => 'A code sample with a copy-to-clipboard button, an optional filename header and line numbers.',
+            'components' => ['ui.code-block'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'filename' => ['title' => 'Filename and line numbers', 'preview' => 'block'],
+            ],
+            'props' => [
+                'ui.code-block' => [
+                    'code' => 'The code, escaped for you. Alternatively use the slot, which is printed as-is (escape it yourself).',
+                    'language' => 'Adds a `language-*` class (for highlight.js, Prism or Shiki) and a badge in the header.',
+                    'filename' => 'Shows a header with the file name.',
+                    'line-numbers' => 'Show a line-number gutter (not copied).',
+                    'copyable' => 'Show the copy button.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => 'Copying uses the Clipboard API with a fallback, announces “Copied to clipboard” to screen readers and dispatches a bubbling `copy` event with `{ text }`. Without JavaScript the button stays hidden. Syntax colours are left to your highlighter.',
+        ],
+
+        'date-range-picker' => [
+            'title' => 'Date Range Picker',
+            'description' => 'Pick a start and end date from a two-month calendar or a preset, built from Popover and Calendar.',
+            'components' => ['ui.date-range-picker', 'ui.range-calendar'],
+            'examples' => [
+                'default' => 'Default',
+                'x-model' => ['title' => 'x-model, input names and custom presets', 'description' => 'Presets can be renamed with `label => key` pairs.'],
+                'calendar' => ['title' => 'Range calendar on its own', 'description' => '`<x-ui.range-calendar>` is the inline two-month grid the picker uses.'],
+            ],
+            'props' => [
+                'ui.date-range-picker' => [
+                    'start' => 'Initial start date.',
+                    'end' => 'Initial end date.',
+                    'name' => 'Posts `{name}[start]` and `{name}[end]`.',
+                    'start-name' => 'Explicit name for the start input (overrides `name`).',
+                    'end-name' => 'Explicit name for the end input (overrides `name`).',
+                    'placeholder' => 'Text when no range is selected.',
+                    'presets' => 'Preset keys (`today`, `yesterday`, `last7`, `last14`, `last30`, `last90`, `thisWeek`, `thisMonth`, `lastMonth`, `thisYear`, `lastYear`), or `label => key` pairs. `false` hides them.',
+                    'months' => 'Months shown side by side (1–3).',
+                    'min' => 'Earliest selectable date.',
+                    'max' => 'Latest selectable date.',
+                    'week-starts-on' => '`0` = Sunday … `6` = Saturday.',
+                    'locale' => 'Locale for formatting. Defaults to the app locale.',
+                    'format' => "`Intl.DateTimeFormat` options for the trigger, default `['month' => 'short', 'day' => 'numeric', 'year' => 'numeric']`.",
+                    'class' => 'Extra classes for the trigger button.',
+                ],
+                'ui.range-calendar' => [
+                    'start' => 'Range start.',
+                    'end' => 'Range end (swapped with `start` if earlier).',
+                    'start-name' => 'Name of the hidden start input.',
+                    'end-name' => 'Name of the hidden end input.',
+                    'months' => 'Months shown side by side (1–3).',
+                    'min' => 'Earliest selectable date.',
+                    'max' => 'Latest selectable date.',
+                    'week-starts-on' => '`0` = Sunday … `6` = Saturday.',
+                    'locale' => 'BCP 47 locale for month/day names. Defaults to `app()->getLocale()`.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- Values are `Y-m-d` strings. `x-model` binds `{ start, end }`. The first click picks the start, the second the end (hovering previews the range); the popover closes once both are set.
+- Same keyboard model as Calendar: arrows by day/week, <kbd>PageUp</kbd>/<kbd>PageDown</kbd> by month, <kbd>Enter</kbd>/<kbd>Space</kbd> to pick.
+- Dispatches a bubbling `change` event with `{ start, end }`.
+MD,
         ],
 
         // --- Laravel-native features (feat/laravel-native) ---------------------------
