@@ -1830,6 +1830,353 @@ BLADE,
             ],
         ],
 
+        'carousel' => [
+            'title' => 'Carousel',
+            'description' => 'A carousel with motion and swipe built on native CSS scroll-snap and Alpine.js.',
+            'components' => ['ui.carousel', 'ui.carousel-content', 'ui.carousel-item', 'ui.carousel-previous', 'ui.carousel-next', 'ui.carousel-dots'],
+            'examples' => [
+                'default' => 'Default',
+                'sizes' => ['title' => 'Sizes', 'description' => 'Set a `basis-*` class on `carousel-item` to show several slides at once.'],
+                'orientation' => ['title' => 'Orientation', 'description' => 'Use `orientation="vertical"` and give `carousel-content` a height.'],
+                'autoplay' => ['title' => 'Autoplay & dots', 'description' => '`autoplay` advances every _n_ ms (paused on hover / focus and when the visitor prefers reduced motion); `carousel-dots` shows one dot per slide.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.carousel>
+    <x-ui.carousel-content>
+        <x-ui.carousel-item>...</x-ui.carousel-item>
+        <x-ui.carousel-item>...</x-ui.carousel-item>
+    </x-ui.carousel-content>
+    <x-ui.carousel-previous />
+    <x-ui.carousel-next />
+    <x-ui.carousel-dots />
+</x-ui.carousel>
+BLADE,
+            'notes' => <<<'MD'
+- Scrolling is native: touch swipe, trackpads and the mouse wheel work out of the box, and slides snap with `scroll-snap`.
+- Slides are spaced by a 1rem gutter (`pl-4` / `pt-4` on each item, `-ml-4` / `-mt-4` on the content).
+- `role="region"` with `aria-roledescription="carousel"`; slides are `role="group"` labelled "n of m". <kbd>←</kbd>/<kbd>→</kbd> (<kbd>↑</kbd>/<kbd>↓</kbd> when vertical), <kbd>Home</kbd> and <kbd>End</kbd> move between slides while focus is inside.
+- Previous / next are disabled at the ends unless `loop` is set.
+MD,
+            'props' => [
+                'ui.carousel' => [
+                    'orientation' => '`horizontal` or `vertical`.',
+                    'loop' => 'Wrap around from the last slide to the first (and back).',
+                    'autoplay' => 'Advance automatically every this many milliseconds. `0` turns it off.',
+                    'label' => 'Accessible name of the carousel region.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.carousel-content' => ['class' => 'Extra classes for the scrolling viewport (e.g. a height when vertical).'],
+                'ui.carousel-item' => ['class' => 'Extra classes, e.g. `basis-1/3` to show three slides.'],
+                'ui.carousel-previous' => ['variant' => 'Button variant.', 'size' => 'Button size.', 'class' => 'Extra classes.'],
+                'ui.carousel-next' => ['variant' => 'Button variant.', 'size' => 'Button size.', 'class' => 'Extra classes.'],
+                'ui.carousel-dots' => ['class' => 'Extra classes for the dot row.'],
+            ],
+        ],
+
+        'drawer' => [
+            'title' => 'Drawer',
+            'description' => 'A panel that slides in from the edge of the screen, with a drag-to-close handle on touch devices.',
+            'components' => ['ui.drawer', 'ui.drawer-trigger', 'ui.drawer-content', 'ui.drawer-header', 'ui.drawer-title', 'ui.drawer-description', 'ui.drawer-footer', 'ui.drawer-close'],
+            'examples' => [
+                'default' => 'Default',
+                'directions' => ['title' => 'Directions', 'description' => 'Set `direction` on the root to `top`, `right`, `bottom` (default) or `left`.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.drawer>
+    <x-ui.drawer-trigger>Open</x-ui.drawer-trigger>
+    <x-ui.drawer-content>
+        <x-ui.drawer-header>
+            <x-ui.drawer-title>...</x-ui.drawer-title>
+            <x-ui.drawer-description>...</x-ui.drawer-description>
+        </x-ui.drawer-header>
+        ...
+        <x-ui.drawer-footer>
+            <x-ui.drawer-close>Cancel</x-ui.drawer-close>
+        </x-ui.drawer-footer>
+    </x-ui.drawer-content>
+</x-ui.drawer>
+BLADE,
+            'composition' => 'The root holds an Alpine `open` state (bind it with `x-model`). Any element inside can close the drawer with `x-on:click="open = false"`.',
+            'notes' => <<<'MD'
+- Drag the handle (or, on touch screens, the header) towards the edge to close: past 30% of the drawer, or with a quick flick, it closes; otherwise it springs back.
+- `role="dialog"` with `aria-modal`, labelled by the title and described by the description. Focus is trapped while open (`x-trap.inert.noscroll`, from `@alpinejs/focus`) and returns to the trigger.
+- <kbd>Esc</kbd> or clicking the overlay closes it, unless `:dismissible="false"`.
+MD,
+            'props' => [
+                'ui.drawer' => [
+                    'open' => 'Initial open state.',
+                    'direction' => '`bottom`, `top`, `left` or `right`.',
+                    'dismissible' => 'Whether Esc, the overlay and dragging close the drawer.',
+                    'class' => 'Extra classes for the root.',
+                ],
+                'ui.drawer-trigger' => ['variant' => 'Button variant.', 'size' => 'Button size.', 'class' => 'Extra classes.'],
+                'ui.drawer-content' => [
+                    'handle' => 'Show the grab handle. Defaults to `true` for bottom drawers.',
+                    'class' => 'Extra classes for the panel.',
+                ],
+                'ui.drawer-header' => ['class' => 'Extra classes.'],
+                'ui.drawer-title' => ['class' => 'Extra classes.'],
+                'ui.drawer-description' => ['class' => 'Extra classes.'],
+                'ui.drawer-footer' => ['class' => 'Extra classes.'],
+                'ui.drawer-close' => ['variant' => 'Button variant.', 'size' => 'Button size.', 'class' => 'Extra classes.'],
+            ],
+        ],
+
+        'menubar' => [
+            'title' => 'Menubar',
+            'description' => 'A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands.',
+            'components' => [
+                'ui.menubar', 'ui.menubar-menu', 'ui.menubar-trigger', 'ui.menubar-content', 'ui.menubar-item', 'ui.menubar-checkbox-item',
+                'ui.menubar-radio-group', 'ui.menubar-radio-item', 'ui.menubar-label', 'ui.menubar-separator', 'ui.menubar-shortcut',
+                'ui.menubar-sub', 'ui.menubar-sub-trigger', 'ui.menubar-sub-content',
+            ],
+            'examples' => [
+                'default' => 'Default',
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.menubar>
+    <x-ui.menubar-menu>
+        <x-ui.menubar-trigger>File</x-ui.menubar-trigger>
+        <x-ui.menubar-content>
+            <x-ui.menubar-item>New <x-ui.menubar-shortcut>⌘N</x-ui.menubar-shortcut></x-ui.menubar-item>
+            <x-ui.menubar-separator />
+            <x-ui.menubar-checkbox-item checked>...</x-ui.menubar-checkbox-item>
+            <x-ui.menubar-radio-group value="a">
+                <x-ui.menubar-radio-item value="a">...</x-ui.menubar-radio-item>
+            </x-ui.menubar-radio-group>
+            <x-ui.menubar-sub>
+                <x-ui.menubar-sub-trigger>...</x-ui.menubar-sub-trigger>
+                <x-ui.menubar-sub-content>...</x-ui.menubar-sub-content>
+            </x-ui.menubar-sub>
+        </x-ui.menubar-content>
+    </x-ui.menubar-menu>
+</x-ui.menubar>
+BLADE,
+            'notes' => <<<'MD'
+- Items share the look and keyboard model of the dropdown / context menu: `menuitem`, `menuitemcheckbox` and `menuitemradio` roles, <kbd>↑</kbd>/<kbd>↓</kbd>/<kbd>Home</kbd>/<kbd>End</kbd> and typeahead.
+- The bar is a `role="menubar"` with a roving tab stop: <kbd>←</kbd>/<kbd>→</kbd> move between menus (and switch the open one), <kbd>↓</kbd>/<kbd>Enter</kbd> open a menu, <kbd>→</kbd> opens a sub menu and <kbd>←</kbd> closes it, <kbd>Esc</kbd> closes and returns focus.
+- Once a menu is open, hovering another trigger switches to it.
+- Checkbox items and radio groups keep their state in Alpine (`checked` / `selected`), so they work with `x-model`.
+MD,
+            'props' => [
+                'ui.menubar' => ['class' => 'Extra classes for the bar.'],
+                'ui.menubar-menu' => ['value' => 'Identifier of the menu. Generated when omitted.', 'class' => 'Extra classes.'],
+                'ui.menubar-trigger' => ['class' => 'Extra classes.'],
+                'ui.menubar-content' => ['align' => '`start` or `end` edge of the trigger to align to.', 'class' => 'Extra classes for the menu.'],
+                'ui.menubar-item' => [
+                    'href' => 'Render a link.',
+                    'variant' => '`default` or `destructive`.',
+                    'inset' => 'Indent to line up with checkbox / radio items.',
+                    'disabled' => 'Disable the item.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.menubar-checkbox-item' => ['checked' => 'Initial checked state.', 'disabled' => 'Disable the item.', 'class' => 'Extra classes.'],
+                'ui.menubar-radio-group' => ['value' => 'Initially selected value.', 'class' => 'Extra classes.'],
+                'ui.menubar-radio-item' => [
+                    'value' => 'Value selected by this item.',
+                    'checked' => 'Server-rendered checked state (match it to the group\'s `value`).',
+                    'disabled' => 'Disable the item.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.menubar-label' => ['inset' => 'Indent the label.', 'class' => 'Extra classes.'],
+                'ui.menubar-separator' => ['class' => 'Extra classes.'],
+                'ui.menubar-shortcut' => ['class' => 'Extra classes.'],
+                'ui.menubar-sub' => ['class' => 'Extra classes.'],
+                'ui.menubar-sub-trigger' => ['inset' => 'Indent the trigger.', 'class' => 'Extra classes.'],
+                'ui.menubar-sub-content' => ['class' => 'Extra classes for the sub menu.'],
+            ],
+        ],
+
+        'navigation-menu' => [
+            'title' => 'Navigation Menu',
+            'description' => 'A collection of links for navigating websites, with dropdown panels.',
+            'components' => ['ui.navigation-menu', 'ui.navigation-menu-list', 'ui.navigation-menu-item', 'ui.navigation-menu-trigger', 'ui.navigation-menu-content', 'ui.navigation-menu-link'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.navigation-menu>
+    <x-ui.navigation-menu-list>
+        <x-ui.navigation-menu-item>
+            <x-ui.navigation-menu-trigger>...</x-ui.navigation-menu-trigger>
+            <x-ui.navigation-menu-content>
+                <x-ui.navigation-menu-link href="...">...</x-ui.navigation-menu-link>
+            </x-ui.navigation-menu-content>
+        </x-ui.navigation-menu-item>
+        <x-ui.navigation-menu-item>
+            <x-ui.navigation-menu-link href="..." variant="trigger">...</x-ui.navigation-menu-link>
+        </x-ui.navigation-menu-item>
+    </x-ui.navigation-menu-list>
+</x-ui.navigation-menu>
+BLADE,
+            'notes' => <<<'MD'
+- Panels open on hover (after `delay` ms) and on click; once one is open, moving to another trigger switches immediately. Leaving the menu closes it after `close-delay` ms.
+- `<nav>` landmark with a list of links. Triggers expose `aria-expanded` / `aria-controls`; <kbd>←</kbd>/<kbd>→</kbd>/<kbd>Home</kbd>/<kbd>End</kbd> move between top-level items, <kbd>↓</kbd> opens a panel and focuses its first link, <kbd>↑</kbd>/<kbd>↓</kbd> move inside it and <kbd>Esc</kbd> closes it.
+- `indicator` adds an arrow under the open trigger.
+MD,
+            'props' => [
+                'ui.navigation-menu' => [
+                    'delay' => 'Hover delay in ms before the first panel opens.',
+                    'close-delay' => 'Delay in ms before closing after the pointer leaves.',
+                    'indicator' => 'Show an arrow under the active trigger.',
+                    'label' => 'Accessible name of the `<nav>`.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.navigation-menu-list' => ['class' => 'Extra classes.'],
+                'ui.navigation-menu-item' => ['value' => 'Identifier of the item. Generated when omitted.', 'class' => 'Extra classes.'],
+                'ui.navigation-menu-trigger' => ['class' => 'Extra classes.'],
+                'ui.navigation-menu-content' => ['align' => '`start`, `center` or `end` relative to the item.', 'class' => 'Extra classes for the panel.'],
+                'ui.navigation-menu-link' => [
+                    'href' => 'Link target.',
+                    'active' => 'Mark as the current page (`aria-current="page"`).',
+                    'variant' => '`default` for links in a panel, `trigger` for a top-level link styled like a trigger.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+        ],
+
+        'resizable' => [
+            'title' => 'Resizable',
+            'description' => 'Accessible resizable panel groups and layouts with keyboard support.',
+            'components' => ['ui.resizable-panel-group', 'ui.resizable-panel', 'ui.resizable-handle'],
+            'examples' => [
+                'default' => 'Default',
+                'vertical' => ['title' => 'Vertical', 'description' => 'Use `direction="vertical"`.'],
+                'handle' => ['title' => 'Handle, limits & persistence', 'description' => '`with-handle` shows a grip, `min-size` / `max-size` limit each panel and `auto-save-id` remembers the layout in `localStorage`.'],
+            ],
+            'anatomy' => <<<'BLADE'
+<x-ui.resizable-panel-group direction="horizontal">
+    <x-ui.resizable-panel :default-size="50">...</x-ui.resizable-panel>
+    <x-ui.resizable-handle />
+    <x-ui.resizable-panel :default-size="50">...</x-ui.resizable-panel>
+</x-ui.resizable-panel-group>
+BLADE,
+            'notes' => <<<'MD'
+- Sizes are percentages of the group. Panels without a `default-size` share what is left; the server renders the default sizes so there is no layout shift.
+- Each handle is a focusable `role="separator"` with `aria-valuenow` / `aria-valuemin` / `aria-valuemax`. Drag it, or use <kbd>←</kbd>/<kbd>→</kbd> (<kbd>↑</kbd>/<kbd>↓</kbd> when vertical) to move it by `keyboard-step` percent and <kbd>Home</kbd>/<kbd>End</kbd> to jump to the limits.
+- Groups nest. A `resizable-change` event with `{ sizes }` is dispatched after every resize.
+MD,
+            'props' => [
+                'ui.resizable-panel-group' => [
+                    'direction' => '`horizontal` or `vertical`.',
+                    'auto-save-id' => 'Remember the sizes in `localStorage` under this key.',
+                    'keyboard-step' => 'Percent moved per arrow key press.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.resizable-panel' => [
+                    'default-size' => 'Initial size in percent.',
+                    'min-size' => 'Minimum size in percent.',
+                    'max-size' => 'Maximum size in percent.',
+                    'class' => 'Extra classes.',
+                ],
+                'ui.resizable-handle' => [
+                    'with-handle' => 'Show a visible grip.',
+                    'label' => 'Accessible name of the separator.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+        ],
+
+        'line-chart' => [
+            'title' => 'Line Chart',
+            'group' => 'Extras',
+            'description' => 'A responsive line chart rendered as SVG on the server, with an Alpine tooltip.',
+            'components' => ['charts.line'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'linear' => ['title' => 'Linear with dots', 'preview' => 'block', 'description' => '`curve="linear"`, `dots`, a custom colour and a `$` prefix; the y-axis and legend are hidden.'],
+            ],
+            'props' => [
+                'charts.line' => [
+                    'id' => 'Id of the chart element. Generated when omitted.',
+                    'labels' => 'X-axis labels, one per point.',
+                    'series' => 'Either `[\'Name\' => [values…]]` or a list of `[\'name\' => …, \'data\' => […], \'color\' => …]`. `null` values leave a gap.',
+                    'colors' => 'Colour per series (any CSS colour). Defaults to the theme\'s `--chart-1` … `--chart-5`.',
+                    'height' => 'Height in px; the width is fluid.',
+                    'curve' => '`smooth` (monotone, never overshoots), `linear` or `step`.',
+                    'dots' => 'Draw a dot on every point.',
+                    'grid' => 'Show horizontal grid lines.',
+                    'xAxis' => 'Show the x-axis labels (`:x-axis="false"` hides them).',
+                    'yAxis' => 'Show the y-axis labels (`:y-axis="false"` hides them).',
+                    'legend' => 'Show the legend.',
+                    'tooltip' => 'Show the hover / keyboard tooltip.',
+                    'prefix' => 'Text before values (e.g. `$`).',
+                    'suffix' => 'Text after values (e.g. `%`).',
+                    'label' => 'Accessible name of the chart.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- No JavaScript library: the chart is SVG computed in Blade, so it renders without JS and in emails / PDFs (the tooltip needs Alpine).
+- Colours are CSS variables (`--color-0`, `--color-1`, … on the root), defaulting to the theme's `--chart-*` tokens, so light and dark mode both work.
+- `role="figure"` with a screen-reader data table; focus the plot and use <kbd>←</kbd>/<kbd>→</kbd> to read values, which are announced.
+- Line, bar and area charts share one renderer, `<x-charts.cartesian>`.
+MD,
+        ],
+
+        'bar-chart' => [
+            'title' => 'Bar Chart',
+            'group' => 'Extras',
+            'description' => 'A responsive grouped or stacked bar chart rendered as SVG on the server, with an Alpine tooltip.',
+            'components' => ['charts.bar'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'stacked' => ['title' => 'Stacked', 'preview' => 'block', 'description' => 'Set `stacked` to stack the series.'],
+            ],
+            'props' => [
+                'charts.bar' => [
+                    'id' => 'Id of the chart element. Generated when omitted.',
+                    'labels' => 'X-axis labels, one per bar group.',
+                    'series' => 'Either `[\'Name\' => [values…]]` or a list of `[\'name\' => …, \'data\' => […], \'color\' => …]`. Negative values draw below zero.',
+                    'colors' => 'Colour per series (any CSS colour). Defaults to the theme\'s `--chart-1` … `--chart-5`.',
+                    'height' => 'Height in px; the width is fluid.',
+                    'stacked' => 'Stack the series instead of grouping them.',
+                    'grid' => 'Show horizontal grid lines.',
+                    'xAxis' => 'Show the x-axis labels (`:x-axis="false"` hides them).',
+                    'yAxis' => 'Show the y-axis labels (`:y-axis="false"` hides them).',
+                    'legend' => 'Show the legend.',
+                    'tooltip' => 'Show the hover / keyboard tooltip.',
+                    'prefix' => 'Text before values (e.g. `$`).',
+                    'suffix' => 'Text after values (e.g. `%`).',
+                    'label' => 'Accessible name of the chart.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => 'Rendered by the same SVG renderer as the line chart; see its notes for theming and accessibility.',
+        ],
+
+        'area-chart' => [
+            'title' => 'Area Chart',
+            'group' => 'Extras',
+            'description' => 'A responsive area chart, optionally stacked, rendered as SVG on the server, with an Alpine tooltip.',
+            'components' => ['charts.area'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'preview' => 'block'],
+                'stacked' => ['title' => 'Stacked', 'preview' => 'block', 'description' => 'Set `stacked` to pile the series on top of each other.'],
+            ],
+            'props' => [
+                'charts.area' => [
+                    'id' => 'Id of the chart element. Generated when omitted.',
+                    'labels' => 'X-axis labels, one per point.',
+                    'series' => 'Either `[\'Name\' => [values…]]` or a list of `[\'name\' => …, \'data\' => […], \'color\' => …]`.',
+                    'colors' => 'Colour per series (any CSS colour). Defaults to the theme\'s `--chart-1` … `--chart-5`.',
+                    'height' => 'Height in px; the width is fluid.',
+                    'curve' => '`smooth` (monotone, never overshoots), `linear` or `step`.',
+                    'stacked' => 'Stack the series.',
+                    'grid' => 'Show horizontal grid lines.',
+                    'xAxis' => 'Show the x-axis labels (`:x-axis="false"` hides them).',
+                    'yAxis' => 'Show the y-axis labels (`:y-axis="false"` hides them).',
+                    'legend' => 'Show the legend.',
+                    'tooltip' => 'Show the hover / keyboard tooltip.',
+                    'prefix' => 'Text before values (e.g. `$`).',
+                    'suffix' => 'Text after values (e.g. `%`).',
+                    'label' => 'Accessible name of the chart.',
+                    'class' => 'Extra classes for the root.',
+                ],
+            ],
+            'notes' => 'Rendered by the same SVG renderer as the line chart; see its notes for theming and accessibility.',
+        ],
+
         'donut-chart' => [
             'title' => 'Donut Chart',
             'group' => 'Extras',
