@@ -80,7 +80,7 @@
             <x-icons.calendar class="size-4" />
             <span x-text="formatted()" :class="! range.start && 'text-muted-foreground'">{{ $start ? ($end && $end !== $start ? $start.' – '.$end : $start) : $placeholder }}</span>
         </x-ui.popover-trigger>
-        <x-ui.popover-content align="start" class="flex w-auto flex-col p-0 sm:flex-row">
+        <x-ui.popover-content align="start" class="flex w-auto max-w-[calc(100vw-1rem)] flex-col p-0 sm:flex-row">
             @if ($presets !== [])
                 <div role="group" aria-label="Presets" data-slot="date-range-picker-presets" class="flex gap-1 overflow-x-auto border-b p-2 sm:w-36 sm:flex-col sm:border-r sm:border-b-0">
                     @foreach ($presets as $preset)

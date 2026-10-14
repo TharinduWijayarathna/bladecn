@@ -10,7 +10,7 @@
 
 {{-- A column of the board. `value` keys the column in the posted data and the `sorted` event; an `actions` slot sits in the header. --}}
 <section data-slot="kanban-column" data-column="{{ $value }}"
-    {{ $attributes->merge(['class' => cn('flex w-72 shrink-0 flex-col rounded-lg border bg-muted/40 dark:bg-muted/20', $class)]) }}>
+    {{ $attributes->merge(['class' => cn('flex min-w-60 flex-1 shrink-0 basis-60 flex-col rounded-lg border bg-muted/40 dark:bg-muted/20', $class)]) }}>
     <header class="flex items-center gap-2 px-3 pt-3 pb-2">
         <h3 class="text-sm font-medium text-foreground">{{ $title ?? $value }}</h3>
         <span data-slot="kanban-column-count" class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-background px-1.5 text-xs tabular-nums text-muted-foreground"
