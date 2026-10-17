@@ -62,43 +62,6 @@ return [
 
     'components' => [
 
-        'appearance-tabs' => [
-            'title' => 'Appearance Tabs',
-            'description' => 'A light / dark / system switcher that toggles the `.dark` class and remembers the choice.',
-            'components' => ['ui.appearance-tabs'],
-            'examples' => [
-                'default' => ['title' => 'Default', 'description' => 'Click a tab: the whole docs site follows, because it uses the same `appearance` key.'],
-            ],
-            'props' => [
-                'ui.appearance-tabs' => [
-                    'class' => 'Extra classes for the tab container.',
-                    'value' => "Initially selected mode (`light`, `dark` or `system`). Defaults to `session('appearance', 'system')`. When set, it is written to `localStorage` on load; pass an empty string to keep the visitor's stored choice.",
-                ],
-            ],
-            'notes' => <<<'MD'
-- Clicking a tab stores the mode in `localStorage` (`appearance`) **and** an `appearance` cookie, then toggles `.dark` on `<html>`.
-- `system` follows `prefers-color-scheme` and reacts to OS changes.
-- The script is pushed to the `scripts` stack, so your layout needs `@stack('scripts')`.
-MD,
-        ],
-
-        'approval-item' => [
-            'title' => 'Approval Item',
-            'description' => 'A list row with stacked thumbnails, a title, a timestamp and a "View" link.',
-            'components' => ['ui.approval-item'],
-            'examples' => [
-                'default' => ['title' => 'Default', 'preview' => 'block'],
-            ],
-            'props' => [
-                'ui.approval-item' => [
-                    'title' => 'Row title (also used as the images\' `alt`).',
-                    'time' => 'Secondary text shown next to the clock icon.',
-                    'images' => 'Array of image URLs, rendered as an overlapping stack.',
-                    'href' => 'Target of the "View" button.',
-                ],
-            ],
-        ],
-
         'avatar' => [
             'title' => 'Avatar',
             'description' => 'An image element with a fallback for representing the user.',
@@ -694,44 +657,6 @@ BLADE,
             ],
         ],
 
-        'like-button' => [
-            'title' => 'Like Button',
-            'description' => 'A gradient “Liked” toggle that fades in on hover of a `group` parent.',
-            'components' => ['ui.like-button'],
-            'examples' => [
-                'default' => ['title' => 'Default', 'description' => 'Unliked buttons are `opacity-0` until a parent with the `group` class is hovered.'],
-            ],
-            'props' => [
-                'ui.like-button' => [
-                    'liked' => 'Render the active (gradient) state.',
-                    'class' => 'Extra classes.',
-                ],
-            ],
-            'notes' => 'The click handler calls `event.stopPropagation()` before your own `onclick`, so it can sit on top of clickable cards. Toggle state on the server or with your own script.',
-        ],
-
-        'metric-card' => [
-            'title' => 'Metric Card',
-            'description' => 'A KPI card with a value, a trend badge and an icon.',
-            'components' => ['ui.metric-card'],
-            'examples' => [
-                'default' => ['title' => 'Default', 'preview' => 'block'],
-            ],
-            'props' => [
-                'ui.metric-card' => [
-                    'title' => 'Metric name.',
-                    'value' => 'Main value.',
-                    'change' => 'Change shown in the badge (a `%` sign is appended).',
-                    'trend' => '`up` (green, trending-up icon) or `down` (red, trending-down icon).',
-                    'icon-bg-color' => 'Tailwind background class for the icon tile.',
-                    'icon-color' => 'Tailwind text class for the icon.',
-                    'change-bg-color' => 'Override the badge background class.',
-                    'change-color' => 'Override the badge text class.',
-                ],
-            ],
-            'notes' => 'Requires a named `icon` slot.',
-        ],
-
         'native-select' => [
             'title' => 'Native Select',
             'description' => 'A styled native `<select>` with a chevron.',
@@ -742,43 +667,6 @@ BLADE,
             ],
             'props' => [
                 'ui.native-select' => ['class' => 'Extra classes for the `<select>`.'],
-            ],
-        ],
-
-        'notification-group' => [
-            'title' => 'Notification Group',
-            'description' => 'A segmented radio group for notification preferences, wrapping Radio Group.',
-            'components' => ['ui.notification-group'],
-            'examples' => [
-                'default' => 'Default',
-            ],
-            'props' => [
-                'ui.notification-group' => [
-                    'id' => 'Identifier; used as the radio `name` when `name` is not set.',
-                    'options' => 'Options passed to `x-ui.radio-group`.',
-                    'value' => 'Selected value.',
-                    'name' => 'Radio input name.',
-                    'class' => 'Extra classes.',
-                ],
-            ],
-        ],
-
-        'payment-card' => [
-            'title' => 'Payment Card',
-            'description' => 'A card summarising a saved payment method.',
-            'components' => ['ui.payment-card'],
-            'examples' => [
-                'default' => ['title' => 'Default', 'preview' => 'block'],
-            ],
-            'props' => [
-                'ui.payment-card' => [
-                    'title' => 'Card heading.',
-                    'description' => 'Text under the heading.',
-                    'card-type' => '`visa` or `master` show the card logo.',
-                    'card-holder' => 'Name on the card.',
-                    'card-number' => 'Card number; only the last four digits are displayed.',
-                    'expiry-date' => 'Any date string Carbon can parse; displayed as `m/y`.',
-                ],
             ],
         ],
 
@@ -812,26 +700,6 @@ BLADE,
                     'options' => "Array of values, or arrays of `['value' => ..., 'label' => ...]`.",
                     'value' => 'Checked value.',
                     'class' => 'Extra classes for the group.',
-                ],
-            ],
-        ],
-
-        'segmented-progress' => [
-            'title' => 'Segmented Progress',
-            'description' => 'A gradient progress bar made of segments, optionally animating to 100%.',
-            'components' => ['ui.segmented-progress'],
-            'examples' => [
-                'default' => ['title' => 'Default', 'preview' => 'block'],
-                'static' => ['title' => 'Static', 'preview' => 'block'],
-            ],
-            'props' => [
-                'ui.segmented-progress' => [
-                    'initial-progress' => 'Starting percentage.',
-                    'segments' => 'Number of segments.',
-                    'animate-to-end' => 'Animate from the initial value to 100%.',
-                    'animation-delay' => 'Delay in ms before animating.',
-                    'animation-speed' => 'Interval in ms between 1% steps.',
-                    'show-badge' => 'Show the percentage badge.',
                 ],
             ],
         ],
@@ -930,27 +798,6 @@ MD,
             ],
         ],
 
-        'subscription-card' => [
-            'title' => 'Subscription Card',
-            'description' => 'A plan summary card with price, renewal date, usage progress and an upgrade link.',
-            'components' => ['ui.subscription-card'],
-            'examples' => [
-                'default' => ['title' => 'Default', 'preview' => 'block'],
-            ],
-            'props' => [
-                'ui.subscription-card' => [
-                    'plan' => 'Plan name.',
-                    'subscription' => 'Billing period shown in the badge (e.g. `monthly`).',
-                    'description' => 'Optional description.',
-                    'price' => 'Price.',
-                    'currency' => 'Currency label shown before the price.',
-                    'expire-date' => 'Due date; any string Carbon can parse.',
-                    'progress' => 'Usage percentage for the progress bar.',
-                    'upgrade-route' => 'When set, shows an “Upgrade plan” link in the footer.',
-                ],
-            ],
-        ],
-
         'table' => [
             'title' => 'Table',
             'description' => 'A responsive table component.',
@@ -1013,20 +860,6 @@ BLADE,
                 'ui.textarea' => ['class' => 'Extra classes.'],
             ],
             'notes' => 'The slot becomes the initial value. Write it on one line (`<x-ui.textarea>{{ $bio }}</x-ui.textarea>`) or use a `value` workflow of your own, because whitespace inside the tag is preserved.',
-        ],
-
-        'tone-wheel' => [
-            'title' => 'Tone Wheel',
-            'description' => 'A four-quadrant picker (Catchy, Professional, Informative, Empower) where a click places a knob.',
-            'components' => ['ui.tone-wheel'],
-            'examples' => [
-                'default' => ['title' => 'Default'],
-            ],
-            'props' => [
-                'ui.tone-wheel' => [
-                    'class' => 'Extra classes for the outer card (e.g. a max width).',
-                ],
-            ],
         ],
 
         'tooltip' => [
@@ -2906,6 +2739,181 @@ BLADE,
 - `input-tags` switches to an Alpine version when it has `wire:model` or `x-model`: the bound value is an array of strings, and with `name` each tag is submitted as `name[]`. Without them it renders exactly as before.
 - Server-side binding (`:model`, `old()`) is skipped for fields with `wire:model` or `x-model`.
 - Nothing references Livewire classes; the package works the same without it.
+MD,
+        ],
+
+        'media-item' => [
+            'title' => 'Media Item',
+            'description' => 'A list row with overlapping thumbnails, a title, a supporting line and an action.',
+            'components' => ['ui.media-item'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'A review queue: the first row uses the default `href` button, the second its own `actions` slot.'],
+            ],
+            'props' => [
+                'ui.media-item' => [
+                    'title' => 'Row title.',
+                    'description' => 'Supporting line under the title (a timestamp, a status).',
+                    'images' => 'Array of image URLs, rendered as an overlapping stack.',
+                    'href' => 'Shows a default action button linking here (ignored when the `actions` slot is set).',
+                    'action' => 'Label of the default action button.',
+                    'max' => 'How many thumbnails to show before a `+N` tile.',
+                    'class' => 'Extra classes for the row.',
+                ],
+            ],
+            'notes' => 'Thumbnails are decorative (`alt=""`); the title carries the meaning. The default button adds the title for screen readers ("View: Spring campaign visuals").',
+        ],
+
+        'payment-method' => [
+            'title' => 'Payment Method',
+            'description' => 'A saved card row with a brand tile, the last four digits, expiry and holder.',
+            'components' => ['ui.payment-method'],
+            'examples' => [
+                'default' => ['title' => 'Default'],
+            ],
+            'props' => [
+                'ui.payment-method' => [
+                    'brand' => '`visa`, `mastercard`, `amex`, `discover` or `card`; anything else is shown capitalised.',
+                    'last4' => 'Last four digits. Pass only these: non-digits are stripped and at most four digits render.',
+                    'expires' => 'Expiry text, e.g. `04/28`.',
+                    'holder' => 'Name on the card.',
+                    'default' => 'Show a "Default" badge.',
+                    'class' => 'Extra classes for the row.',
+                ],
+            ],
+            'notes' => 'Put buttons in the `actions` slot. The component never needs (or renders) a full card number.',
+        ],
+
+        'plan-card' => [
+            'title' => 'Plan Card',
+            'description' => 'A subscription summary: plan name, price per interval, renewal date and usage.',
+            'components' => ['ui.plan-card'],
+            'examples' => [
+                'default' => ['title' => 'Default'],
+            ],
+            'props' => [
+                'ui.plan-card' => [
+                    'name' => 'Plan name.',
+                    'price' => 'Formatted price, e.g. `$29`.',
+                    'interval' => 'Billing interval shown after the price, e.g. `month`.',
+                    'badge' => 'Optional badge next to the name.',
+                    'description' => 'Optional line under the name.',
+                    'renews' => 'Renewal date; any string Carbon can parse (shown as "Renews on November 1, 2026").',
+                    'usage' => 'Usage percentage (0–100) for the progress bar; omit to hide it.',
+                    'usage-label' => 'Label for the usage bar.',
+                    'class' => 'Extra classes for the card.',
+                ],
+            ],
+            'notes' => 'The default slot renders inside the content area (feature lists, notices); the `footer` slot holds actions.',
+        ],
+
+        'quadrant-picker' => [
+            'title' => 'Quadrant Picker',
+            'description' => 'A two-axis "XY pad": click, drag or use the arrow keys to place a handle, with optional corner labels.',
+            'components' => ['ui.quadrant-picker'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'Bound with `x-model`; values run from -1 to 1 on each axis.'],
+            ],
+            'props' => [
+                'ui.quadrant-picker' => [
+                    'labels' => 'Up to four corner labels, in reading order: top-left, top-right, bottom-left, bottom-right.',
+                    'x' => 'Initial x, from -1 (left) to 1 (right).',
+                    'y' => 'Initial y, from -1 (bottom) to 1 (top).',
+                    'name' => 'Submits `{name}[x]` and `{name}[y]`.',
+                    'step' => 'Arrow-key step (<kbd>Shift</kbd> moves five steps).',
+                    'label' => 'Accessible name of the pad.',
+                    'disabled' => 'Disable interaction.',
+                    'class' => 'Extra classes for the wrapper (e.g. a max width).',
+                ],
+            ],
+            'notes' => <<<'MD'
+- The pad is a focusable `role="slider"` with `aria-valuetext` ("x 0.4, y 0.3"). Arrows move the handle, <kbd>Home</kbd> or <kbd>Esc</kbd> recentres it.
+- `x-model` binds `{ x, y }`; a bubbling `change` event carries the same object.
+MD,
+        ],
+
+        'reaction-button' => [
+            'title' => 'Reaction Button',
+            'description' => 'A pressable like / favourite / upvote toggle with an optional count.',
+            'components' => ['ui.reaction-button'],
+            'examples' => [
+                'default' => ['title' => 'Default'],
+            ],
+            'props' => [
+                'ui.reaction-button' => [
+                    'pressed' => 'Initial pressed state.',
+                    'count' => 'Optional count; it goes up or down by one as the button toggles.',
+                    'icon' => '`heart`, `star` or `thumbs-up`.',
+                    'label' => 'Button text, or the accessible name when a count is shown. The slot overrides it.',
+                    'name' => 'Submits `1` or `0`.',
+                    'disabled' => 'Disable the button.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+            'notes' => 'A real `aria-pressed` button. `x-model` binds the pressed boolean; a bubbling `change` event carries `{ pressed, count }`, so you can persist it with a fetch or `wire:click`.',
+        ],
+
+        'segmented-progress' => [
+            'title' => 'Segmented Progress',
+            'description' => 'A progress bar split into equal segments, filled with the primary colour.',
+            'components' => ['ui.segmented-progress'],
+            'examples' => [
+                'default' => ['title' => 'Default'],
+            ],
+            'props' => [
+                'ui.segmented-progress' => [
+                    'value' => 'Current value.',
+                    'max' => 'Maximum value.',
+                    'segments' => 'Number of segments (2–100).',
+                    'show-value' => 'Show the percentage next to the bar.',
+                    'label' => 'Accessible name of the progress bar.',
+                    'class' => 'Extra classes.',
+                ],
+            ],
+            'notes' => 'Renders a `role="progressbar"` with `aria-valuenow`. Filled segments use `bg-primary`, empty ones `bg-muted`.',
+        ],
+
+        'stat-card' => [
+            'title' => 'Stat Card',
+            'description' => 'A KPI card with a label, a value, a change with a trend arrow and an optional icon.',
+            'components' => ['ui.stat-card'],
+            'examples' => [
+                'default' => ['title' => 'Default'],
+            ],
+            'props' => [
+                'ui.stat-card' => [
+                    'title' => 'Metric name.',
+                    'value' => 'Main value, already formatted.',
+                    'change' => 'Change text, e.g. `+20.1%`.',
+                    'trend' => '`up` or `down` adds a trend arrow (and screen-reader text); omit for none.',
+                    'description' => 'Supporting text after the change, e.g. "from last month".',
+                    'class' => 'Extra classes for the card.',
+                ],
+            ],
+            'notes' => 'Pass an `icon` slot for a muted icon in the corner. Colours come from the theme, so it follows dark mode and your palette.',
+        ],
+
+        'theme-switcher' => [
+            'title' => 'Theme Switcher',
+            'description' => 'A light / dark / system switcher that toggles the `.dark` class and remembers the choice.',
+            'components' => ['ui.theme-switcher'],
+            'examples' => [
+                'default' => ['title' => 'Default', 'description' => 'Click an option: the whole docs site follows, because it uses the same `appearance` key.'],
+                'icon-only' => ['title' => 'Icon only'],
+            ],
+            'props' => [
+                'ui.theme-switcher' => [
+                    'value' => "Initially selected mode (`light`, `dark` or `system`). Defaults to `session('appearance', 'system')`. When set, it is stored on load; pass an empty string to keep the visitor's stored choice.",
+                    'name' => 'Adds a hidden input with the selected mode, for settings forms.',
+                    'icon-only' => 'Show icons only (each option keeps an accessible label).',
+                    'size' => '`default` or `sm`.',
+                    'label' => 'Accessible name of the radio group.',
+                    'class' => 'Extra classes for the container.',
+                ],
+            ],
+            'notes' => <<<'MD'
+- Stores the mode in `localStorage` (`appearance`) **and** an `appearance` cookie, then toggles `.dark` on `<html>`. Every switcher on the page stays in sync.
+- `system` follows `prefers-color-scheme` and reacts to OS changes.
+- A `role="radiogroup"`: arrow keys move between options. Dispatches a bubbling `change` event with `{ value }`; `x-model` binds the mode.
 MD,
         ],
     ],

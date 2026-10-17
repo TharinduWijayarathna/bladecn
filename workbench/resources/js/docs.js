@@ -24,7 +24,7 @@ function highlight() {
 
 // Header dark-mode toggle. Uses the package's convention: `appearance` in
 // localStorage (light | dark | system) + a `.dark` class on <html>, the same
-// keys <x-ui.appearance-tabs> and the app layout read.
+// keys <x-ui.theme-switcher> and the app layout read.
 function setupThemeToggle() {
     document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
         button.addEventListener('click', () => {

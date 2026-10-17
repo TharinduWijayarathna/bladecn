@@ -1,87 +1,34 @@
 @props([
-    'initialProgress' => 37,
-    'segments' => 50,
-    'animateToEnd' => true,
-    'animationDelay' => 500,
-    'animationSpeed' => 100,
-    'showBadge' => true,
+    'value' => 0,
+    'max' => 100,
+    'segments' => 20,
+    'showValue' => false,
+    'label' => 'Progress',
+    'class' => '',
 ])
 
 @php
-    $uniqueId = uniqid('segmented-progress-');
+    $max = max(1, (float) $max);
+    $value = min($max, max(0, (float) $value));
+    $segments = max(2, min(100, (int) $segments));
+    $percent = (int) round($value / $max * 100);
+    $filled = (int) round($value / $max * $segments);
+    $showValue = filter_var($showValue, FILTER_VALIDATE_BOOLEAN);
 @endphp
 
-<div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
-    <div id="{{ $uniqueId }}-segments" class="flex flex-1 gap-[0.125rem]"></div>
-    @if($showBadge)
-        <x-ui.badge class="self-start whitespace-nowrap font-mono text-xs font-semibold" style="height: clamp(1.25rem, 2.5vw, 3rem); font-size: clamp(0.625rem, 1vw, 0.8rem);">
-            <span id="{{ $uniqueId }}-value">{{ $initialProgress }}</span>%
-        </x-ui.badge>
+{{--
+    A progress bar split into equal segments, filled with the primary colour. Server-rendered and static:
+    change `value` to move it.
+--}}
+<div data-slot="segmented-progress" {{ $attributes->merge(['class' => cn('flex w-full items-center gap-3', $class)]) }}>
+    <div role="progressbar" aria-label="{{ $label }}" aria-valuemin="0" aria-valuemax="{{ $max + 0 }}" aria-valuenow="{{ $value + 0 }}"
+        class="flex h-2 flex-1 gap-0.5">
+        @for ($i = 0; $i < $segments; $i++)
+            <span data-slot="segmented-progress-segment" data-filled="{{ $i < $filled ? 'true' : 'false' }}"
+                class="h-full flex-1 rounded-[2px] bg-muted transition-colors data-[filled=true]:bg-primary"></span>
+        @endfor
+    </div>
+    @if ($showValue)
+        <span data-slot="segmented-progress-value" class="w-10 shrink-0 text-right text-sm font-medium tabular-nums">{{ $percent }}%</span>
     @endif
 </div>
-
-@push('scripts')
-<script>
-    (function() {
-        // Segmented progress bar
-        const segments = {{ $segments }};
-        let progress = {{ $initialProgress }};
-        const container = document.getElementById('{{ $uniqueId }}-segments');
-        const progressValueEl = document.getElementById('{{ $uniqueId }}-value');
-
-        function lerpColor(color1, color2, t) {
-            return color1.map((c, i) => Math.round(c + (color2[i] - c) * t));
-        }
-
-        function renderSegments() {
-            const filledSegments = Math.round((progress / 100) * segments);
-            container.innerHTML = '';
-
-            for (let i = 0; i < segments; i++) {
-                const t = i / (segments - 1);
-                let segmentColorArray;
-                
-                if (t < 0.33) {
-                    segmentColorArray = lerpColor([255, 78, 0], [177, 107, 62], t / 0.33);
-                } else if (t < 0.66) {
-                    segmentColorArray = lerpColor([177, 107, 62], [0, 234, 255], (t - 0.33) / 0.33);
-                } else {
-                    segmentColorArray = [0, 234, 255];
-                }
-
-                const segmentColor = `rgb(${segmentColorArray.join(',')})`;
-                const isFilled = i < filledSegments;
-
-                const segment = document.createElement('div');
-                segment.className = `transform rounded-md transition-all duration-300 ease-in-out ${isFilled ? 'hover:scale-110 hover:shadow-lg' : 'bg-secondary'}`;
-                segment.style.width = `${100 / segments}%`;
-                segment.style.height = 'clamp(1.25rem, 2.5vw, 3rem)';
-                if (isFilled) {
-                    segment.style.background = segmentColor;
-                }
-                container.appendChild(segment);
-            }
-        }
-
-        renderSegments();
-
-        @if($animateToEnd)
-        // Animate progress to 100%
-        setTimeout(() => {
-            const interval = setInterval(() => {
-                if (progress < 100) {
-                    progress++;
-                    if (progressValueEl) {
-                        progressValueEl.textContent = progress;
-                    }
-                    renderSegments();
-                } else {
-                    clearInterval(interval);
-                }
-            }, {{ $animationSpeed }});
-        }, {{ $animationDelay }});
-        @endif
-    })();
-</script>
-@endpush
-

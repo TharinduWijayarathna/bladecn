@@ -2,6 +2,24 @@
 
 All notable changes to `bladecn/bladecn` will be documented in this file.
 
+## Unreleased
+
+### Breaking: app-specific components renamed and redesigned
+
+Nine components from the original extraction carried one app's names, copy and brand gradients. They now have generic names, use only theme tokens (so they follow your palette and dark mode), and are accessible and Alpine-driven.
+
+| Before | After | What changed |
+| --- | --- | --- |
+| `ui.metric-card` | `ui.stat-card` | `change` is plain text (`+20.1%`); icon colour props are gone; adds `description` |
+| `ui.subscription-card` | `ui.plan-card` | `plan`/`subscription`/`currency`/`expire-date`/`progress`/`upgrade-route` become `name`/`badge`/`price`/`renews`/`usage` plus a `footer` slot |
+| `ui.payment-card` | `ui.payment-method` | Takes `brand`, `last4`, `expires`, `holder`, `default` and an `actions` slot; never needs a full card number |
+| `ui.approval-item` | `ui.media-item` | `time` becomes `description`; adds an `actions` slot, `action` and `max` |
+| `ui.like-button` | `ui.reaction-button` | A real `aria-pressed` toggle with an optional `count`, a `heart`/`star`/`thumbs-up` icon, `x-model` and `name` |
+| `ui.tone-wheel` | `ui.quadrant-picker` | A generic XY pad: configurable corner `labels`, values from -1 to 1, keyboard support, `x-model` and `name` |
+| `ui.appearance-tabs` | `ui.theme-switcher` | Alpine radiogroup with arrow keys, `name` for forms, `icon-only` and `size` |
+| `ui.segmented-progress` | `ui.segmented-progress` | Same name, now static and token-coloured: `value`, `max`, `segments`, `show-value`; the animation props are removed |
+| `ui.notification-group` | `ui.radio-group` | Removed; it only wrapped Radio Group |
+
 ## v1.1 - 2026-10-14
 
 ### What's new

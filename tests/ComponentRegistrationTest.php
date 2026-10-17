@@ -24,7 +24,7 @@ it('renders class, anonymous and icon components without publishing', function (
     expect(Blade::render('<x-ui.button variant="outline">Save</x-ui.button>'))->toContain('<button', 'Save', 'border')
         ->and(Blade::render('<x-ui.item><x-ui.item-footer>F</x-ui.item-footer></x-ui.item>'))->toContain('data-slot="item-footer"')
         ->and(Blade::render('<x-ui.alert><x-ui.alert-title>Heads up</x-ui.alert-title></x-ui.alert>'))->toContain('role="alert"', 'Heads up')
-        ->and(Blade::render('<x-ui.payment-card title="T" description="D" card-holder="Jane" card-number="4242424242424242" expiry-date="2030-01-01" />'))->toContain('**** **** **** 4242', '<a')
+        ->and(Blade::render('<x-ui.payment-method brand="visa" last4="4242424242424242" expires="01/30" />'))->toContain('ending in </span>4242', 'Expires 01/30')->not->toContain('42424242')
         ->and(Blade::render('<x-icons.check class="size-4" />'))->toContain('<svg');
 });
 
