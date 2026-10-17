@@ -83,7 +83,7 @@ it('reads props from component classes and @props', function () {
         ->and($button['variant']['default'])->toBe("'default'")
         ->and($button['variant']['type'])->toBe('string');
 
-    $payment = collect($extractor->extract('ui.payment-card')['props'])->keyBy('name');
-    expect($payment['card-number']['required'])->toBeTrue()
-        ->and($payment['card-type']['default'])->toBe("'visa'");
+    $payment = collect($extractor->extract('ui.payment-method')['props'])->keyBy('name');
+    expect($payment['last4']['required'])->toBeFalse()
+        ->and($payment['brand']['default'])->toBe("'card'");
 });

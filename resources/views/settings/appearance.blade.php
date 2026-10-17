@@ -18,8 +18,7 @@
                 
                 <div class="grid gap-2">
                     <x-ui.label>Theme</x-ui.label>
-                    <x-ui.appearance-tabs :value="session('appearance', 'system')" />
-                    <input type="hidden" name="appearance" id="appearance-input" value="{{ session('appearance', 'system') }}" />
+                    <x-ui.theme-switcher name="appearance" :value="session('appearance', 'system')" />
                 </div>
             </div>
             
@@ -27,7 +26,7 @@
                 <x-ui.button type="submit">Save appearance</x-ui.button>
                 
                 @if(session('status') === 'appearance-updated')
-                    <p id="savedMessage" class="text-sm text-neutral-600">Saved</p>
+                    <p id="savedMessage" class="text-sm text-muted-foreground">Saved</p>
                 @endif
             </div>
         </form>
@@ -36,27 +35,7 @@
 
 @push('scripts')
 <script>
-    // Update hidden input when appearance tabs change
     document.addEventListener('DOMContentLoaded', function() {
-        const appearanceInput = document.getElementById('appearance-input');
-        const currentAppearance = '{{ session('appearance', 'system') }}';
-        
-        // Set initial value from session
-        if (appearanceInput) {
-            appearanceInput.value = currentAppearance;
-        }
-        
-        // Listen for appearance tab clicks
-        document.querySelectorAll('.appearance-tab').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const value = this.getAttribute('data-appearance-value');
-                if (appearanceInput) {
-                    appearanceInput.value = value;
-                }
-            });
-        });
-        
         // Show saved message with fade animation
         const savedMessage = document.getElementById('savedMessage');
         if (savedMessage) {

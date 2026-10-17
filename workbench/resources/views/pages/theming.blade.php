@@ -49,7 +49,7 @@ CSS;
 BLADE;
 
     $tabs = <<<'BLADE'
-<x-ui.appearance-tabs />
+<x-ui.theme-switcher />
 BLADE;
 @endphp
 
@@ -100,14 +100,14 @@ BLADE;
 <div class="docs-prose mt-10">
     <h3>Appearance switcher</h3>
     <p>
-        <code>&lt;x-ui.appearance-tabs&gt;</code> writes the same keys, so it works with the layout above. Try it: this
+        <code>&lt;x-ui.theme-switcher&gt;</code> writes the same keys, so it works with the layout above. Try it: this
         docs site follows the same convention, as does the moon / sun button in the header.
     </p>
 </div>
 @include('docs::partials.code', ['code' => $tabs])
 <div class="mt-4 flex justify-center rounded-lg border p-6">
-    <x-ui.appearance-tabs value="" />
+    <x-ui.theme-switcher value="" />
 </div>
 <p class="mt-3 text-sm text-muted-foreground">
-    See <a class="underline underline-offset-4" href="{{ $docs->url('components/appearance-tabs') }}">Appearance Tabs</a> for its props.
+    See <a class="underline underline-offset-4" href="{{ $docs->url('components/theme-switcher') }}">Theme Switcher</a> for its props.
 </p>

@@ -7,7 +7,7 @@
             <x-ai.message from="assistant">
                 <x-ai.message-content>
                     <x-ai.response>
-                        <p>Drop <code>&lt;x-ui.appearance-tabs /&gt;</code> into your settings page. It toggles the <code>.dark</code> class and remembers the choice.</p>
+                        <p>Drop <code>&lt;x-ui.theme-switcher /&gt;</code> into your settings page. It toggles the <code>.dark</code> class and remembers the choice.</p>
                     </x-ai.response>
                 </x-ai.message-content>
             </x-ai.message>
